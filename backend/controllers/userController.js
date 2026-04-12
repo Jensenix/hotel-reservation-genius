@@ -76,12 +76,12 @@ class UserController {
         order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password'] }
       });
-
+      
       return res.status(200).json({
         success: true,
         message: 'Users retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting users:', error);

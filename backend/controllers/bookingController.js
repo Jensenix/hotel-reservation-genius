@@ -98,7 +98,7 @@ class BookingController {
         success: true,
         message: 'Bookings retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting bookings:', error);

@@ -67,7 +67,7 @@ class PaymentMethodController {
         success: true,
         message: 'Payment methods retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting payment methods:', error);
