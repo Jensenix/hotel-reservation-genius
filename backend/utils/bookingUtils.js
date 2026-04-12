@@ -73,6 +73,41 @@ class BookingUtils {
   }
 
   /**
+   * Find first available room for given room type and dates
+   * @param {number} roomTypeId - Room Type ID
+   * @param {Date} checkInDate - Check-in date
+   * @param {Date} checkOutDate - Check-out date
+   * @returns {Promise<Object|null>}
+   */
+  static async findAvailableRoom(roomTypeId, checkInDate, checkOutDate) {
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+
+    // Validate dates
+    if (checkIn >= checkOut) {
+      throw new Error('Check-in date must be before check-out date');
+    }
+
+    // Get all rooms of this type that are available
+    const rooms = await Room.findAll({
+      where: { 
+        roomTypeId,
+        status: 'available'
+      }
+    });
+
+    // Check each room for availability
+    for (const room of rooms) {
+      const isAvailable = await this.checkRoomAvailability(room.id, checkIn, checkOut);
+      if (isAvailable) {
+        return room;
+      }
+    }
+
+    return null; // No available rooms
+  }
+
+  /**
    * Get available rooms for given date range and room type
    * @param {Date} checkInDate - Check-in date
    * @param {Date} checkOutDate - Check-out date

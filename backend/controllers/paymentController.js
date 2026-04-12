@@ -15,6 +15,17 @@ class PaymentController {
         });
       }
 
+      // Validate payment method exists
+      if (paymentMethodId) {
+        const paymentMethod = await PaymentMethod.findByPk(paymentMethodId);
+        if (!paymentMethod) {
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid payment method'
+          });
+        }
+      }
+
       const payment = await Payment.create({
         bookingId,
         paymentMethodId,

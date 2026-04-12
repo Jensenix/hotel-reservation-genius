@@ -6,38 +6,31 @@ class BookingController {
   // Create new booking
   async createBooking(req, res) {
     try {
-      const { userId, roomId, checkInDate, checkOutDate, totalPrice, status } = req.body;
+      const { userId, roomTypeId, checkInDate, checkOutDate, totalPrice, status } = req.body;
 
       // Manual validation
-      if (!userId || !roomId || !checkInDate || !checkOutDate) {
+      if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
         return res.status(400).json({
           success: false,
-          message: 'userId, roomId, checkInDate, and checkOutDate are required'
+          message: 'userId, roomTypeId, checkInDate, and checkOutDate are required'
         });
       }
 
-      // Check if room exists
-      const room = await Room.findByPk(roomId);
-      if (!room) {
-        return res.status(404).json({
+      // Find available room for this room type
+      const availableRoom = await BookingUtils.findAvailableRoom(roomTypeId, checkInDate, checkOutDate);
+      if (!availableRoom) {
+        return res.status(400).json({
           success: false,
-          message: 'Room not found'
+          message: 'All rooms of this type are fully booked for the selected dates'
         });
       }
 
-      // Check room availability
-      const isAvailable = await BookingUtils.checkRoomAvailability(roomId, checkInDate, checkOutDate);
-      if (!isAvailable) {
-        return res.status(400).json({
-          success: false,
-          message: 'Room is not available for the selected dates'
-        });
-      }
+      const roomId = availableRoom.id;
 
       // Calculate total price if not provided
       let calculatedPrice = totalPrice;
       if (!totalPrice) {
-        calculatedPrice = await BookingUtils.calculateTotalPrice(room.roomTypeId, checkInDate, checkOutDate);
+        calculatedPrice = await BookingUtils.calculateTotalPrice(roomTypeId, checkInDate, checkOutDate);
       }
 
       const booking = await Booking.create({
