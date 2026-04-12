@@ -20,10 +20,36 @@ const Rooms = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await apiService.getRoomTypes();
-      setRooms(response.data.data);
+      // Fetch rooms with their roomType info
+      const response = await apiService.getRooms();
+      const roomsData = response.data.data;
+      
+      // Fetch room types separately for pricing info
+      const roomTypesResponse = await apiService.getRoomTypes();
+      const roomTypes = roomTypesResponse.data.data;
+      
+      // Combine room and roomType data
+      const combinedRooms = roomsData.map(room => {
+        const roomType = roomTypes.find(rt => rt.id === room.roomTypeId);
+        return {
+          ...room,
+          name: roomType?.name || 'Unknown Room',
+          description: roomType?.description || '',
+          basePrice: roomType?.basePrice || 0,
+          maxCapacity: roomType?.maxCapacity || 1
+        };
+      });
+      
+      setRooms(combinedRooms);
     } catch (error) {
       console.error('Error fetching rooms:', error);
+      // Fallback to roomTypes if rooms endpoint fails
+      try {
+        const roomTypesResponse = await apiService.getRoomTypes();
+        setRooms(roomTypesResponse.data.data);
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+      }
     } finally {
       setLoading(false);
     }

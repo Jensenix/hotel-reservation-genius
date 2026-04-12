@@ -1,8 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
 const Header = () => {
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
       <div className="container mx-auto px-4">
@@ -46,14 +55,39 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* CTA Button */}
+          {/* User Section */}
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm">
-              Book Now
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-3">
+                  <div className="text-right hidden md:block">
+                    <p className="text-sm font-medium">{user?.fullName}</p>
+                    <p className="text-xs text-blue-100">{user?.email}</p>
+                  </div>
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 font-bold text-sm">
+                      {user?.fullName?.charAt(0)?.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="sm">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

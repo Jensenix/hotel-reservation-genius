@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
+import Loading from '../components/ui/Loading';
+import Modal from '../components/common/Modal';
 
 const Booking = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +23,8 @@ const Booking = () => {
   });
   const [step, setStep] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (roomId) {
@@ -33,8 +39,16 @@ const Booking = () => {
 
   const fetchRoomDetails = async () => {
     try {
+      // For now, we'll use roomType as room since we don't have actual rooms
       const response = await apiService.getRoomTypeById(roomId);
-      setRoom(response.data.data);
+      const roomType = response.data.data;
+      
+      // Create a room-like object from roomType
+      setRoom({
+        ...roomType,
+        id: roomType.id,
+        roomTypeId: roomType.id // For room types, roomTypeId = id
+      });
     } catch (error) {
       console.error('Error fetching room details:', error);
     } finally {
@@ -90,13 +104,15 @@ const Booking = () => {
   const handleSubmitBooking = async () => {
     try {
       const bookingPayload = {
-        roomId: parseInt(roomId),
+        userId: user?.id || 1, // Use logged-in user ID
+        roomTypeId: room?.roomTypeId,
         checkInDate: bookingData.checkInDate,
         checkOutDate: bookingData.checkOutDate,
         totalPrice,
-        specialRequests: bookingData.specialRequests
+        status: 'pending'
       };
 
+      console.log('Booking payload:', bookingPayload);
       const bookingResponse = await apiService.createBooking(bookingPayload);
       const booking = bookingResponse.data.data;
 
@@ -104,7 +120,9 @@ const Booking = () => {
       const paymentPayload = {
         bookingId: booking.id,
         paymentMethodId: parseInt(bookingData.paymentMethodId),
-        paymentStatus: 'pending'
+        amount: totalPrice,
+        paymentStatus: 'pending',
+        transactionTime: new Date().toISOString()
       };
 
       await apiService.createPayment(paymentPayload);
@@ -114,7 +132,9 @@ const Booking = () => {
       });
     } catch (error) {
       console.error('Error creating booking:', error);
-      alert('Failed to create booking. Please try again.');
+      const errorMsg = error.response?.data?.message || 'Failed to create booking. Please try again.';
+      setErrorMessage(errorMsg);
+      setShowErrorModal(true);
     }
   };
 
@@ -255,8 +275,8 @@ const Booking = () => {
                           className="mr-4"
                         />
                         <div className="flex-1">
-                          <div className="font-medium text-gray-900">{method.name}</div>
-                          <div className="text-sm text-gray-500">{method.description}</div>
+                          <div className="font-medium text-gray-900">{method.methodName}</div>
+                          <div className="text-sm text-gray-500">{method.accountNumber}</div>
                         </div>
                       </label>
                     ))}
@@ -337,6 +357,46 @@ const Booking = () => {
           </div>
         </div>
       </div>
+
+      {/* Error Modal */}
+      <Modal
+        isOpen={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        title="Booking Error"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {errorMessage.includes('fully booked') ? 'Room Fully Booked' : 'Booking Failed'}
+          </h3>
+          <p className="text-gray-600 mb-6">
+            {errorMessage.includes('fully booked') 
+              ? 'All rooms of this type are fully booked for the selected dates. Please try different dates or choose a different room type.'
+              : errorMessage
+            }
+          </p>
+          <div className="flex space-x-3 justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowErrorModal(false)}
+            >
+              Try Different Dates
+            </Button>
+            <Button
+              onClick={() => {
+                setShowErrorModal(false);
+                navigate('/rooms');
+              }}
+            >
+              View Other Rooms
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

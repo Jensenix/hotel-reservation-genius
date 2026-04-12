@@ -16,6 +16,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     console.error('API Error:', error);
+    console.error('Error Response:', error.response?.data);
+    console.error('Error Status:', error.response?.status);
     return Promise.reject(error);
   }
 );
