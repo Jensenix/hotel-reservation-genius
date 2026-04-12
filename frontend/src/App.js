@@ -7,6 +7,7 @@ import Rooms from './pages/Rooms';
 import Booking from './pages/Booking';
 import BookingSuccess from './pages/BookingSuccess';
 import Facilities from './pages/Facilities';
+import MyBookings from './pages/MyBookings';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -23,6 +24,7 @@ function AppRoutes() {
       <Route path="/" element={isAuthenticated ? <MainLayout><Home /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/rooms" element={isAuthenticated ? <MainLayout><Rooms /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/facilities" element={isAuthenticated ? <MainLayout><Facilities /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking-success" element={isAuthenticated ? <MainLayout><BookingSuccess /></MainLayout> : <Navigate to="/login" />} />
     </Routes>
