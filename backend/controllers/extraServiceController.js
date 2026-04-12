@@ -1,4 +1,4 @@
-const { ExtraService, Booking } = require('../models');
+const { ExtraService } = require('../models');
 
 class ExtraServiceController {
   // Create new extra service
@@ -61,14 +61,7 @@ class ExtraServiceController {
     try {
       const { id } = req.params;
 
-      const extraService = await ExtraService.findByPk(id, {
-        include: [
-          {
-            model: Booking,
-            as: 'bookings'
-          }
-        ]
-      });
+      const extraService = await ExtraService.findByPk(id);
 
       if (!extraService) {
         return res.status(404).json({
