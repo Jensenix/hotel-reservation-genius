@@ -2,43 +2,40 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Bookings', {
+    await queryInterface.createTable('Payments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      bookingId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'Bookings',
           key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      roomId: {
+      paymentMethodId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Rooms',
+          model: 'PaymentMethods',
           key: 'id'
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'SET NULL'
       },
-      checkInDate: {
-        type: Sequelize.DATE
-      },
-      checkOutDate: {
-        type: Sequelize.DATE
-      },
-      totalPrice: {
+      amount: {
         type: Sequelize.DECIMAL
       },
-      bookingStatus: {
-        type: Sequelize.ENUM('pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'),
+      paymentStatus: {
+        type: Sequelize.ENUM('pending', 'paid', 'failed', 'refunded'),
         defaultValue: 'pending'
+      },
+      transactionTime: {
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -51,6 +48,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Bookings');
+    await queryInterface.dropTable('Payments');
   }
 };

@@ -10,14 +10,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Room.belongsTo(models.RoomType, { foreignKey: 'roomTypeId', as: 'roomType' });
+      Room.hasMany(models.Booking, { foreignKey: 'roomId', as: 'bookings' });
     }
   }
   Room.init({
-    roomTypeId: DataTypes.INTEGER,
     roomNumber: DataTypes.STRING,
+    roomTypeId: DataTypes.INTEGER,
     floor: DataTypes.INTEGER,
-    roomStatus: DataTypes.ENUM
+    status: {
+      type: DataTypes.ENUM('available', 'occupied', 'maintenance'),
+      defaultValue: 'available'
+    }
   }, {
     sequelize,
     modelName: 'Room',

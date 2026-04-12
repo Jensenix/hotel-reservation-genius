@@ -13,16 +13,19 @@ module.exports = {
         type: Sequelize.STRING
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       password: {
         type: Sequelize.STRING
       },
-      role: {
-        type: Sequelize.STRING
-      },
       phoneNumber: {
         type: Sequelize.STRING
+      },
+      role: {
+        type: Sequelize.ENUM('admin', 'staff', 'guest'),
+        defaultValue: 'guest'
       },
       createdAt: {
         allowNull: false,

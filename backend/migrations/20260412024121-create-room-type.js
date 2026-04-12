@@ -2,31 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Rooms', {
+    await queryInterface.createTable('RoomTypes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      roomTypeId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'RoomTypes',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      roomNumber: {
+      name: {
         type: Sequelize.STRING
       },
-      floor: {
-        type: Sequelize.INTEGER
+      description: {
+        type: Sequelize.TEXT
       },
-      roomStatus: {
-        type: Sequelize.ENUM('available', 'occupied', 'maintenance', 'cleaning'),
-        defaultValue: 'available'
+      basePrice: {
+        type: Sequelize.DECIMAL
+      },
+      maxCapacity: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Rooms');
+    await queryInterface.dropTable('RoomTypes');
   }
 };

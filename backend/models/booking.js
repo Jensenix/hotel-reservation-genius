@@ -10,7 +10,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Booking.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+      Booking.belongsTo(models.Room, { foreignKey: 'roomId', as: 'room' });
+      Booking.hasOne(models.Payment, { foreignKey: 'bookingId', as: 'payment' });
+      Booking.hasMany(models.Review, { foreignKey: 'bookingId', as: 'reviews' });
+      Booking.belongsToMany(models.ExtraService, {
+        through: 'BookingExtraServices',
+        foreignKey: 'bookingId',
+        otherKey: 'extraServiceId',
+        as: 'extraServices'
+      });
     }
   }
   Booking.init({
@@ -19,7 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     checkInDate: DataTypes.DATE,
     checkOutDate: DataTypes.DATE,
     totalPrice: DataTypes.DECIMAL,
-    bookingStatus: DataTypes.ENUM
+    status: {
+      type: DataTypes.ENUM('pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'),
+      defaultValue: 'pending'
+    }
   }, {
     sequelize,
     modelName: 'Booking',
