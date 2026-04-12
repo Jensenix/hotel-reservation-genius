@@ -1,5 +1,4 @@
 const { PaymentMethod, Payment } = require('../models');
-const pagination = require('../utils/pagination');
 
 class PaymentMethodController {
   // Create new payment method
@@ -36,10 +35,10 @@ class PaymentMethodController {
     }
   }
 
-  // Get all payment methods with pagination
+  // Get all payment methods with filtering
   async getAllPaymentMethods(req, res) {
     try {
-      const { page = 1, limit = 10, isActive } = req.query;
+      const { isActive } = req.query;
 
       const where = {};
 
@@ -48,12 +47,8 @@ class PaymentMethodController {
         where.isActive = isActive === 'true';
       }
 
-      const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
-
-      const { count, rows } = await PaymentMethod.findAndCountAll({
+      const paymentMethods = await PaymentMethod.findAll({
         where,
-        offset,
-        limit: parsedLimit,
         order: [['createdAt', 'DESC']],
         include: [
           {
@@ -66,8 +61,7 @@ class PaymentMethodController {
       return res.status(200).json({
         success: true,
         message: 'Payment methods retrieved successfully',
-        data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        data: paymentMethods
       });
     } catch (error) {
       console.error('Error getting payment methods:', error);

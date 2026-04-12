@@ -1,5 +1,4 @@
 const { ExtraService, Booking } = require('../models');
-const pagination = require('../utils/pagination');
 
 class ExtraServiceController {
   // Create new extra service
@@ -35,24 +34,17 @@ class ExtraServiceController {
     }
   }
 
-  // Get all extra services with pagination
+  // Get all extra services
   async getAllExtraServices(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-
-      const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
-
-      const { count, rows } = await ExtraService.findAndCountAll({
-        offset,
-        limit: parsedLimit,
+      const extraServices = await ExtraService.findAll({
         order: [['createdAt', 'DESC']]
       });
 
       return res.status(200).json({
         success: true,
         message: 'Extra services retrieved successfully',
-        data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        data: extraServices
       });
     } catch (error) {
       console.error('Error getting extra services:', error);

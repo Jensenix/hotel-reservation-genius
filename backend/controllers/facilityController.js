@@ -1,5 +1,4 @@
 const { Facility, RoomType } = require('../models');
-const pagination = require('../utils/pagination');
 
 class FacilityController {
   // Create new facility
@@ -35,24 +34,17 @@ class FacilityController {
     }
   }
 
-  // Get all facilities with pagination
+  // Get all facilities
   async getAllFacilities(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-
-      const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
-
-      const { count, rows } = await Facility.findAndCountAll({
-        offset,
-        limit: parsedLimit,
+      const facilities = await Facility.findAll({
         order: [['createdAt', 'DESC']]
       });
 
       return res.status(200).json({
         success: true,
         message: 'Facilities retrieved successfully',
-        data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        data: facilities
       });
     } catch (error) {
       console.error('Error getting facilities:', error);

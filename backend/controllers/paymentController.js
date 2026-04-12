@@ -41,7 +41,7 @@ class PaymentController {
   // Get all payments with pagination and filtering
   async getAllPayments(req, res) {
     try {
-      const { page = 1, limit = 10, paymentStatus, bookingId } = req.query;
+      const { page = 1, limit, paymentStatus, bookingId } = req.query;
 
       const where = {};
 
@@ -79,7 +79,7 @@ class PaymentController {
         success: true,
         message: 'Payments retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting payments:', error);

@@ -1,5 +1,4 @@
 const { RoomType, Room, Facility } = require('../models');
-const pagination = require('../utils/pagination');
 
 class RoomTypeController {
   // Create new room type
@@ -37,10 +36,10 @@ class RoomTypeController {
     }
   }
 
-  // Get all room types with pagination and filtering
+  // Get all room types with filtering
   async getAllRoomTypes(req, res) {
     try {
-      const { page = 1, limit = 10, minPrice, maxPrice, search } = req.query;
+      const { minPrice, maxPrice, search } = req.query;
 
       const where = {};
 
@@ -56,12 +55,8 @@ class RoomTypeController {
         where.name = { [require('sequelize').Op.like]: `%${search}%` };
       }
 
-      const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
-
-      const { count, rows } = await RoomType.findAndCountAll({
+      const roomTypes = await RoomType.findAll({
         where,
-        offset,
-        limit: parsedLimit,
         order: [['createdAt', 'DESC']],
         include: [
           {
@@ -78,8 +73,7 @@ class RoomTypeController {
       return res.status(200).json({
         success: true,
         message: 'Room types retrieved successfully',
-        data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        data: roomTypes
       });
     } catch (error) {
       console.error('Error getting room types:', error);

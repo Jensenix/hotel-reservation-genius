@@ -40,7 +40,7 @@ class ReviewController {
   // Get all reviews with pagination and filtering
   async getAllReviews(req, res) {
     try {
-      const { page = 1, limit = 10, rating, userId, bookingId } = req.query;
+      const { page = 1, limit, rating, userId, bookingId } = req.query;
 
       const where = {};
 
@@ -84,7 +84,7 @@ class ReviewController {
         success: true,
         message: 'Reviews retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting reviews:', error);

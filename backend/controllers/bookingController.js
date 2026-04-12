@@ -42,7 +42,7 @@ class BookingController {
   // Get all bookings with pagination and filtering
   async getAllBookings(req, res) {
     try {
-      const { page = 1, limit = 10, status, userId, roomId } = req.query;
+      const { page = 1, limit, status, userId, roomId } = req.query;
 
       const where = {};
 
@@ -98,7 +98,7 @@ class BookingController {
         success: true,
         message: 'Bookings retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData(count, page, parsedLimit)
+        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
       });
     } catch (error) {
       console.error('Error getting bookings:', error);
