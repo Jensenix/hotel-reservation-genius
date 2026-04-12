@@ -1,5 +1,6 @@
-const { Booking, User, Room, Payment, Review, ExtraService } = require('../models');
+const { Booking, User, Room, Payment, Review, ExtraService, RoomType } = require('../models');
 const pagination = require('../utils/pagination');
+const BookingUtils = require('../utils/bookingUtils');
 
 class BookingController {
   // Create new booking
@@ -15,12 +16,36 @@ class BookingController {
         });
       }
 
+      // Check if room exists
+      const room = await Room.findByPk(roomId);
+      if (!room) {
+        return res.status(404).json({
+          success: false,
+          message: 'Room not found'
+        });
+      }
+
+      // Check room availability
+      const isAvailable = await BookingUtils.checkRoomAvailability(roomId, checkInDate, checkOutDate);
+      if (!isAvailable) {
+        return res.status(400).json({
+          success: false,
+          message: 'Room is not available for the selected dates'
+        });
+      }
+
+      // Calculate total price if not provided
+      let calculatedPrice = totalPrice;
+      if (!totalPrice) {
+        calculatedPrice = await BookingUtils.calculateTotalPrice(room.roomTypeId, checkInDate, checkOutDate);
+      }
+
       const booking = await Booking.create({
         userId,
         roomId,
         checkInDate,
         checkOutDate,
-        totalPrice,
+        totalPrice: calculatedPrice,
         status: status || 'pending'
       });
 
@@ -228,6 +253,69 @@ class BookingController {
       return res.status(500).json({
         success: false,
         message: 'Error deleting booking',
+        error: error.message
+      });
+    }
+  }
+
+  // Check room availability
+  async checkRoomAvailability(req, res) {
+    try {
+      const { roomId, checkInDate, checkOutDate } = req.query;
+
+      if (!roomId || !checkInDate || !checkOutDate) {
+        return res.status(400).json({
+          success: false,
+          message: 'roomId, checkInDate, and checkOutDate are required'
+        });
+      }
+
+      const isAvailable = await BookingUtils.checkRoomAvailability(roomId, checkInDate, checkOutDate);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Room availability checked successfully',
+        data: {
+          roomId,
+          checkInDate,
+          checkOutDate,
+          available: isAvailable
+        }
+      });
+    } catch (error) {
+      console.error('Error checking room availability:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error checking room availability',
+        error: error.message
+      });
+    }
+  }
+
+  // Get available rooms for date range
+  async getAvailableRooms(req, res) {
+    try {
+      const { checkInDate, checkOutDate, roomTypeId } = req.query;
+
+      if (!checkInDate || !checkOutDate) {
+        return res.status(400).json({
+          success: false,
+          message: 'checkInDate and checkOutDate are required'
+        });
+      }
+
+      const availableRooms = await BookingUtils.getAvailableRooms(checkInDate, checkOutDate, roomTypeId);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Available rooms retrieved successfully',
+        data: availableRooms
+      });
+    } catch (error) {
+      console.error('Error getting available rooms:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting available rooms',
         error: error.message
       });
     }
