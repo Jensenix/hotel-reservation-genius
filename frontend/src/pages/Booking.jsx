@@ -25,6 +25,7 @@ const Booking = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     if (roomId) {
@@ -103,13 +104,15 @@ const Booking = () => {
 
   const handleSubmitBooking = async () => {
     try {
+      setIsProcessingPayment(true);
+      
       const bookingPayload = {
-        userId: user?.id || 1, // Use logged-in user ID
+        userId: user?.id, // Use logged-in user ID
         roomTypeId: room?.roomTypeId,
         checkInDate: bookingData.checkInDate,
         checkOutDate: bookingData.checkOutDate,
         totalPrice,
-        status: 'pending'
+        status: 'confirmed' // Direct to confirmed since payment is immediate
       };
 
       console.log('Booking payload:', bookingPayload);
@@ -121,20 +124,34 @@ const Booking = () => {
         bookingId: booking.id,
         paymentMethodId: parseInt(bookingData.paymentMethodId),
         amount: totalPrice,
-        paymentStatus: 'pending',
+        paymentStatus: 'paid',
         transactionTime: new Date().toISOString()
       };
 
-      await apiService.createPayment(paymentPayload);
+      const paymentResponse = await apiService.createPayment(paymentPayload);
+      console.log('Payment response:', paymentResponse.data);
 
-      navigate('/booking-success', { 
-        state: { booking, room } 
-      });
+      // Verify payment was created successfully
+      if (paymentResponse.data.success) {
+        // Use updated booking from payment response
+        const updatedBooking = paymentResponse.data.data.booking;
+        
+        console.log('Payment response data:', paymentResponse.data);
+        console.log('Updated booking from payment response:', updatedBooking);
+        
+        navigate('/booking-success', { 
+          state: { booking: updatedBooking, room } 
+        });
+      } else {
+        throw new Error('Payment processing failed');
+      }
     } catch (error) {
       console.error('Error creating booking:', error);
       const errorMsg = error.response?.data?.message || 'Failed to create booking. Please try again.';
       setErrorMessage(errorMsg);
       setShowErrorModal(true);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -295,10 +312,10 @@ const Booking = () => {
                 )}
                 <Button
                   onClick={handleNextStep}
-                  disabled={step === 1 ? !validateStep1() : !validateStep2()}
+                  disabled={step === 1 ? !validateStep1() : !validateStep2() || isProcessingPayment}
                   className="ml-auto"
                 >
-                  {step === 1 ? 'Continue to Payment' : 'Complete Booking'}
+                  {isProcessingPayment ? 'Processing...' : (step === 1 ? 'Continue to Payment' : 'Complete Booking')}
                 </Button>
               </div>
             </Card>

@@ -34,10 +34,18 @@ class PaymentController {
         transactionTime
       });
 
+      // Note: Booking is already confirmed from frontend, no need to update status
+
+      // Get updated booking to return in response
+      const updatedBooking = await Booking.findByPk(bookingId);
+
       return res.status(201).json({
         success: true,
         message: 'Payment created successfully',
-        data: payment
+        data: {
+          payment,
+          booking: updatedBooking
+        }
       });
     } catch (error) {
       console.error('Error creating payment:', error);

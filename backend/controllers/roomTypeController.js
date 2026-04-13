@@ -85,6 +85,33 @@ class RoomTypeController {
     }
   }
 
+  // Get all room types with their facilities
+  async getAllRoomTypesWithFacilities(req, res) {
+    try {
+      const roomTypes = await RoomType.findAll({
+        include: [{
+          model: Facility,
+          as: 'facilities',
+          through: { attributes: [] } // Exclude junction table attributes
+        }],
+        order: [['basePrice', 'ASC']]
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Room types with facilities retrieved successfully',
+        data: roomTypes
+      });
+    } catch (error) {
+      console.error('Error getting room types with facilities:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting room types with facilities',
+        error: error.message
+      });
+    }
+  }
+
   // Get room type by ID
   async getRoomTypeById(req, res) {
     try {
