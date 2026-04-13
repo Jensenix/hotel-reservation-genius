@@ -36,10 +36,10 @@ const Header = () => {
               Home
             </Link>
             <Link 
-              to="/rooms" 
+              to="/our-rooms" 
               className="text-white hover:text-blue-200 transition-colors duration-200 font-medium"
             >
-              Rooms
+              Our Rooms
             </Link>
             <Link 
               to="/facilities" 

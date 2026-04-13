@@ -14,8 +14,8 @@ const BookingSuccess = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Booking Not Found</h1>
           <p className="text-gray-600 mb-8">We couldn't find your booking details.</p>
-          <Button onClick={() => navigate('/rooms')}>
-            Browse Rooms
+          <Button onClick={() => navigate('/our-rooms')}>
+            Browse Our Rooms
           </Button>
         </div>
       </div>
@@ -23,7 +23,7 @@ const BookingSuccess = () => {
   }
 
   const handleNewBooking = () => {
-    navigate('/rooms');
+    navigate('/our-rooms');
   };
 
   const handleViewBookings = () => {

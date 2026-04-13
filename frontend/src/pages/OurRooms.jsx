@@ -4,7 +4,7 @@ import { apiService } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 
-const Rooms = () => {
+const OurRooms = () => {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,15 +20,22 @@ const Rooms = () => {
 
   const fetchRooms = async () => {
     try {
-      // Fetch room types directly - this is what we want to display
-      const response = await apiService.getRoomTypes();
-      const roomTypes = response.data.data;
+      // Fetch room types with their facilities from backend
+      const response = await apiService.getRoomTypesWithFacilities();
+      const roomTypesWithFacilities = response.data.data;
       
-      console.log('Room Types:', roomTypes);
-      setRooms(roomTypes);
+      console.log('Room Types with Facilities:', roomTypesWithFacilities);
+      setRooms(roomTypesWithFacilities);
     } catch (error) {
-      console.error('Error fetching room types:', error);
-      setRooms([]);
+      console.error('Error fetching room types with facilities:', error);
+      // Fallback to regular room types
+      try {
+        const fallbackResponse = await apiService.getRoomTypes();
+        setRooms(fallbackResponse.data.data);
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+        setRooms([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -191,6 +198,27 @@ const Rooms = () => {
                   <h3 className="text-2xl font-bold text-gray-900">{room.name}</h3>
                   <p className="text-gray-600 line-clamp-3">{room.description}</p>
                   
+                  {/* Facilities Display */}
+                  <div className="flex flex-wrap gap-2">
+                    {(room.facilities || []).slice(0, 4).map((facility) => (
+                      <span 
+                        key={facility.id}
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                        title={facility.facilityName}
+                      >
+                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        {facility.facilityName}
+                      </span>
+                    ))}
+                    {(room.facilities || []).length > 4 && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                        +{(room.facilities || []).length - 4} more
+                      </span>
+                    )}
+                  </div>
+                  
                   <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                     <div>
                       <span className="text-3xl font-bold text-blue-600">
@@ -226,4 +254,4 @@ const Rooms = () => {
   );
 };
 
-export default Rooms;
+export default OurRooms;

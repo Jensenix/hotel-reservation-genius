@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
-import Rooms from './pages/Rooms';
+import OurRooms from './pages/OurRooms';
 import Booking from './pages/Booking';
 import BookingSuccess from './pages/BookingSuccess';
 import Facilities from './pages/Facilities';
@@ -22,7 +22,7 @@ function AppRoutes() {
       
       {/* Protected Routes */}
       <Route path="/" element={isAuthenticated ? <MainLayout><Home /></MainLayout> : <Navigate to="/login" />} />
-      <Route path="/rooms" element={isAuthenticated ? <MainLayout><Rooms /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/our-rooms" element={isAuthenticated ? <MainLayout><OurRooms /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/facilities" element={isAuthenticated ? <MainLayout><Facilities /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />

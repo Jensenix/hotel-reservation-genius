@@ -26,6 +26,7 @@ api.interceptors.response.use(
 export const apiService = {
   // Room Types
   getRoomTypes: () => api.get('/room-types'),
+  getRoomTypesWithFacilities: () => api.get('/room-types/with-facilities'),
   getRoomTypeById: (id) => api.get(`/room-types/${id}`),
   
   // Rooms

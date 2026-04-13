@@ -131,8 +131,8 @@ const MyBookings = () => {
                 : `No ${getStatusText(filter)} bookings found`
               }
             </div>
-            <Button onClick={() => window.location.href = '/rooms'}>
-              Browse Rooms
+            <Button onClick={() => window.location.href = '/our-rooms'}>
+              Browse Our Rooms
             </Button>
           </div>
         ) : (

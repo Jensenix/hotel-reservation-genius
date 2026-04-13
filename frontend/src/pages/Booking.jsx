@@ -156,8 +156,8 @@ const Booking = () => {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Room Not Found</h1>
-          <Button onClick={() => navigate('/rooms')}>
-            Back to Rooms
+          <Button onClick={() => navigate('/our-rooms')}>
+            Back to Our Rooms
           </Button>
         </div>
       </div>
@@ -389,7 +389,7 @@ const Booking = () => {
             <Button
               onClick={() => {
                 setShowErrorModal(false);
-                navigate('/rooms');
+                navigate('/our-rooms');
               }}
             >
               View Other Rooms
