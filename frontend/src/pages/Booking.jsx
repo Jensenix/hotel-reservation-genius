@@ -6,6 +6,9 @@ import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import Loading from '../components/ui/Loading';
 import Modal from '../components/common/Modal';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../styles/datepicker.css';
 
 const Booking = () => {
   const { roomId } = useParams();
@@ -15,8 +18,8 @@ const Booking = () => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bookingData, setBookingData] = useState({
-    checkInDate: '',
-    checkOutDate: '',
+    checkInDate: null,
+    checkOutDate: null,
     guestCount: 1,
     specialRequests: '',
     paymentMethodId: ''
@@ -68,8 +71,8 @@ const Booking = () => {
 
   const calculateTotalPrice = () => {
     if (bookingData.checkInDate && bookingData.checkOutDate && room) {
-      const checkIn = new Date(bookingData.checkInDate);
-      const checkOut = new Date(bookingData.checkOutDate);
+      const checkIn = bookingData.checkInDate;
+      const checkOut = bookingData.checkOutDate;
       const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
       setTotalPrice(nights * room.basePrice);
     }
@@ -87,7 +90,7 @@ const Booking = () => {
     return bookingData.checkInDate && 
            bookingData.checkOutDate && 
            bookingData.guestCount > 0 &&
-           new Date(bookingData.checkInDate) < new Date(bookingData.checkOutDate);
+           bookingData.checkInDate < bookingData.checkOutDate;
   };
 
   const validateStep2 = () => {
@@ -109,8 +112,8 @@ const Booking = () => {
       const bookingPayload = {
         userId: user?.id, // Use logged-in user ID
         roomTypeId: room?.roomTypeId,
-        checkInDate: bookingData.checkInDate,
-        checkOutDate: bookingData.checkOutDate,
+        checkInDate: bookingData.checkInDate.toISOString().split('T')[0],
+        checkOutDate: bookingData.checkOutDate.toISOString().split('T')[0],
         totalPrice,
         status: 'confirmed' // Direct to confirmed since payment is immediate
       };
@@ -216,12 +219,12 @@ const Booking = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Check-in Date
                       </label>
-                      <input
-                        type="date"
-                        name="checkInDate"
-                        value={bookingData.checkInDate}
-                        onChange={handleInputChange}
-                        min={new Date().toISOString().split('T')[0]}
+                      <DatePicker
+                        selected={bookingData.checkInDate}
+                        onChange={(date) => setBookingData(prev => ({ ...prev, checkInDate: date }))}
+                        minDate={new Date()}
+                        dateFormat="MMMM d, yyyy"
+                        placeholderText="Select check-in date"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
@@ -230,12 +233,12 @@ const Booking = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Check-out Date
                       </label>
-                      <input
-                        type="date"
-                        name="checkOutDate"
-                        value={bookingData.checkOutDate}
-                        onChange={handleInputChange}
-                        min={bookingData.checkInDate || new Date().toISOString().split('T')[0]}
+                      <DatePicker
+                        selected={bookingData.checkOutDate}
+                        onChange={(date) => setBookingData(prev => ({ ...prev, checkOutDate: date }))}
+                        minDate={bookingData.checkInDate || new Date()}
+                        dateFormat="MMMM d, yyyy"
+                        placeholderText="Select check-out date"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
@@ -244,33 +247,74 @@ const Booking = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Number of Guests
                       </label>
-                      <select
-                        name="guestCount"
-                        value={bookingData.guestCount}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        {[...Array(room.maxCapacity)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1} Guest{i + 1 > 1 ? 's' : ''}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center border border-gray-300 rounded-lg">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (bookingData.guestCount > 1) {
+                                setBookingData(prev => ({ ...prev, guestCount: prev.guestCount - 1 }));
+                              }
+                            }}
+                            className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-colors rounded-l-lg"
+                            disabled={bookingData.guestCount <= 1}
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                            </svg>
+                          </button>
+                          <div className="px-6 py-2 min-w-[80px] text-center font-semibold text-lg">
+                            {bookingData.guestCount}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (bookingData.guestCount < room.maxCapacity) {
+                                setBookingData(prev => ({ ...prev, guestCount: prev.guestCount + 1 }));
+                              }
+                            }}
+                            className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-colors rounded-r-lg"
+                            disabled={bookingData.guestCount >= room.maxCapacity}
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                          </svg>
+                          <span className="text-sm text-gray-600">
+                            Max {room.maxCapacity} guests
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Special Requests (Optional)
+                      Special Requests
+                      <span className="text-gray-400 font-normal ml-1">(Optional)</span>
                     </label>
-                    <textarea
-                      name="specialRequests"
-                      value={bookingData.specialRequests}
-                      onChange={handleInputChange}
-                      rows={4}
-                      placeholder="Any special requests or requirements..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                    <div className="relative">
+                      <textarea
+                        name="specialRequests"
+                        value={bookingData.specialRequests}
+                        onChange={handleInputChange}
+                        rows={4}
+                        maxLength={500}
+                        placeholder="Let us know if you have any special requests for your stay..."
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200"
+                      />
+                      <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+                        {bookingData.specialRequests.length}/500
+                      </div>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-500">
+                      Examples: Late check-in, early check-out, room preferences, dietary requirements, etc.
+                    </p>
                   </div>
                 </div>
               ) : (
