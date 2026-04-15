@@ -31,7 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM('pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'),
       defaultValue: 'pending'
-    }
+    },
+    actualCheckIn: DataTypes.DATE,
+    actualCheckOut: DataTypes.DATE,
+    cancelReason: DataTypes.TEXT,
+    cancelledAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Booking',

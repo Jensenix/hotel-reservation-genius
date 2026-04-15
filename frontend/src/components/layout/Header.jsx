@@ -53,6 +53,12 @@ const Header = () => {
             >
               Bookings
             </Link>
+            <Link 
+              to="/admin" 
+              className="text-white hover:text-blue-200 transition-colors duration-200 font-medium"
+            >
+              Admin
+            </Link>
           </nav>
 
           {/* User Section */}

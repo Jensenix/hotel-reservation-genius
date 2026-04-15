@@ -313,6 +313,265 @@ class BookingController {
       });
     }
   }
+
+  // Admin: Confirm booking
+  async confirmBooking(req, res) {
+    try {
+      const { id } = req.params;
+
+      const booking = await Booking.findByPk(id, {
+        include: [
+          { model: User, as: 'user' },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Payment, as: 'payments' }
+        ]
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      if (booking.status !== 'pending') {
+        return res.status(400).json({
+          success: false,
+          message: 'Booking cannot be confirmed'
+        });
+      }
+
+      await booking.update({ status: 'confirmed' });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Booking confirmed successfully',
+        data: booking
+      });
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error confirming booking',
+        error: error.message
+      });
+    }
+  }
+
+  // Admin: Check-in guest
+  async checkInGuest(req, res) {
+    try {
+      const { id } = req.params;
+
+      const booking = await Booking.findByPk(id, {
+        include: [
+          { model: User, as: 'user' },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Payment, as: 'payments' }
+        ]
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      if (booking.status !== 'confirmed') {
+        return res.status(400).json({
+          success: false,
+          message: 'Only confirmed bookings can be checked in'
+        });
+      }
+
+      // Update room status to occupied
+      await booking.room.update({ status: 'occupied' });
+      
+      // Update booking status
+      await booking.update({ 
+        status: 'checked_in',
+        actualCheckIn: new Date()
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Guest checked in successfully',
+        data: booking
+      });
+    } catch (error) {
+      console.error('Error checking in guest:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error checking in guest',
+        error: error.message
+      });
+    }
+  }
+
+  // Admin: Check-out guest
+  async checkOutGuest(req, res) {
+    try {
+      const { id } = req.params;
+
+      const booking = await Booking.findByPk(id, {
+        include: [
+          { model: User, as: 'user' },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Payment, as: 'payments' }
+        ]
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      if (booking.status !== 'checked_in') {
+        return res.status(400).json({
+          success: false,
+          message: 'Only checked-in guests can be checked out'
+        });
+      }
+
+      // Update room status to available/cleaning
+      await booking.room.update({ status: 'available' });
+      
+      // Update booking status
+      await booking.update({ 
+        status: 'checked_out',
+        actualCheckOut: new Date()
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Guest checked out successfully',
+        data: booking
+      });
+    } catch (error) {
+      console.error('Error checking out guest:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error checking out guest',
+        error: error.message
+      });
+    }
+  }
+
+  // Admin: Cancel booking (soft delete)
+  async cancelBooking(req, res) {
+    try {
+      const { id } = req.params;
+      const { reason } = req.body;
+
+      const booking = await Booking.findByPk(id, {
+        include: [
+          { model: User, as: 'user' },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Payment, as: 'payments' }
+        ]
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      if (booking.status === 'checked_in') {
+        return res.status(400).json({
+          success: false,
+          message: 'Cannot cancel checked-in booking'
+        });
+      }
+
+      // Update room status to available if it was occupied
+      if (booking.room.status === 'occupied') {
+        await booking.room.update({ status: 'available' });
+      }
+
+      await booking.update({ 
+        status: 'cancelled',
+        cancelReason: reason || 'Cancelled by admin',
+        cancelledAt: new Date()
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Booking cancelled successfully',
+        data: booking
+      });
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error cancelling booking',
+        error: error.message
+      });
+    }
+  }
+
+  // Admin: Get all bookings with filters
+  async getAllBookingsAdmin(req, res) {
+    try {
+      const { 
+        status, 
+        checkInDate, 
+        checkOutDate, 
+        userId, 
+        page = 1, 
+        limit = 10 
+      } = req.query;
+
+      const where = {};
+      
+      if (status) where.status = status;
+      if (checkInDate) where.checkInDate = { [require('sequelize').Op.gte]: checkInDate };
+      if (checkOutDate) where.checkOutDate = { [require('sequelize').Op.lte]: checkOutDate };
+      if (userId) where.userId = userId;
+
+      const { count, rows: bookings } = await Booking.findAndCountAll({
+        where,
+        include: [
+          { model: User, as: 'user', attributes: ['id', 'name', 'email', 'phone'] },
+          { 
+            model: Room, 
+            as: 'room', 
+            include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name'] }],
+            attributes: ['id', 'roomNumber', 'status']
+          },
+          { model: Payment, as: 'payments' }
+        ],
+        order: [['createdAt', 'DESC']],
+        limit: parseInt(limit),
+        offset: (parseInt(page) - 1) * parseInt(limit)
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Bookings retrieved successfully',
+        data: {
+          bookings,
+          pagination: {
+            currentPage: parseInt(page),
+            totalPages: Math.ceil(count / limit),
+            totalItems: count,
+            itemsPerPage: parseInt(limit)
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error getting admin bookings:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting admin bookings',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new BookingController();

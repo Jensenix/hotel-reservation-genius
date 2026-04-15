@@ -58,6 +58,13 @@ export const apiService = {
   getPayments: () => api.get('/payments'),
   getPaymentById: (id) => api.get(`/payments/${id}`),
   createPayment: (paymentData) => api.post('/payments', paymentData),
+
+  // Admin Booking Management
+  getAdminBookings: (filters) => api.get('/bookings/admin/all', { params: filters }),
+  confirmBooking: (bookingId) => api.put(`/bookings/admin/${bookingId}/confirm`),
+  checkInGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-in`),
+  checkOutGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-out`),
+  cancelBooking: (bookingId, data) => api.put(`/bookings/admin/${bookingId}/cancel`, data),
 };
 
 export default api;
