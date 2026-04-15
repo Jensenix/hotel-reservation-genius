@@ -523,6 +523,7 @@ class BookingController {
     try {
       const { 
         status, 
+        search,
         checkInDate, 
         checkOutDate, 
         userId, 
@@ -536,6 +537,9 @@ class BookingController {
       if (checkInDate) where.checkInDate = { [require('sequelize').Op.gte]: checkInDate };
       if (checkOutDate) where.checkOutDate = { [require('sequelize').Op.lte]: checkOutDate };
       if (userId) where.userId = userId;
+      if (search) {
+        where.id = { [require('sequelize').Op.eq]: parseInt(search) };
+      }
 
       const { count, rows: bookings } = await Booking.findAndCountAll({
         where,

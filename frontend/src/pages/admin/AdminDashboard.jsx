@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     status: '',
+    search: '',
     page: 1,
     limit: 10
   });
@@ -22,7 +23,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchBookings();
-  }, [filters]);
+  }, [filters.status, filters.page, filters.limit]);
 
   const fetchBookings = async () => {
     try {
@@ -47,9 +48,17 @@ const AdminDashboard = () => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value, page: 1 }));
+    setFilters(prev => {
+      const newFilters = { ...prev, [key]: value };
+      // Only reset page when changing filters other than page
+      if (key !== 'page') {
+        newFilters.page = 1;
+      }
+      return newFilters;
+    });
   };
 
+  
   const handleAction = (booking, action) => {
     setSelectedBooking(booking);
     setActionType(action);
@@ -176,6 +185,40 @@ const AdminDashboard = () => {
         {/* Filters */}
         <Card className="mb-6">
           <div className="flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-64">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Search Booking
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  placeholder="Search by Booking ID..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      fetchBookings();
+                    }
+                  }}
+                />
+                <Button
+                  onClick={fetchBookings}
+                  className="px-4"
+                >
+                  Search
+                </Button>
+                {filters.search && (
+                  <Button
+                    variant="outline"
+                    onClick={() => handleFilterChange('search', '')}
+                    className="px-4"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status Filter
@@ -290,13 +333,13 @@ const AdminDashboard = () => {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="mt-6 flex justify-between items-center">
+            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-sm text-gray-700">
                 Showing {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} to{' '}
                 {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of{' '}
                 {pagination.totalItems} results
               </div>
-              <div className="flex space-x-2">
+              <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -305,6 +348,35 @@ const AdminDashboard = () => {
                 >
                   Previous
                 </Button>
+                
+                {/* Page Numbers */}
+                <div className="flex space-x-1">
+                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (pagination.totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (pagination.currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (pagination.currentPage >= pagination.totalPages - 2) {
+                      pageNum = pagination.totalPages - 4 + i;
+                    } else {
+                      pageNum = pagination.currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={pagination.currentPage === pageNum ? "primary" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('page', pageNum)}
+                        className="min-w-[40px]"
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+                </div>
+                
                 <Button
                   variant="outline"
                   size="sm"
