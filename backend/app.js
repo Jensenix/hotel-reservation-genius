@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 // Import routes
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const roomTypeRoutes = require('./routes/roomTypeRoutes');
 const facilityRoutes = require('./routes/facilityRoutes');
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/room-types', roomTypeRoutes);
 app.use('/api/facilities', facilityRoutes);

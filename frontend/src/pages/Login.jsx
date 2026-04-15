@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
+import { apiService } from '../services/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,22 +30,26 @@ const Login = () => {
     setError('');
 
     try {
-      // For now, simulate login (we'll implement actual auth later)
-      if (formData.email === 'john.doe@example.com' && formData.password === 'password123') {
-        const userData = {
-          id: 1,
-          email: formData.email,
-          fullName: 'John Doe',
-          role: 'guest'
-        };
-        
+      // Call login API
+      const response = await apiService.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.data.success) {
+        const userData = response.data.data;
         login(userData);
         navigate('/');
       } else {
-        setError('Invalid email or password');
+        setError(response.data.message || 'Login failed');
       }
     } catch (error) {
-      setError('Login failed. Please try again.');
+      console.error('Login error:', error);
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -128,9 +133,11 @@ const Login = () => {
 
           {/* Demo Account Info */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800 font-medium mb-2">Demo Account:</p>
-            <p className="text-xs text-blue-600">Email: john.doe@example.com</p>
-            <p className="text-xs text-blue-600">Password: password123</p>
+            <p className="text-sm text-blue-800 font-medium mb-2">Demo Accounts:</p>
+            <div className="space-y-1">
+              <p className="text-xs text-blue-600">User: john.doe@example.com / password123</p>
+              <p className="text-xs text-blue-600">Admin: admin@geniussocietyhotel.com / admin123</p>
+            </div>
           </div>
 
           {/* Register Link */}

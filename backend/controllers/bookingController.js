@@ -60,7 +60,7 @@ class BookingController {
   // Get all bookings with pagination and filtering
   async getAllBookings(req, res) {
     try {
-      const { page = 1, limit, status, userId, roomId } = req.query;
+      const { page = 1, limit = 10, status, userId, roomId } = req.query;
 
       const where = {};
 
@@ -79,7 +79,8 @@ class BookingController {
         where.roomId = roomId;
       }
 
-      const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
+      const parsedLimit = parseInt(limit);
+      const offset = (parseInt(page) - 1) * parsedLimit;
 
       const { count, rows } = await Booking.findAndCountAll({
         where,
@@ -88,26 +89,20 @@ class BookingController {
         order: [['createdAt', 'DESC']],
         include: [
           {
-            model: User,
+            model: require('../models').User,
             as: 'user',
-            attributes: { exclude: ['password'] }
+            attributes: ['id', 'fullName', 'email', 'phoneNumber']
           },
           {
-            model: Room,
+            model: require('../models').Room,
             as: 'room',
-            include: ['roomType']
-          },
-          {
-            model: Payment,
-            as: 'payment'
-          },
-          {
-            model: Review,
-            as: 'reviews'
-          },
-          {
-            model: ExtraService,
-            as: 'extraServices'
+            include: [
+              {
+                model: require('../models').RoomType,
+                as: 'roomType',
+                attributes: ['id', 'name', 'basePrice']
+              }
+            ]
           }
         ]
       });
@@ -116,7 +111,12 @@ class BookingController {
         success: true,
         message: 'Bookings retrieved successfully',
         data: rows,
-        pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit)
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(count / parsedLimit),
+          totalItems: count,
+          itemsPerPage: parsedLimit
+        }
       });
     } catch (error) {
       console.error('Error getting bookings:', error);
@@ -321,9 +321,13 @@ class BookingController {
 
       const booking = await Booking.findByPk(id, {
         include: [
-          { model: User, as: 'user' },
-          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
-          { model: Payment, as: 'payments' }
+          { model: require('../models').User, as: 'user' },
+          { 
+            model: require('../models').Room, 
+            as: 'room', 
+            include: [{ model: require('../models').RoomType, as: 'roomType' }] 
+          },
+          { model: require('../models').Payment, as: 'payment' }
         ]
       });
 
@@ -367,7 +371,7 @@ class BookingController {
         include: [
           { model: User, as: 'user' },
           { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
-          { model: Payment, as: 'payments' }
+          { model: require('../models').Payment, as: 'payment' }
         ]
       });
 
@@ -418,7 +422,7 @@ class BookingController {
         include: [
           { model: User, as: 'user' },
           { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
-          { model: Payment, as: 'payments' }
+          { model: require('../models').Payment, as: 'payment' }
         ]
       });
 
@@ -470,7 +474,7 @@ class BookingController {
         include: [
           { model: User, as: 'user' },
           { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
-          { model: Payment, as: 'payments' }
+          { model: require('../models').Payment, as: 'payment' }
         ]
       });
 
@@ -536,14 +540,27 @@ class BookingController {
       const { count, rows: bookings } = await Booking.findAndCountAll({
         where,
         include: [
-          { model: User, as: 'user', attributes: ['id', 'name', 'email', 'phone'] },
           { 
-            model: Room, 
+            model: require('../models').User, 
+            as: 'user', 
+            attributes: ['id', 'fullName', 'email', 'phoneNumber'] 
+          },
+          { 
+            model: require('../models').Room, 
             as: 'room', 
-            include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name'] }],
+            include: [
+              { 
+                model: require('../models').RoomType, 
+                as: 'roomType', 
+                attributes: ['id', 'name'] 
+              }
+            ],
             attributes: ['id', 'roomNumber', 'status']
           },
-          { model: Payment, as: 'payments' }
+          { 
+            model: require('../models').Payment, 
+            as: 'payment' 
+          }
         ],
         order: [['createdAt', 'DESC']],
         limit: parseInt(limit),

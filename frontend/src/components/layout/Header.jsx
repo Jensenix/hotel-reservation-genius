@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
 const Header = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -53,12 +53,14 @@ const Header = () => {
             >
               Bookings
             </Link>
-            <Link 
-              to="/admin" 
-              className="text-white hover:text-blue-200 transition-colors duration-200 font-medium"
-            >
-              Admin
-            </Link>
+            {isAdmin && (
+              <Link 
+                to="/admin" 
+                className="text-white hover:text-blue-200 transition-colors duration-200 font-medium"
+              >
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* User Section */}

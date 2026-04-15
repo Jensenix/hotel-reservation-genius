@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
 import Card from '../../components/ui/Card';
 import Button from '../../components/common/Button';
-import Modal from '../../components/ui/Modal';
+import Modal from '../../components/common/Modal';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -27,11 +27,20 @@ const AdminDashboard = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
+      console.log('Fetching admin bookings with filters:', filters);
       const response = await apiService.getAdminBookings(filters);
-      setBookings(response.data.data.bookings);
-      setPagination(response.data.data.pagination);
+      console.log('Admin bookings response:', response.data);
+      
+      if (response.data.success) {
+        setBookings(response.data.data.bookings);
+        setPagination(response.data.data.pagination);
+        console.log('Bookings loaded:', response.data.data.bookings.length);
+      } else {
+        console.error('API returned error:', response.data.message);
+      }
     } catch (error) {
       console.error('Error fetching admin bookings:', error);
+      console.error('Error response:', error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -239,7 +248,7 @@ const AdminDashboard = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
-                          {booking.user?.name}
+                          {booking.user?.fullName}
                         </div>
                         <div className="text-sm text-gray-500">
                           {booking.user?.email}
@@ -337,7 +346,7 @@ const AdminDashboard = () => {
                 {selectedBooking && (
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                     <div className="text-sm">
-                      <div className="font-medium">Guest: {selectedBooking.user?.name}</div>
+                      <div className="font-medium">Guest: {selectedBooking.user?.fullName}</div>
                       <div>Room: {selectedBooking.room?.roomNumber}</div>
                       <div>Dates: {new Date(selectedBooking.checkInDate).toLocaleDateString()} - {new Date(selectedBooking.checkOutDate).toLocaleDateString()}</div>
                       <div>Total: ${selectedBooking.totalPrice}</div>

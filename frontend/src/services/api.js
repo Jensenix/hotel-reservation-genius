@@ -59,6 +59,9 @@ export const apiService = {
   getPaymentById: (id) => api.get(`/payments/${id}`),
   createPayment: (paymentData) => api.post('/payments', paymentData),
 
+  // Auth
+  login: (credentials) => api.post('/auth/login', credentials),
+  
   // Admin Booking Management
   getAdminBookings: (filters) => api.get('/bookings/admin/all', { params: filters }),
   confirmBooking: (bookingId) => api.put(`/bookings/admin/${bookingId}/confirm`),

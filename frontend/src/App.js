@@ -13,7 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   return (
     <Routes>
@@ -28,7 +28,7 @@ function AppRoutes() {
       <Route path="/bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking-success" element={isAuthenticated ? <MainLayout><BookingSuccess /></MainLayout> : <Navigate to="/login" />} />
-      <Route path="/admin" element={isAuthenticated ? <MainLayout><AdminDashboard /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/admin" element={isAuthenticated && isAdmin ? <MainLayout><AdminDashboard /></MainLayout> : <Navigate to="/login" />} />
     </Routes>
   );
 }
