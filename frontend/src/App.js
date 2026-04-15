@@ -9,6 +9,7 @@ import BookingSuccess from './pages/BookingSuccess';
 import Facilities from './pages/Facilities';
 import MyBookings from './pages/MyBookings';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import RevenueDashboard from './pages/admin/RevenueDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -28,7 +29,8 @@ function AppRoutes() {
       <Route path="/bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking-success" element={isAuthenticated ? <MainLayout><BookingSuccess /></MainLayout> : <Navigate to="/login" />} />
-      <Route path="/admin" element={isAuthenticated && isAdmin ? <MainLayout><AdminDashboard /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminDashboard /> : <Navigate to="/login" />} />
+      <Route path="/admin/revenue" element={isAuthenticated && isAdmin ? <RevenueDashboard /> : <Navigate to="/login" />} />
     </Routes>
   );
 }

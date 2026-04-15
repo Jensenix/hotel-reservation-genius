@@ -39,7 +39,8 @@ const Login = () => {
       if (response.data.success) {
         const userData = response.data.data;
         login(userData);
-        navigate('/');
+        // Redirect admin to admin dashboard, users to home
+        navigate(userData.role === 'admin' ? '/admin' : '/');
       } else {
         setError(response.data.message || 'Login failed');
       }

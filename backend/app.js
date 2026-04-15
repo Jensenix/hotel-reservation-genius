@@ -12,6 +12,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const extraServiceRoutes = require('./routes/extraServiceRoutes');
 const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
+const revenueRoutes = require('./routes/revenueRoutes');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/extra-services', extraServiceRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
+app.use('/api/revenue', revenueRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

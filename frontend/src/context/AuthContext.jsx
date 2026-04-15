@@ -17,15 +17,23 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check for existing user in localStorage
     const storedUser = localStorage.getItem('user');
+    console.log('AuthContext: storedUser from localStorage:', storedUser);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const userData = JSON.parse(storedUser);
+      console.log('AuthContext: parsed user data:', userData);
+      setUser(userData);
     }
     setLoading(false);
   }, []);
 
   const login = (userData) => {
+    // Clear any existing user data first
+    localStorage.removeItem('user');
+    // Set new user data
+    console.log('AuthContext.login: setting user data:', userData);
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    console.log('AuthContext.login: stored to localStorage:', JSON.stringify(userData));
   };
 
   const logout = () => {

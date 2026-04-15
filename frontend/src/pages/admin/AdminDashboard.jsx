@@ -4,12 +4,14 @@ import { apiService } from '../../services/api';
 import Card from '../../components/ui/Card';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
+import AdminLayout from '../../components/layout/AdminLayout';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
+
+    const [filters, setFilters] = useState({
     status: '',
     search: '',
     page: 1,
@@ -175,7 +177,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <AdminLayout>
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
@@ -445,7 +447,7 @@ const AdminDashboard = () => {
           </div>
         </Modal>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 

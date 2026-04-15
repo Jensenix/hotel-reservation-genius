@@ -63,7 +63,11 @@ export const apiService = {
   login: (credentials) => api.post('/auth/login', credentials),
   
   // Admin Booking Management
-  getAdminBookings: (filters) => api.get('/bookings/admin/all', { params: filters }),
+  getAdminBookings: (params) => api.get('/bookings/admin/all', { params }),
+  
+  // Revenue Management
+  getRevenueStats: (params) => api.get('/revenue/stats', { params }),
+  
   confirmBooking: (bookingId) => api.put(`/bookings/admin/${bookingId}/confirm`),
   checkInGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-in`),
   checkOutGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-out`),
