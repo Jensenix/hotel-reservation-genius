@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { LayoutDashboard, DollarSign, Home, Users, BarChart3, LogOut, Menu, X } from 'lucide-react';
 
 // FIXED: Admin header with proper auth context
 const AdminHeader = () => {
@@ -21,12 +22,14 @@ const AdminHeader = () => {
   const isActive = (path) => location.pathname === path;
 
   const adminNavItems = [
-    { path: '/admin', label: 'Dashboard', icon: '📊' },
-    { path: '/admin/revenue', label: 'Revenue', icon: '💰' },
-    { path: '/admin/availability', label: 'Availability', icon: '🏠' },
-    { path: '/admin/guests', label: 'Guests', icon: '👥' },
-    { path: '/admin/reports', label: 'Reports', icon: '📈' },
+    { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/admin/revenue', label: 'Revenue', icon: DollarSign },
+    { path: '/admin/availability', label: 'Availability', icon: Home },
+    { path: '/admin/guests', label: 'Guests', icon: Users },
+    { path: '/admin/reports', label: 'Reports', icon: BarChart3 },
   ];
+
+  console.log('Admin Nav Items:', adminNavItems);
 
   return (
     <header className="bg-gradient-to-r from-slate-900 to-slate-800 shadow-lg border-b border-slate-700">
@@ -51,14 +54,14 @@ const AdminHeader = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
                   isActive(item.path)
                     ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                 }`}
               >
-                <span className="mr-2">{item.icon}</span>
-                {item.label}
+                <item.icon size={16} />
+                <span>{item.label}</span>
               </Link>
             ))}
           </nav>
@@ -77,18 +80,21 @@ const AdminHeader = () => {
               </div>
             </div>
 
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -102,14 +108,14 @@ const AdminHeader = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium transition-all duration-200 ${
                     isActive(item.path)
                       ? 'bg-blue-600 text-white'
                       : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                   }`}
                 >
-                  <span className="mr-3">{item.icon}</span>
-                  {item.label}
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
                 </Link>
               ))}
               

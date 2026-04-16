@@ -165,14 +165,14 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
+      <AdminLayout>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-1/3 mb-8"></div>
-            <div className="h-96 bg-gray-300 rounded-xl"></div>
+            <div className="h-8 bg-gray-300 rounded w-1/3 mb-8 mx-auto"></div>
+            <div className="h-96 bg-gray-300 rounded-xl w-full max-w-4xl"></div>
           </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 

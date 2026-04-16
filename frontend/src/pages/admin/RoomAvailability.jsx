@@ -4,24 +4,42 @@ import Button from '../../components/common/Button';
 import Loading from '../../components/ui/Loading';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { apiService } from '../../services/api';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../../styles/datepicker.css';
 
 const RoomAvailability = () => {
   const [availabilityData, setAvailabilityData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [expandedRoomType, setExpandedRoomType] = useState(null);
 
+  // Helper function to convert Date to string (local timezone)
+  const dateToString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
+    console.log('Date changed to:', selectedDate);
     fetchAvailabilityData();
   }, [selectedDate]);
 
   const fetchAvailabilityData = async () => {
     try {
       setLoading(true);
+      const dateString = dateToString(selectedDate);
+      console.log('Selected Date object:', selectedDate);
+      console.log('Selected Date ISO:', selectedDate.toISOString());
+      console.log('Converted to local string:', dateString);
+      console.log('Fetching availability for date:', dateString);
       const response = await apiService.getRoomAvailabilityStats({
-        date: selectedDate
+        date: dateString
       });
 
+      console.log('Availability data response:', response.data);
       if (response.data.success) {
         setAvailabilityData(response.data.data);
       } else {
@@ -94,16 +112,29 @@ const RoomAvailability = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Check Availability Date
                 </label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    console.log('DatePicker changed:', date);
+                    console.log('DatePicker local date:', date?.getDate());
+                    setSelectedDate(date);
+                  }}
+                  minDate={new Date()}
+                  dateFormat="yyyy-MM-dd"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholderText="Select date"
+                  calendarClassName="custom-datepicker"
                 />
               </div>
               <div className="flex items-end">
                 <Button 
-                  onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
+                  onClick={() => {
+                    const today = new Date();
+                    console.log('Today button clicked:', today);
+                    console.log('Today ISO:', today.toISOString());
+                    console.log('Today local date:', today.getDate());
+                    setSelectedDate(today);
+                  }}
                   variant="secondary"
                 >
                   Today
@@ -198,9 +229,12 @@ const RoomAvailability = () => {
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Available</p>
+                      <p className="text-sm text-gray-600">Available Slots</p>
                       <p className="text-2xl font-bold text-green-600">
                         {roomType.availableRooms} / {roomType.totalRooms}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {roomType.bookedRoomsCount || 0} booked on {dateToString(selectedDate)}
                       </p>
                     </div>
                     <Button 
@@ -222,7 +256,7 @@ const RoomAvailability = () => {
                     ></div>
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
-                    {roomType.availabilityPercentage}% availability rate
+                    {roomType.availabilityPercentage}% of physical rooms available for booking on {dateToString(selectedDate)}
                   </p>
                 </div>
 

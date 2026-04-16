@@ -15,7 +15,7 @@ const RevenueDashboard = () => {
 
   useEffect(() => {
     fetchRevenueData();
-  }, [dateRange]);
+  }, [dateRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRevenueData = async () => {
     try {
@@ -24,15 +24,17 @@ const RevenueDashboard = () => {
       // Build query parameters as object
       const params = {};
       if (dateRange.startDate) {
-        params.startDate = dateRange.startDate.toISOString();
+        params.startDate = dateRange.startDate.toISOString().split('T')[0];
       }
       if (dateRange.endDate) {
-        params.endDate = dateRange.endDate.toISOString();
+        params.endDate = dateRange.endDate.toISOString().split('T')[0];
       }
       
+      console.log('Fetching revenue data with params:', params);
       const response = await apiService.getRevenueStats(params);
       
       if (response.data.success) {
+        console.log('Revenue data received:', response.data.data);
         setRevenueData(response.data.data);
       } else {
         console.error('Error fetching revenue data:', response.data.message);
@@ -57,9 +59,11 @@ const RevenueDashboard = () => {
 
   if (loading || !revenueData) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loading size="large" />
-      </div>
+      <AdminLayout>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <Loading size="large" />
+        </div>
+      </AdminLayout>
     );
   }
 
@@ -124,12 +128,13 @@ const RevenueDashboard = () => {
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100 text-sm font-medium">Monthly Revenue</p>
-                <p className="text-3xl font-bold">{formatCurrency(revenueData.monthlyRevenue)}</p>
+                <p className="text-green-100 text-sm font-medium">Occupancy Rate</p>
+                <p className="text-3xl font-bold">{revenueData.occupancyRate || 0}%</p>
+                <p className="text-sm text-green-200 mt-1">{revenueData.occupiedRooms || 0} / {revenueData.totalRooms || 0} rooms</p>
               </div>
               <div className="p-3 bg-green-700 bg-opacity-50 rounded-lg">
                 <svg className="w-6 h-6 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
             </div>
@@ -174,24 +179,32 @@ const RevenueDashboard = () => {
         {/* Monthly Revenue Chart */}
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Monthly Revenue Trend</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">Monthly Revenue Trend</h3>
+            <p className="text-sm text-slate-600 mb-4">Revenue distribution by month (from filtered date range)</p>
             <div className="space-y-3">
-              {revenueData.revenueByMonth.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-700">{item.month}</span>
-                  <div className="flex items-center">
-                    <div className="w-24 bg-slate-200 rounded-full h-2 mr-3">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(item.revenue / 150000) * 100}%` }}
-                      ></div>
+              {revenueData.revenueByMonth.length > 0 ? (
+                revenueData.revenueByMonth.map((item, index) => {
+                  const maxRevenue = Math.max(...revenueData.revenueByMonth.map(i => i.revenue));
+                  return (
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-700">{item.month}</span>
+                      <div className="flex items-center">
+                        <div className="w-24 bg-slate-200 rounded-full h-2 mr-3">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-semibold text-slate-900 min-w-[80px] text-right">
+                          {formatCurrency(item.revenue)}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-sm font-semibold text-slate-900">
-                      {formatCurrency(item.revenue)}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  );
+                })
+              ) : (
+                <p className="text-sm text-slate-500 text-center py-4">No revenue data available for selected period</p>
+              )}
             </div>
           </div>
         </Card>
@@ -199,9 +212,13 @@ const RevenueDashboard = () => {
         {/* Revenue by Room Type */}
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Revenue by Room Type</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">Revenue by Room Type</h3>
+            <p className="text-sm text-slate-600 mb-4">Revenue breakdown by room category</p>
             <div className="space-y-4">
-              {revenueData.revenueByRoomType.map((item, index) => (
+              {revenueData.revenueByRoomType.filter(item => item.type && item.type !== 'Unknown').length > 0 ? (
+                revenueData.revenueByRoomType
+                  .filter(item => item.type && item.type !== 'Unknown')
+                  .map((item, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div>
                     <p className="font-medium text-slate-900">{item.type}</p>
@@ -214,7 +231,10 @@ const RevenueDashboard = () => {
                     </p>
                   </div>
                 </div>
-              ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500 text-center py-4">No room type revenue data available</p>
+                )}
             </div>
           </div>
         </Card>

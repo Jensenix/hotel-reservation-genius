@@ -32,6 +32,15 @@ class RevenueController {
       // Total bookings
       const totalBookings = await Booking.count();
 
+      // Calculate occupancy rate
+      const totalRooms = await Room.count();
+      const occupiedRooms = await Room.count({
+        where: {
+          status: 'occupied'
+        }
+      });
+      const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
+
       // Revenue by month (from payments)
       const revenueByMonth = await Payment.findAll({
         attributes: [
@@ -63,7 +72,8 @@ class RevenueController {
                 as: 'roomType',
                 attributes: ['name']
               }
-            ]
+            ],
+            required: true
           },
           {
             model: Payment,
@@ -129,7 +139,7 @@ class RevenueController {
         status: booking.payment?.paymentStatus || 'pending',
         date: booking.createdAt,
         guest: booking.user?.fullName || 'Unknown',
-        roomType: booking.room?.roomType?.name || 'Unknown'
+        roomType: booking.room?.roomType?.name || booking.room?.roomNumber || 'Unknown'
       }));
 
       res.json({
@@ -138,6 +148,9 @@ class RevenueController {
         data: {
           totalRevenue: parseFloat(totalRevenueResult) || 0,
           totalBookings,
+          occupancyRate,
+          totalRooms,
+          occupiedRooms,
           monthlyRevenue: formattedRevenueByMonth.reduce((sum, item) => sum + item.revenue, 0),
           revenueByMonth: formattedRevenueByMonth,
           revenueByRoomType: formattedRevenueByRoomType,
