@@ -24,6 +24,22 @@ const Login = () => {
     setError('');
   };
 
+  const fillDemoCredentials = (role) => {
+    const demoCredentials = {
+      admin: {
+        email: 'admin@geniussocietyhotel.com',
+        password: 'admin123'
+      },
+      user: {
+        email: 'john.doe@example.com',
+        password: 'password123'
+      }
+    };
+
+    setFormData(demoCredentials[role]);
+    setError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -132,13 +148,34 @@ const Login = () => {
             </Button>
           </form>
 
-          {/* Demo Account Info */}
+          {/* Demo Account Quick Fill */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800 font-medium mb-2">Demo Accounts:</p>
-            <div className="space-y-1">
-              <p className="text-xs text-blue-600">User: john.doe@example.com / password123</p>
-              <p className="text-xs text-blue-600">Admin: admin@geniussocietyhotel.com / admin123</p>
+            <p className="text-sm text-blue-800 font-medium mb-3">Quick Demo Login:</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Button
+                onClick={() => fillDemoCredentials('admin')}
+                variant="outline"
+                className="text-sm bg-white hover:bg-blue-50 border-blue-300 text-blue-700 py-3"
+              >
+                <div className="flex flex-col items-center">
+                  <span className="font-medium mb-1">Admin</span>
+                  <span className="text-xs opacity-75 text-center break-all">admin@geniussocietyhotel.com</span>
+                </div>
+              </Button>
+              <Button
+                onClick={() => fillDemoCredentials('user')}
+                variant="outline"
+                className="text-sm bg-white hover:bg-blue-50 border-blue-300 text-blue-700 py-3"
+              >
+                <div className="flex flex-col items-center">
+                  <span className="font-medium mb-1">User</span>
+                  <span className="text-xs opacity-75 text-center break-all">john.doe@example.com</span>
+                </div>
+              </Button>
             </div>
+            <p className="text-xs text-blue-600 mt-3 text-center">
+              Click to auto-fill credentials, then Sign In
+            </p>
           </div>
 
           {/* Register Link */}

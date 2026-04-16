@@ -3,6 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
+import { 
+  Search, 
+  Filter, 
+  Users, 
+  DollarSign, 
+  Star, 
+  Wifi, 
+  MapPin, 
+  ChevronRight,
+  Heart,
+  CheckCircle,
+  Shield
+} from 'lucide-react';
 
 const OurRooms = () => {
   const navigate = useNavigate();
@@ -65,18 +78,30 @@ const OurRooms = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center mb-12">Our Rooms & Suites</h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Star className="w-6 h-6 text-amber-500" />
+              <span className="text-lg font-light tracking-wider text-amber-600">LUXURY ACCOMMODATIONS</span>
+              <Star className="w-6 h-6 text-amber-500" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Rooms & Suites</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Experience unparalleled comfort and elegance in our meticulously designed rooms and suites
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse">
-                <Card>
-                  <div className="h-48 bg-gray-300 rounded-lg mb-4"></div>
-                  <div className="h-6 bg-gray-300 rounded mb-3"></div>
-                  <div className="h-4 bg-gray-300 rounded mb-2 w-3/4"></div>
-                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                </Card>
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                  <div className="h-64 bg-gradient-to-br from-amber-100 to-amber-200"></div>
+                  <div className="p-6">
+                    <div className="h-6 bg-amber-200 rounded mb-3"></div>
+                    <div className="h-4 bg-amber-100 rounded mb-2"></div>
+                    <div className="h-4 bg-amber-100 rounded w-3/4"></div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -86,170 +111,255 @@ const OurRooms = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Our Rooms & Suites
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choose from our selection of premium accommodations designed for your comfort
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+      {/* Hero Section */}
+      <section className="relative py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Star className="w-6 h-6 text-amber-500" />
+              <span className="text-lg font-light tracking-wider text-amber-600">LUXURY ACCOMMODATIONS</span>
+              <Star className="w-6 h-6 text-amber-500" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Rooms & Suites</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Experience unparalleled comfort and elegance in our meticulously designed rooms and suites
+            </p>
+            <div className="flex items-center justify-center space-x-4 mt-8">
+              <div className="flex items-center space-x-2 text-amber-600">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">Premium Comfort</span>
+              </div>
+              <div className="flex items-center space-x-2 text-amber-600">
+                <Wifi className="w-5 h-5" />
+                <span className="font-medium">Modern Amenities</span>
+              </div>
+              <div className="flex items-center space-x-2 text-amber-600">
+                <Shield className="w-5 h-5" />
+                <span className="font-medium">5-Star Service</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Min Capacity
-              </label>
-              <select
-                value={filters.capacity}
-                onChange={(e) => setFilters({...filters, capacity: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">All Capacities</option>
-                <option value="2">2+ Guests</option>
-                <option value="4">4+ Guests</option>
-                <option value="6">6+ Guests</option>
-              </select>
+      {/* Search and Filters */}
+      <section className="py-12 bg-white border-y border-amber-100">
+        <div className="container mx-auto px-4">
+          <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-2xl p-8 shadow-lg">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Find Your Perfect Room</h2>
+                <p className="text-gray-600">Search and filter our luxurious accommodations</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search rooms..."
+                    className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  />
+                </div>
+                <Button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3">
+                  Search
+                </Button>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Price Range
-              </label>
-              <select
-                value={filters.priceRange}
-                onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">All Prices</option>
-                <option value="budget">Budget ($0-$100)</option>
-                <option value="mid">Mid-Range ($100-$200)</option>
-                <option value="luxury">Luxury ($200+)</option>
-              </select>
-            </div>
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white rounded-xl p-4 border border-amber-200">
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <Users className="w-4 h-4 mr-2 text-amber-600" />
+                  Capacity
+                </label>
+                <select
+                  value={filters.capacity}
+                  onChange={(e) => setFilters({...filters, capacity: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Capacities</option>
+                  <option value="2">2+ Guests</option>
+                  <option value="4">4+ Guests</option>
+                  <option value="6">6+ Guests</option>
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Sort By
-              </label>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="name">Name</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="capacity">Capacity</option>
-              </select>
-            </div>
+              <div className="bg-white rounded-xl p-4 border border-amber-200">
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <DollarSign className="w-4 h-4 mr-2 text-amber-600" />
+                  Price Range
+                </label>
+                <select
+                  value={filters.priceRange}
+                  onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Prices</option>
+                  <option value="budget">Budget ($0-$100)</option>
+                  <option value="mid">Mid-Range ($100-$200)</option>
+                  <option value="luxury">Luxury ($200+)</option>
+                </select>
+              </div>
 
-            <div className="flex items-end">
-              <Button 
-                onClick={() => setFilters({ capacity: '', priceRange: '', sortBy: 'name' })}
-                variant="outline"
-                className="w-full"
-              >
+              <div className="bg-white rounded-xl p-4 border border-amber-200">
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <Filter className="w-4 h-4 mr-2 text-amber-600" />
+                  Sort By
+                </label>
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="name">Name</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="capacity">Capacity</option>
+                </select>
+              </div>
+
+              <div className="flex items-end">
+                <Button 
+                  onClick={() => setFilters({ capacity: '', priceRange: '', sortBy: 'name' })}
+                  variant="outline"
+                  className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Results Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Available Rooms
+                <span className="ml-3 text-xl font-normal text-gray-600">({filteredRooms.length} rooms)</span>
+              </h2>
+              <p className="text-gray-600">Luxury accommodations tailored for your comfort</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-500">
+                {filteredRooms.length} room{filteredRooms.length !== 1 ? 's' : ''} available
+              </span>
+            </div>
+          </div>
+
+          {filteredRooms.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-gray-500 text-xl mb-4">
+                No rooms found matching your criteria
+              </div>
+              <p className="text-gray-600 mb-6">Try adjusting your filters to see more options</p>
+              <Button onClick={() => setFilters({ capacity: '', priceRange: '', sortBy: 'name' })}>
                 Clear Filters
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-8 text-center">
-          <p className="text-gray-600">
-            Showing <span className="font-semibold">{filteredRooms.length}</span> room{filteredRooms.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-
-        {/* Rooms Grid */}
-        {filteredRooms.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-gray-500 text-xl mb-4">
-              No rooms found matching your criteria
-            </div>
-            <Button onClick={() => setFilters({ capacity: '', priceRange: '', sortBy: 'name' })}>
-              Clear Filters
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRooms.map((room) => (
-              <Card key={room.id} hover={true} className="overflow-hidden">
-                {/* Room Image */}
-                <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 mb-4 flex items-center justify-center relative">
-                  <span className="text-white text-6xl font-bold">
-                    {room.name.charAt(0)}
-                  </span>
-                  <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-full">
-                    <span className="text-xs font-medium text-blue-600">
-                      {room.maxCapacity} Guests
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-gray-900">{room.name}</h3>
-                  <p className="text-gray-600 line-clamp-3">{room.description}</p>
-                  
-                  {/* Facilities Display */}
-                  <div className="flex flex-wrap gap-2">
-                    {(room.facilities || []).slice(0, 4).map((facility) => (
-                      <span 
-                        key={facility.id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                        title={facility.facilityName}
-                      >
-                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        {facility.facilityName}
-                      </span>
-                    ))}
-                    {(room.facilities || []).length > 4 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                        +{(room.facilities || []).length - 4} more
-                      </span>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <div>
-                      <span className="text-3xl font-bold text-blue-600">
-                        ${room.basePrice}
-                      </span>
-                      <span className="text-gray-500 text-sm">/night</span>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-500">
-                        Max {room.maxCapacity} guests
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredRooms.map((room) => (
+                <Card key={room.id} hover={true} className="overflow-hidden group">
+                  {/* Room Image */}
+                  <div className="relative h-64 bg-gradient-to-br from-amber-400 to-amber-600 mb-6 overflow-hidden rounded-2xl">
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-white text-6xl font-bold mb-2">
+                          {room.name.charAt(0)}
+                        </div>
+                        <div className="text-white/90 text-sm">
+                          {room.maxCapacity} Guests
+                        </div>
                       </div>
                     </div>
+                    <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full shadow-lg">
+                      <span className="text-xs font-medium">
+                        ${room.basePrice}/night
+                      </span>
+                    </div>
                   </div>
                   
-                  <div className="pt-4 space-y-2">
-                    <Button 
-                      className="w-full"
-                      onClick={() => navigate(`/booking/${room.id}`)}
-                    >
-                      Book Now
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      View Details
-                    </Button>
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{room.name}</h3>
+                        <p className="text-gray-600 leading-relaxed line-clamp-3">{room.description}</p>
+                      </div>
+                      <button className="p-2 rounded-full hover:bg-amber-50 transition-colors duration-200">
+                        <Heart className="w-5 h-5 text-gray-400 hover:text-red-500" />
+                      </button>
+                    </div>
+                    
+                    {/* Facilities */}
+                    <div className="flex flex-wrap gap-2">
+                      {(room.facilities || []).slice(0, 4).map((facility) => (
+                        <div 
+                          key={facility.id}
+                          className="flex items-center px-3 py-2 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-200 hover:bg-amber-100 transition-colors duration-200"
+                          title={facility.facilityName}
+                        >
+                          <Wifi className="w-4 h-4 mr-1" />
+                          {facility.facilityName}
+                        </div>
+                      ))}
+                      {(room.facilities || []).length > 4 && (
+                        <div className="flex items-center px-3 py-2 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200">
+                          +{(room.facilities || []).length - 4} more
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Room Details */}
+                    <div className="flex items-center justify-between pt-4 border-t border-amber-100">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1 text-gray-500">
+                          <Users className="w-4 h-4" />
+                          <span className="text-sm">Max {room.maxCapacity} guests</span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-gray-500">
+                          <MapPin className="w-4 h-4" />
+                          <span className="text-sm">Floor {room.floor || '1'}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-3xl font-bold text-amber-600">
+                          ${room.basePrice}
+                        </div>
+                        <span className="text-gray-500 text-sm">/night</span>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="pt-4 space-y-3">
+                      <Button 
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium shadow-lg"
+                        onClick={() => navigate(`/booking/${room.id}`)}
+                      >
+                        Book Now
+                        <ChevronRight className="w-5 h-5 ml-2 inline" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+                        onClick={() => navigate(`/rooms/${room.id}`)}
+                      >
+                        View Details
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

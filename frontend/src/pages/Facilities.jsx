@@ -3,6 +3,12 @@ import { apiService } from '../services/api';
 import Card from '../components/ui/Card';
 import Loading from '../components/ui/Loading';
 import Button from '../components/common/Button';
+import { 
+  Shield, 
+  Star, 
+  CheckCircle,
+  Sparkles
+} from 'lucide-react';
 
 const Facilities = () => {
   const [facilities, setFacilities] = useState([]);
@@ -78,10 +84,15 @@ const Facilities = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+        <div className="container mx-auto px-4 py-16">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-8">Our Facilities</h1>
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Sparkles className="w-6 h-6 text-amber-500" />
+              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
+              <Sparkles className="w-6 h-6 text-amber-500" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Facilities</h1>
             <Loading text="Loading facilities..." size="lg" />
           </div>
         </div>
@@ -91,10 +102,15 @@ const Facilities = () => {
 
   if (facilities.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+        <div className="container mx-auto px-4 py-16">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-8">Our Facilities</h1>
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Sparkles className="w-6 h-6 text-amber-500" />
+              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
+              <Sparkles className="w-6 h-6 text-amber-500" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Facilities</h1>
             <p className="text-gray-600 text-lg">No facilities available at the moment.</p>
           </div>
         </div>
@@ -103,17 +119,36 @@ const Facilities = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Our Premium Facilities
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience world-class amenities designed for your comfort and enjoyment
-          </p>
-        </div>
+        {/* Hero Section */}
+        <section className="py-20">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Sparkles className="w-6 h-6 text-amber-500" />
+              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
+              <Sparkles className="w-6 h-6 text-amber-500" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Premium Facilities</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Experience world-class amenities designed for your comfort and enjoyment
+            </p>
+            <div className="flex items-center justify-center space-x-6 mt-8">
+              <div className="flex items-center space-x-2 text-amber-600">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">24/7 Service</span>
+              </div>
+              <div className="flex items-center space-x-2 text-amber-600">
+                <Star className="w-5 h-5" />
+                <span className="font-medium">Premium Quality</span>
+              </div>
+              <div className="flex items-center space-x-2 text-amber-600">
+                <Shield className="w-5 h-5" />
+                <span className="font-medium">Safe & Clean</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Carousel Section */}
         <div className="mb-16">
