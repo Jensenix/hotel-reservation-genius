@@ -68,6 +68,10 @@ export const apiService = {
   // Revenue Management
   getRevenueStats: (params) => api.get('/revenue/stats', { params }),
   
+  // Room Availability Management
+  getRoomAvailabilityStats: (params) => api.get('/room-availability/stats', { params }),
+  getRoomTypeAvailability: (roomTypeId, params) => api.get(`/room-availability/room-type/${roomTypeId}`, { params }),
+  
   confirmBooking: (bookingId) => api.put(`/bookings/admin/${bookingId}/confirm`),
   checkInGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-in`),
   checkOutGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-out`),

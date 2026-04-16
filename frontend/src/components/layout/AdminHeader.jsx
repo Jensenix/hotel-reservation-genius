@@ -23,7 +23,7 @@ const AdminHeader = () => {
   const adminNavItems = [
     { path: '/admin', label: 'Dashboard', icon: '📊' },
     { path: '/admin/revenue', label: 'Revenue', icon: '💰' },
-    { path: '/admin/rooms', label: 'Rooms', icon: '🏠' },
+    { path: '/admin/availability', label: 'Availability', icon: '🏠' },
     { path: '/admin/guests', label: 'Guests', icon: '👥' },
     { path: '/admin/reports', label: 'Reports', icon: '📈' },
   ];
