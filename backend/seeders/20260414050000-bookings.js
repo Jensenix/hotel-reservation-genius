@@ -4,11 +4,11 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const bookings = [];
     const users = await queryInterface.sequelize.query(
-      `SELECT id FROM Users LIMIT 3`,
+      `SELECT id FROM "Users"`,
       { type: Sequelize.QueryTypes.SELECT }
     );
     const rooms = await queryInterface.sequelize.query(
-      `SELECT id, roomTypeId FROM Rooms LIMIT 5`,
+      `SELECT id, "roomTypeId" FROM "Rooms"`,
       { type: Sequelize.QueryTypes.SELECT }
     );
 

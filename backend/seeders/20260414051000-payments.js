@@ -3,11 +3,11 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const bookings = await queryInterface.sequelize.query(
-      `SELECT id FROM Bookings WHERE status IN ('confirmed', 'checked_in', 'checked_out')`,
+      `SELECT id, "totalPrice" FROM "Bookings" WHERE "status" IN ('confirmed', 'checked_in', 'checked_out')`,
       { type: Sequelize.QueryTypes.SELECT }
     );
     const paymentMethods = await queryInterface.sequelize.query(
-      `SELECT id FROM PaymentMethods LIMIT 3`,
+      `SELECT id FROM "PaymentMethods" LIMIT 3`,
       { type: Sequelize.QueryTypes.SELECT }
     );
 
@@ -19,7 +19,7 @@ module.exports = {
     const payments = bookings.map((booking, index) => ({
       bookingId: booking.id,
       paymentMethodId: paymentMethods[index % paymentMethods.length]?.id || 1,
-      amount: 200.00 + (index * 50),
+      amount: booking.totalPrice,
       paymentStatus: 'paid',
       transactionTime: new Date(),
       createdAt: new Date(),
