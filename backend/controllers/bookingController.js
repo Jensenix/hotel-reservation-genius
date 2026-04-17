@@ -1,4 +1,4 @@
-const { Booking, User, Room, Payment, Review, ExtraService, RoomType } = require('../models');
+const { Booking, User, Room, Payment, Review, ExtraService, RoomType, PaymentMethod } = require('../models');
 const pagination = require('../utils/pagination');
 const BookingUtils = require('../utils/bookingUtils');
 
@@ -147,7 +147,13 @@ class BookingController {
           },
           {
             model: Payment,
-            as: 'payment'
+            as: 'payment',
+            include: [
+              {
+                model: PaymentMethod,
+                as: 'paymentMethod'
+              }
+            ]
           },
           {
             model: Review,
@@ -155,7 +161,10 @@ class BookingController {
           },
           {
             model: ExtraService,
-            as: 'extraServices'
+            as: 'extraServices',
+            through: {
+              attributes: ['quantity', 'subtotal']
+            }
           }
         ]
       });

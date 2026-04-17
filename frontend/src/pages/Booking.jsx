@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
+import api from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
-import Loading from '../components/ui/Loading';
 import Modal from '../components/common/Modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -16,6 +16,7 @@ const Booking = () => {
   const { user } = useAuth();
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [extraServices, setExtraServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bookingData, setBookingData] = useState({
     checkInDate: null,
@@ -24,8 +25,12 @@ const Booking = () => {
     specialRequests: '',
     paymentMethodId: ''
   });
+  const [selectedExtraServices, setSelectedExtraServices] = useState({});
+  const [showExtraServicesDropdown, setShowExtraServicesDropdown] = useState(false);
   const [step, setStep] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [extraServicesTotal, setExtraServicesTotal] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -35,11 +40,30 @@ const Booking = () => {
       fetchRoomDetails();
     }
     fetchPaymentMethods();
+    fetchExtraServices();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   useEffect(() => {
     calculateTotalPrice();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingData.checkInDate, bookingData.checkOutDate, room]);
+
+  useEffect(() => {
+    calculateExtraServicesTotal();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedExtraServices, extraServices]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showExtraServicesDropdown && !event.target.closest('.extra-services-dropdown')) {
+        setShowExtraServicesDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showExtraServicesDropdown]);
 
   const fetchRoomDetails = async () => {
     try {
@@ -69,6 +93,15 @@ const Booking = () => {
     }
   };
 
+  const fetchExtraServices = async () => {
+    try {
+      const response = await apiService.getExtraServices();
+      setExtraServices(response.data.data);
+    } catch (error) {
+      console.error('Error fetching extra services:', error);
+    }
+  };
+
   const calculateTotalPrice = () => {
     if (bookingData.checkInDate && bookingData.checkOutDate && room) {
       const checkIn = bookingData.checkInDate;
@@ -78,11 +111,32 @@ const Booking = () => {
     }
   };
 
+  const calculateExtraServicesTotal = () => {
+    let total = 0;
+    Object.entries(selectedExtraServices).forEach(([serviceId, quantity]) => {
+      if (quantity > 0) {
+        const service = extraServices.find(s => s.id === parseInt(serviceId));
+        if (service) {
+          total += service.price * quantity;
+        }
+      }
+    });
+    setExtraServicesTotal(total);
+    setGrandTotal(totalPrice + total);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBookingData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleExtraServiceChange = (serviceId, quantity) => {
+    setSelectedExtraServices(prev => ({
+      ...prev,
+      [serviceId]: quantity
     }));
   };
 
@@ -110,23 +164,45 @@ const Booking = () => {
       setIsProcessingPayment(true);
       
       const bookingPayload = {
-        userId: user?.id, // Use logged-in user ID
+        userId: user?.id,
         roomTypeId: room?.roomTypeId,
         checkInDate: bookingData.checkInDate.toISOString().split('T')[0],
         checkOutDate: bookingData.checkOutDate.toISOString().split('T')[0],
-        totalPrice,
-        status: 'confirmed' // Direct to confirmed since payment is immediate
+        totalPrice: grandTotal,
+        status: 'confirmed'
       };
 
       console.log('Booking payload:', bookingPayload);
       const bookingResponse = await apiService.createBooking(bookingPayload);
       const booking = bookingResponse.data.data;
 
+      // Create booking extra services if any selected
+      const bookingExtraServicesPayloads = [];
+      Object.entries(selectedExtraServices).forEach(([serviceId, quantity]) => {
+        if (quantity > 0) {
+          const service = extraServices.find(s => s.id === parseInt(serviceId));
+          if (service) {
+            bookingExtraServicesPayloads.push({
+              bookingId: booking.id,
+              extraServiceId: parseInt(serviceId),
+              quantity: quantity,
+              subtotal: service.price * quantity
+            });
+          }
+        }
+      });
+
+      if (bookingExtraServicesPayloads.length > 0) {
+        for (const payload of bookingExtraServicesPayloads) {
+          await api.post('/booking-extra-services', payload);
+        }
+      }
+
       // Create payment
       const paymentPayload = {
         bookingId: booking.id,
         paymentMethodId: parseInt(bookingData.paymentMethodId),
-        amount: totalPrice,
+        amount: grandTotal,
         paymentStatus: 'paid',
         transactionTime: new Date().toISOString()
       };
@@ -134,9 +210,7 @@ const Booking = () => {
       const paymentResponse = await apiService.createPayment(paymentPayload);
       console.log('Payment response:', paymentResponse.data);
 
-      // Verify payment was created successfully
       if (paymentResponse.data.success) {
-        // Use updated booking from payment response
         const updatedBooking = paymentResponse.data.data.booking;
         
         console.log('Payment response data:', paymentResponse.data);
@@ -316,6 +390,81 @@ const Booking = () => {
                       Examples: Late check-in, early check-out, room preferences, dietary requirements, etc.
                     </p>
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Extra Services
+                      <span className="text-gray-400 font-normal ml-1">(Optional)</span>
+                    </label>
+                    <div className="relative extra-services-dropdown">
+                      <button
+                        type="button"
+                        onClick={() => setShowExtraServicesDropdown(!showExtraServicesDropdown)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="text-gray-900">
+                          {Object.keys(selectedExtraServices).filter(id => selectedExtraServices[id] > 0).length > 0
+                            ? `${Object.keys(selectedExtraServices).filter(id => selectedExtraServices[id] > 0).length} services selected`
+                            : 'Select extra services...'}
+                        </span>
+                        <svg 
+                          className={`w-5 h-5 text-gray-400 transition-transform ${showExtraServicesDropdown ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      
+                      {showExtraServicesDropdown && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          {extraServices.map((service) => {
+                            const quantity = selectedExtraServices[service.id] || 0;
+                            return (
+                              <div key={service.id} className="p-3 border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm text-gray-900">{service.serviceName}</div>
+                                    <div className="text-xs text-gray-500">${service.price}/unit</div>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleExtraServiceChange(service.id, Math.max(0, quantity - 1))}
+                                      className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                                      disabled={quantity <= 0}
+                                    >
+                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                      </svg>
+                                    </button>
+                                    <div className="w-8 text-center font-semibold text-sm">
+                                      {quantity}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleExtraServiceChange(service.id, quantity + 1)}
+                                      className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                                    >
+                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {extraServices.length === 0 && (
+                            <div className="text-center text-gray-500 py-4 text-sm">
+                              No extra services available
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -404,12 +553,40 @@ const Booking = () => {
                 )}
 
                 {totalPrice > 0 && (
-                  <div className="border-t pt-4">
+                  <div className="border-t pt-4 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold">Total Price:</span>
-                      <span className="text-2xl font-bold text-blue-600">
-                        ${totalPrice}
-                      </span>
+                      <span className="text-sm text-gray-600">Room Price</span>
+                      <span className="font-semibold text-gray-900">${totalPrice}</span>
+                    </div>
+                    
+                    {Object.entries(selectedExtraServices).some(([_, qty]) => qty > 0) && (
+                      <div className="border-t pt-3 space-y-2">
+                        <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Extra Services</div>
+                        {Object.entries(selectedExtraServices).map(([serviceId, quantity]) => {
+                          if (quantity > 0) {
+                            const service = extraServices.find(s => s.id === parseInt(serviceId));
+                            if (service) {
+                              const subtotal = service.price * quantity;
+                              return (
+                                <div key={serviceId} className="flex justify-between text-xs">
+                                  <span className="text-gray-600">{service.serviceName} × {quantity}</span>
+                                  <span className="text-gray-900">${subtotal}</span>
+                                </div>
+                              );
+                            }
+                          }
+                          return null;
+                        })}
+                        <div className="flex justify-between items-center pt-2 border-t border-dashed">
+                          <span className="text-sm font-medium text-gray-700">Services Total</span>
+                          <span className="font-semibold text-gray-900">${extraServicesTotal}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between items-center pt-3 border-t-2 border-gray-900">
+                      <span className="text-base font-bold text-gray-900">Total</span>
+                      <span className="text-xl font-bold text-blue-600">${grandTotal}</span>
                     </div>
                   </div>
                 )}

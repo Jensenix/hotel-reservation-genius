@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import OurRooms from './pages/OurRooms';
 import Booking from './pages/Booking';
 import BookingSuccess from './pages/BookingSuccess';
+import BookingDetail from './pages/BookingDetail';
 import Facilities from './pages/Facilities';
 import MyBookings from './pages/MyBookings';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -27,9 +28,10 @@ function AppRoutes() {
       <Route path="/" element={isAuthenticated ? <MainLayout><Home /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/our-rooms" element={isAuthenticated ? <MainLayout><OurRooms /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/facilities" element={isAuthenticated ? <MainLayout><Facilities /></MainLayout> : <Navigate to="/login" />} />
-      <Route path="/bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/my-bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking-success" element={isAuthenticated ? <MainLayout><BookingSuccess /></MainLayout> : <Navigate to="/login" />} />
+      <Route path="/my-bookings/details/:id" element={isAuthenticated ? <MainLayout><BookingDetail /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminDashboard /> : <Navigate to="/login" />} />
       <Route path="/admin/revenue" element={isAuthenticated && isAdmin ? <RevenueDashboard /> : <Navigate to="/login" />} />
       <Route path="/admin/availability" element={isAuthenticated && isAdmin ? <RoomAvailability /> : <Navigate to="/login" />} />

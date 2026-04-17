@@ -74,7 +74,7 @@ const Header = () => {
               Facilities
             </Link>
             <Link 
-              to="/bookings" 
+              to="/my-bookings" 
               className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
             >
               My Bookings

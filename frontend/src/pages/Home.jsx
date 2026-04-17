@@ -71,7 +71,7 @@ const Home = () => {
                 Explore Rooms
               </Button>
             </Link>
-            <Link to="/bookings">
+            <Link to="/our-rooms">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg font-semibold">
                 Make Reservation
               </Button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
@@ -18,6 +19,7 @@ import {
 
 const MyBookings = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, confirmed, checked_in, checked_out, cancelled
@@ -207,7 +209,11 @@ const MyBookings = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBookings.map((booking) => (
-              <Card key={booking.id} className="hover:shadow-lg transition-shadow duration-300 min-h-[320px] flex flex-col">
+              <Card 
+                key={booking.id} 
+                className="hover:shadow-lg transition-shadow duration-300 min-h-[320px] flex flex-col cursor-pointer"
+                onClick={() => navigate(`/my-bookings/details/${booking.id}`)}
+              >
                 {/* Room Image */}
                 <div className="relative h-32 bg-gradient-to-br from-amber-400 to-amber-600 rounded-t-lg overflow-hidden">
                   <div className="absolute inset-0 bg-black/20"></div>
@@ -268,7 +274,7 @@ const MyBookings = () => {
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
                       {booking.status === 'pending' && (
                         <Button 
                           variant="outline" 

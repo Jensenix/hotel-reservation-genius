@@ -12,6 +12,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const extraServiceRoutes = require('./routes/extraServiceRoutes');
 const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
+const bookingExtraServiceRoutes = require('./routes/bookingExtraServiceRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
 const roomAvailabilityRoutes = require('./routes/roomAvailabilityRoutes');
 
@@ -38,6 +39,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/extra-services', extraServiceRoutes);
 app.use('/api/payment-methods', paymentMethodRoutes);
+app.use('/api/booking-extra-services', bookingExtraServiceRoutes);
 app.use('/api/revenue', revenueRoutes);
 app.use('/api/room-availability', roomAvailabilityRoutes);
 
