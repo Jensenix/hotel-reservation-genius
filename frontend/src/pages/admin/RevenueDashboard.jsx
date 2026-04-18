@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Card from '../../components/ui/Card';
 import Button from '../../components/common/Button';
 import Loading from '../../components/ui/Loading';
 import AdminLayout from '../../components/layout/AdminLayout';
@@ -70,103 +69,125 @@ const RevenueDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Revenue Dashboard</h1>
-        <p className="text-slate-600">Monitor hotel financial performance and analytics</p>
-      </div>
-
-      {/* Date Range Filter */}
-      <Card className="mb-6">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Payment Start Date
-            </label>
-            <input
-              type="date"
-              value={dateRange.startDate.toLocaleDateString('en-CA')}
-              onChange={(e) => setDateRange(prev => ({ ...prev, startDate: new Date(e.target.value) }))}
-              className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Payment End Date
-            </label>
-            <input
-              type="date"
-              value={dateRange.endDate.toLocaleDateString('en-CA')}
-              onChange={(e) => setDateRange(prev => ({ ...prev, endDate: new Date(e.target.value) }))}
-              className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <Button onClick={fetchRevenueData}>
-            Apply Filter
-          </Button>
-        </div>
-      </Card>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-          <div className="p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header with elegant styling */}
+          <div className="mb-10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm font-medium">Total Revenue</p>
-                <p className="text-3xl font-bold">{formatCurrency(revenueData.totalRevenue)}</p>
+                <h1 className="text-4xl font-light text-slate-800 mb-2 tracking-tight">
+                  Revenue <span className="font-semibold text-amber-600">Dashboard</span>
+                </h1>
+                <p className="text-slate-500 text-sm tracking-wide uppercase">Financial Performance & Analytics</p>
               </div>
-              <div className="p-3 bg-blue-700 bg-opacity-50 rounded-lg">
-                <svg className="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="hidden md:flex items-center gap-2">
+                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+                <span className="text-amber-600 text-xs font-semibold tracking-widest">GENIUS SOCIETY HOTEL</span>
+                <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
               </div>
             </div>
           </div>
-        </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100 text-sm font-medium">Total Bookings</p>
-                <p className="text-3xl font-bold">{revenueData.totalBookings}</p>
+          {/* Date Range Filter - Elegant Card */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+            <div className="flex flex-wrap gap-6 items-end">
+              <div className="flex-1 min-w-[200px]">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  Payment Start Date
+                </label>
+                <input
+                  type="date"
+                  value={dateRange.startDate.toLocaleDateString('en-CA')}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, startDate: new Date(e.target.value) }))}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-slate-700 bg-slate-50 focus:bg-white"
+                />
               </div>
-              <div className="p-3 bg-purple-700 bg-opacity-50 rounded-lg">
-                <svg className="w-6 h-6 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
+              <div className="flex-1 min-w-[200px]">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  Payment End Date
+                </label>
+                <input
+                  type="date"
+                  value={dateRange.endDate.toLocaleDateString('en-CA')}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, endDate: new Date(e.target.value) }))}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-slate-700 bg-slate-50 focus:bg-white"
+                />
+              </div>
+              <div>
+                <Button 
+                  onClick={fetchRevenueData}
+                  className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-8 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 border-0"
+                >
+                  Apply Filter
+                </Button>
               </div>
             </div>
           </div>
-        </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-orange-100 text-sm font-medium">Top Room Type</p>
-                <p className="text-3xl font-bold">{revenueData.revenueByRoomType?.[0]?.type || 'N/A'}</p>
-                <p className="text-sm text-orange-200 mt-1">{formatCurrency(revenueData.revenueByRoomType?.[0]?.revenue || 0)}</p>
+      {/* Key Metrics - Elegant Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Total Revenue - Navy with Gold Accent */}
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-lg p-6 border border-slate-700 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500 opacity-10 rounded-full -mr-16 -mt-16"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-amber-500/20 rounded-lg">
+                    <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">Total</span>
+                </div>
+                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Revenue</p>
+                <p className="text-3xl font-light text-white">{formatCurrency(revenueData.totalRevenue)}</p>
               </div>
-              <div className="p-3 bg-orange-700 bg-opacity-50 rounded-lg">
-                <svg className="w-6 h-6 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
+            </div>
+
+            {/* Total Bookings - Elegant Navy */}
+            <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-lg p-6 border border-slate-600 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500 opacity-5 rounded-full -mr-16 -mt-16"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-amber-500/10 rounded-lg">
+                    <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Bookings</span>
+                </div>
+                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Bookings</p>
+                <p className="text-3xl font-light text-white">{revenueData.totalBookings}</p>
+              </div>
+            </div>
+
+            {/* Top Room Type - Gold Accent */}
+            <div className="bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl shadow-lg p-6 border border-amber-500 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-white/20 rounded-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-semibold text-white uppercase tracking-wider">Top</span>
+                </div>
+                <p className="text-amber-100 text-xs uppercase tracking-wider mb-1">Top Room Type</p>
+                <p className="text-2xl font-semibold text-white mb-1">{revenueData.revenueByRoomType?.[0]?.type || 'N/A'}</p>
+                <p className="text-sm text-amber-100">{formatCurrency(revenueData.revenueByRoomType?.[0]?.revenue || 0)}</p>
               </div>
             </div>
           </div>
-        </Card>
-      </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Monthly Revenue Chart */}
-        <Card>
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">Monthly Revenue Trend</h3>
-            <p className="text-sm text-slate-600 mb-4">Revenue distribution by month (from payment date range)</p>
-            <div className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Monthly Revenue Chart */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-1">Monthly Revenue Trend</h3>
+                <p className="text-sm text-slate-500">Revenue distribution by month (from payment date range)</p>
+              </div>
+              <div className="space-y-3">
               {revenueData.revenueByMonth.length > 0 ? (
                 revenueData.revenueByMonth.map((item, index) => {
                   const maxRevenue = Math.max(...revenueData.revenueByMonth.map(i => i.revenue));
@@ -190,26 +211,26 @@ const RevenueDashboard = () => {
               ) : (
                 <p className="text-sm text-slate-500 text-center py-4">No revenue data available for selected payment period</p>
               )}
+              </div>
             </div>
-          </div>
-        </Card>
 
-        {/* Revenue by Room Type */}
-        <Card>
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">Revenue by Room Type</h3>
-            <p className="text-sm text-slate-600 mb-4">Revenue breakdown by room category (from payment date range)</p>
-            <div className="space-y-4">
+            {/* Revenue by Room Type */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-1">Revenue by Room Type</h3>
+                <p className="text-sm text-slate-500">Revenue breakdown by room category (from payment date range)</p>
+              </div>
+              <div className="space-y-3">
               {revenueData.revenueByRoomType && revenueData.revenueByRoomType.length > 0 ? (
                 revenueData.revenueByRoomType.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-white border border-slate-100 rounded-lg hover:shadow-md transition-shadow duration-200">
                   <div>
-                    <p className="font-medium text-slate-900">{item.type}</p>
-                    <p className="text-sm text-slate-600">{item.bookings} bookings</p>
+                    <p className="font-semibold text-slate-800">{item.type}</p>
+                    <p className="text-sm text-slate-500">{item.bookings} bookings</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-slate-900">{formatCurrency(item.revenue)}</p>
-                    <p className="text-sm text-slate-600">
+                    <p className="font-bold text-slate-900">{formatCurrency(item.revenue)}</p>
+                    <p className="text-xs text-slate-500">
                       {item.bookings > 0 ? formatCurrency(Math.round(item.revenue / item.bookings)) : formatCurrency(0)} avg
                     </p>
                   </div>
@@ -221,58 +242,59 @@ const RevenueDashboard = () => {
                     <p className="text-xs text-slate-400">Try adjusting the payment date range or check if there are paid bookings</p>
                   </div>
                 )}
+              </div>
             </div>
           </div>
-        </Card>
-      </div>
 
       {/* Recent Transactions */}
-      <Card>
-        <div className="p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Transactions (by Payment Date)</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Booking ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Guest
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Payment Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-1">Recent Transactions</h3>
+              <p className="text-sm text-slate-500">Latest payments (by payment date)</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-100">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Booking ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Guest
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Payment Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
                 {revenueData.recentTransactions.map((transaction) => (
-                  <tr key={transaction.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                  <tr key={transaction.id} className="hover:bg-slate-50 transition-colors duration-150">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">
                       #{transaction.bookingId}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                       {transaction.guest}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900">
                       {formatCurrency(transaction.amount)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         transaction.status === 'paid' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-emerald-100 text-emerald-800' 
+                          : 'bg-amber-100 text-amber-800'
                       }`}>
                         {transaction.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                       {formatDate(transaction.date)}
                     </td>
                   </tr>
@@ -281,7 +303,7 @@ const RevenueDashboard = () => {
             </table>
           </div>
         </div>
-      </Card>
+      </div>
       </div>
     </AdminLayout>
   );
