@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import api from '../services/api';
@@ -13,6 +13,7 @@ import '../styles/datepicker.css';
 const Booking = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -34,6 +35,7 @@ const Booking = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
 
   useEffect(() => {
     if (roomId) {
@@ -44,10 +46,69 @@ const Booking = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
+  // Check for existing booking (continue payment flow)
+  useEffect(() => {
+    const state = location.state;
+    if (state?.bookingId) {
+      setBookingId(state.bookingId);
+      setStep(2); // Skip to payment step
+      
+      // Fetch booking details to populate form
+      const fetchBookingDetails = async () => {
+        try {
+          const response = await apiService.getBookingById(state.bookingId);
+          const booking = response.data.data;
+          
+          // Set booking data from existing booking
+          setBookingData(prev => ({
+            ...prev,
+            checkInDate: new Date(booking.checkInDate),
+            checkOutDate: new Date(booking.checkOutDate),
+            guestCount: booking.guestCount || 1,
+            specialRequests: booking.specialRequests || ''
+          }));
+          
+          setGrandTotal(parseFloat(booking.totalPrice));
+          
+          // Calculate room price and extra services total
+          if (booking.room && booking.checkInDate && booking.checkOutDate) {
+            const checkIn = new Date(booking.checkInDate);
+            const checkOut = new Date(booking.checkOutDate);
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const roomPrice = nights * (booking.room.roomType?.basePrice || booking.room.basePrice || 0);
+            setTotalPrice(roomPrice);
+            
+            // Calculate extra services total
+            let servicesTotal = 0;
+            if (booking.extraServices && booking.extraServices.length > 0) {
+              booking.extraServices.forEach(service => {
+                servicesTotal += parseFloat(service.BookingExtraService?.subtotal || service.price || 0);
+              });
+            }
+            setExtraServicesTotal(servicesTotal);
+          }
+          
+          // Load extra services if any
+          if (booking.extraServices && booking.extraServices.length > 0) {
+            const servicesMap = {};
+            booking.extraServices.forEach(service => {
+              servicesMap[service.id] = service.BookingExtraService?.quantity || 1;
+            });
+            setSelectedExtraServices(servicesMap);
+          }
+        } catch (error) {
+          console.error('Error fetching booking details:', error);
+        }
+      };
+      
+      fetchBookingDetails();
+    }
+  }, [location.state]);
+
   useEffect(() => {
     calculateTotalPrice();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookingData.checkInDate, bookingData.checkOutDate, room]);
+  }, [bookingData.checkInDate, bookingData.checkOutDate, room, extraServicesTotal]);
 
   useEffect(() => {
     calculateExtraServicesTotal();
@@ -107,7 +168,9 @@ const Booking = () => {
       const checkIn = bookingData.checkInDate;
       const checkOut = bookingData.checkOutDate;
       const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-      setTotalPrice(nights * room.basePrice);
+      const price = nights * room.basePrice;
+      setTotalPrice(price);
+      setGrandTotal(price + extraServicesTotal);
     }
   };
 
@@ -151,31 +214,53 @@ const Booking = () => {
     return bookingData.paymentMethodId;
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 1 && validateStep1()) {
-      setStep(2);
+      // If bookingId exists (continue payment flow), just move to step 2
+      if (bookingId) {
+        setStep(2);
+        return;
+      }
+      
+      // Create booking with pending status when moving to payment step
+      try {
+        setIsProcessingPayment(true);
+        
+        const bookingPayload = {
+          userId: user?.id,
+          roomTypeId: room?.roomTypeId,
+          checkInDate: bookingData.checkInDate.toLocaleDateString('en-CA'),
+          checkOutDate: bookingData.checkOutDate.toLocaleDateString('en-CA'),
+          totalPrice: grandTotal,
+          status: 'pending'
+        };
+
+        console.log('Creating booking with pending status:', bookingPayload);
+        const bookingResponse = await apiService.createBooking(bookingPayload);
+        const booking = bookingResponse.data.data;
+        
+        setBookingId(booking.id);
+        setStep(2);
+      } catch (error) {
+        console.error('Error creating booking:', error);
+        setErrorMessage('Failed to create booking. Please try again.');
+        setShowErrorModal(true);
+      } finally {
+        setIsProcessingPayment(false);
+      }
     } else if (step === 2 && validateStep2()) {
       handleSubmitBooking();
     }
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
   };
 
   const handleSubmitBooking = async () => {
     try {
       setIsProcessingPayment(true);
       
-      const bookingPayload = {
-        userId: user?.id,
-        roomTypeId: room?.roomTypeId,
-        checkInDate: bookingData.checkInDate.toISOString().split('T')[0],
-        checkOutDate: bookingData.checkOutDate.toISOString().split('T')[0],
-        totalPrice: grandTotal,
-        status: 'confirmed'
-      };
-
-      console.log('Booking payload:', bookingPayload);
-      const bookingResponse = await apiService.createBooking(bookingPayload);
-      const booking = bookingResponse.data.data;
-
       // Create booking extra services if any selected
       const bookingExtraServicesPayloads = [];
       Object.entries(selectedExtraServices).forEach(([serviceId, quantity]) => {
@@ -183,7 +268,7 @@ const Booking = () => {
           const service = extraServices.find(s => s.id === parseInt(serviceId));
           if (service) {
             bookingExtraServicesPayloads.push({
-              bookingId: booking.id,
+              bookingId: bookingId,
               extraServiceId: parseInt(serviceId),
               quantity: quantity,
               subtotal: service.price * quantity
@@ -198,9 +283,9 @@ const Booking = () => {
         }
       }
 
-      // Create payment
+      // Create payment (this will update booking status to confirmed via backend)
       const paymentPayload = {
-        bookingId: booking.id,
+        bookingId: bookingId,
         paymentMethodId: parseInt(bookingData.paymentMethodId),
         amount: grandTotal,
         paymentStatus: 'paid',
@@ -286,7 +371,22 @@ const Booking = () => {
             <Card>
               {step === 1 ? (
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Booking Details</h2>
+                  {bookingId ? (
+                    <div className="text-center py-12">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4">Continue Payment</h2>
+                      <p className="text-gray-600 mb-6">
+                        You have a pending booking. Click "Continue to Payment" to proceed with payment.
+                      </p>
+                      <Button
+                        onClick={handleNextStep}
+                        disabled={isProcessingPayment}
+                      >
+                        {isProcessingPayment ? 'Processing...' : 'Continue to Payment'}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-2xl font-bold text-gray-900">Booking Details</h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -465,6 +565,8 @@ const Booking = () => {
                       )}
                     </div>
                   </div>
+                </>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -498,17 +600,17 @@ const Booking = () => {
                 {step > 1 && (
                   <Button
                     variant="outline"
-                    onClick={() => setStep(step - 1)}
+                    onClick={handleBack}
                   >
                     Back
                   </Button>
                 )}
                 <Button
                   onClick={handleNextStep}
-                  disabled={step === 1 ? !validateStep1() : !validateStep2() || isProcessingPayment}
+                  disabled={step === 1 ? !validateStep1() || isProcessingPayment : !validateStep2() || isProcessingPayment}
                   className="ml-auto"
                 >
-                  {isProcessingPayment ? 'Processing...' : (step === 1 ? 'Continue to Payment' : 'Complete Booking')}
+                  {isProcessingPayment ? 'Processing...' : (step === 1 ? 'Continue to Payment' : 'Pay')}
                 </Button>
               </div>
             </Card>
@@ -552,7 +654,7 @@ const Booking = () => {
                   </div>
                 )}
 
-                {totalPrice > 0 && (
+                {grandTotal > 0 && (
                   <div className="border-t pt-4 space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Room Price</span>

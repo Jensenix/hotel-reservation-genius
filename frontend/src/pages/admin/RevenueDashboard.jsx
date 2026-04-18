@@ -24,10 +24,10 @@ const RevenueDashboard = () => {
       // Build query parameters as object
       const params = {};
       if (dateRange.startDate) {
-        params.startDate = dateRange.startDate.toISOString().split('T')[0];
+        params.startDate = dateRange.startDate.toLocaleDateString('en-CA');
       }
       if (dateRange.endDate) {
-        params.endDate = dateRange.endDate.toISOString().split('T')[0];
+        params.endDate = dateRange.endDate.toLocaleDateString('en-CA');
       }
       
       console.log('Fetching revenue data with params:', params);
@@ -35,6 +35,7 @@ const RevenueDashboard = () => {
       
       if (response.data.success) {
         console.log('Revenue data received:', response.data.data);
+        console.log('Revenue by room type:', response.data.data.revenueByRoomType);
         setRevenueData(response.data.data);
       } else {
         console.error('Error fetching revenue data:', response.data.message);
@@ -80,22 +81,22 @@ const RevenueDashboard = () => {
         <div className="flex flex-wrap gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Start Date
+              Payment Start Date
             </label>
             <input
               type="date"
-              value={dateRange.startDate.toISOString().split('T')[0]}
+              value={dateRange.startDate.toLocaleDateString('en-CA')}
               onChange={(e) => setDateRange(prev => ({ ...prev, startDate: new Date(e.target.value) }))}
               className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              End Date
+              Payment End Date
             </label>
             <input
               type="date"
-              value={dateRange.endDate.toISOString().split('T')[0]}
+              value={dateRange.endDate.toLocaleDateString('en-CA')}
               onChange={(e) => setDateRange(prev => ({ ...prev, endDate: new Date(e.target.value) }))}
               className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -107,7 +108,7 @@ const RevenueDashboard = () => {
       </Card>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
           <div className="p-6">
             <div className="flex items-center justify-between">
@@ -118,23 +119,6 @@ const RevenueDashboard = () => {
               <div className="p-3 bg-blue-700 bg-opacity-50 rounded-lg">
                 <svg className="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-green-100 text-sm font-medium">Occupancy Rate</p>
-                <p className="text-3xl font-bold">{revenueData.occupancyRate || 0}%</p>
-                <p className="text-sm text-green-200 mt-1">{revenueData.occupiedRooms || 0} / {revenueData.totalRooms || 0} rooms</p>
-              </div>
-              <div className="p-3 bg-green-700 bg-opacity-50 rounded-lg">
-                <svg className="w-6 h-6 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
             </div>
@@ -161,12 +145,13 @@ const RevenueDashboard = () => {
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-100 text-sm font-medium">Occupancy Rate</p>
-                <p className="text-3xl font-bold">{revenueData.occupancyRate}%</p>
+                <p className="text-orange-100 text-sm font-medium">Top Room Type</p>
+                <p className="text-3xl font-bold">{revenueData.revenueByRoomType?.[0]?.type || 'N/A'}</p>
+                <p className="text-sm text-orange-200 mt-1">{formatCurrency(revenueData.revenueByRoomType?.[0]?.revenue || 0)}</p>
               </div>
               <div className="p-3 bg-orange-700 bg-opacity-50 rounded-lg">
                 <svg className="w-6 h-6 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1h3a1 1 0 011 1v3m0 0h8" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
             </div>
@@ -180,7 +165,7 @@ const RevenueDashboard = () => {
         <Card>
           <div className="p-6">
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Monthly Revenue Trend</h3>
-            <p className="text-sm text-slate-600 mb-4">Revenue distribution by month (from filtered date range)</p>
+            <p className="text-sm text-slate-600 mb-4">Revenue distribution by month (from payment date range)</p>
             <div className="space-y-3">
               {revenueData.revenueByMonth.length > 0 ? (
                 revenueData.revenueByMonth.map((item, index) => {
@@ -203,7 +188,7 @@ const RevenueDashboard = () => {
                   );
                 })
               ) : (
-                <p className="text-sm text-slate-500 text-center py-4">No revenue data available for selected period</p>
+                <p className="text-sm text-slate-500 text-center py-4">No revenue data available for selected payment period</p>
               )}
             </div>
           </div>
@@ -213,12 +198,10 @@ const RevenueDashboard = () => {
         <Card>
           <div className="p-6">
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Revenue by Room Type</h3>
-            <p className="text-sm text-slate-600 mb-4">Revenue breakdown by room category</p>
+            <p className="text-sm text-slate-600 mb-4">Revenue breakdown by room category (from payment date range)</p>
             <div className="space-y-4">
-              {revenueData.revenueByRoomType.filter(item => item.type && item.type !== 'Unknown').length > 0 ? (
-                revenueData.revenueByRoomType
-                  .filter(item => item.type && item.type !== 'Unknown')
-                  .map((item, index) => (
+              {revenueData.revenueByRoomType && revenueData.revenueByRoomType.length > 0 ? (
+                revenueData.revenueByRoomType.map((item, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div>
                     <p className="font-medium text-slate-900">{item.type}</p>
@@ -227,13 +210,16 @@ const RevenueDashboard = () => {
                   <div className="text-right">
                     <p className="font-semibold text-slate-900">{formatCurrency(item.revenue)}</p>
                     <p className="text-sm text-slate-600">
-                      {formatCurrency(Math.round(item.revenue / item.bookings))} avg
+                      {item.bookings > 0 ? formatCurrency(Math.round(item.revenue / item.bookings)) : formatCurrency(0)} avg
                     </p>
                   </div>
                 </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-500 text-center py-4">No room type revenue data available</p>
+                  <div className="text-center py-8">
+                    <p className="text-sm text-slate-500 mb-2">No room type revenue data available</p>
+                    <p className="text-xs text-slate-400">Try adjusting the payment date range or check if there are paid bookings</p>
+                  </div>
                 )}
             </div>
           </div>
@@ -243,7 +229,7 @@ const RevenueDashboard = () => {
       {/* Recent Transactions */}
       <Card>
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Transactions</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Transactions (by Payment Date)</h3>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50">
@@ -261,7 +247,7 @@ const RevenueDashboard = () => {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Date
+                    Payment Date
                   </th>
                 </tr>
               </thead>

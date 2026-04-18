@@ -30,11 +30,15 @@ class PaymentController {
         bookingId,
         paymentMethodId,
         amount,
-        paymentStatus: paymentStatus || 'pending',
-        transactionTime
+        paymentStatus: paymentStatus || 'paid',
+        transactionTime: transactionTime || new Date()
       });
 
-      // Note: Booking is already confirmed from frontend, no need to update status
+      // Update booking status from pending to confirmed
+      const booking = await Booking.findByPk(bookingId);
+      if (booking) {
+        await booking.update({ status: 'confirmed' });
+      }
 
       // Get updated booking to return in response
       const updatedBooking = await Booking.findByPk(bookingId);

@@ -100,7 +100,7 @@ class BookingController {
               {
                 model: require('../models').RoomType,
                 as: 'roomType',
-                attributes: ['id', 'name', 'basePrice']
+                attributes: ['id', 'name', 'basePrice', 'maxCapacity']
               }
             ]
           }
@@ -143,7 +143,13 @@ class BookingController {
           {
             model: Room,
             as: 'room',
-            include: ['roomType']
+            include: [
+              {
+                model: RoomType,
+                as: 'roomType',
+                attributes: ['id', 'name', 'basePrice', 'maxCapacity']
+              }
+            ]
           },
           {
             model: Payment,
@@ -334,7 +340,7 @@ class BookingController {
           { 
             model: require('../models').Room, 
             as: 'room', 
-            include: [{ model: require('../models').RoomType, as: 'roomType' }] 
+            include: [{ model: require('../models').RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] 
           },
           { model: require('../models').Payment, as: 'payment' }
         ]
@@ -379,7 +385,7 @@ class BookingController {
       const booking = await Booking.findByPk(id, {
         include: [
           { model: User, as: 'user' },
-          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
           { model: require('../models').Payment, as: 'payment' }
         ]
       });
@@ -430,7 +436,7 @@ class BookingController {
       const booking = await Booking.findByPk(id, {
         include: [
           { model: User, as: 'user' },
-          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
           { model: require('../models').Payment, as: 'payment' }
         ]
       });
@@ -482,7 +488,7 @@ class BookingController {
       const booking = await Booking.findByPk(id, {
         include: [
           { model: User, as: 'user' },
-          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
           { model: require('../models').Payment, as: 'payment' }
         ]
       });
@@ -565,7 +571,7 @@ class BookingController {
               { 
                 model: require('../models').RoomType, 
                 as: 'roomType', 
-                attributes: ['id', 'name'] 
+                attributes: ['id', 'name', 'maxCapacity'] 
               }
             ],
             attributes: ['id', 'roomNumber', 'status']

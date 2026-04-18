@@ -184,7 +184,7 @@ const BookingDetail = () => {
                     <Users className="w-5 h-5 text-amber-600" />
                     <div>
                       <div className="text-xs text-gray-600">Max Guests</div>
-                      <div className="font-semibold text-gray-900">{booking.room?.roomType?.maxCapacity || 2} Guests</div>
+                      <div className="font-semibold text-gray-900">{booking.room?.roomType?.maxCapacity ? `${booking.room.roomType.maxCapacity} Guests` : 'N/A'}</div>
                     </div>
                   </div>
                 </div>

@@ -520,7 +520,7 @@ const AdminDashboard = () => {
                     </div>
                     <div>
                       <div className="text-xs text-gray-500">Max Guests</div>
-                      <div className="text-sm text-gray-700">{bookingDetails.room?.roomType?.maxCapacity || 2} Guests</div>
+                      <div className="text-sm text-gray-700">{bookingDetails.room?.roomType?.maxCapacity ? `${bookingDetails.room.roomType.maxCapacity} Guests` : 'N/A'}</div>
                     </div>
                   </div>
                 </div>

@@ -7,17 +7,20 @@ class RevenueController {
       const { startDate, endDate } = req.query;
       
       const Op = require('sequelize').Op;
-      
-      // Build date filter
-      let dateFilter = {};
+
+      // Build payment date filter
+      const paymentDateFilter = {};
       if (startDate && endDate) {
-        dateFilter = {
-          createdAt: {
-            [Op.between]: [
-              new Date(startDate),
-              new Date(endDate)
-            ]
-          }
+        // Set startDate to beginning of day (00:00:00)
+        const startDateTime = new Date(startDate);
+        startDateTime.setHours(0, 0, 0, 0);
+
+        // Set endDate to end of day (23:59:59) to include entire day
+        const endDateTime = new Date(endDate);
+        endDateTime.setHours(23, 59, 59, 999);
+
+        paymentDateFilter.createdAt = {
+          [Op.between]: [startDateTime, endDateTime]
         };
       }
 
@@ -25,21 +28,12 @@ class RevenueController {
       const totalRevenueResult = await Payment.sum('amount', {
         where: {
           paymentStatus: 'paid',
-          ...dateFilter
+          ...paymentDateFilter
         }
       });
 
       // Total bookings
       const totalBookings = await Booking.count();
-
-      // Calculate occupancy rate
-      const totalRooms = await Room.count();
-      const occupiedRooms = await Room.count({
-        where: {
-          status: 'occupied'
-        }
-      });
-      const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
 
       // Revenue by month (from payments)
       const revenueByMonth = await Payment.findAll({
@@ -49,7 +43,7 @@ class RevenueController {
         ],
         where: {
           paymentStatus: 'paid',
-          ...dateFilter
+          ...paymentDateFilter
         },
         group: [require('sequelize').fn('DATE_TRUNC', 'month', require('sequelize').col('Payment.createdAt'))],
         order: [[require('sequelize').fn('DATE_TRUNC', 'month', require('sequelize').col('Payment.createdAt')), 'ASC']]
@@ -59,7 +53,8 @@ class RevenueController {
       const revenueByRoomType = await Booking.findAll({
         attributes: [
           [require('sequelize').fn('SUM', require('sequelize').col('Booking.totalPrice')), 'revenue'],
-          [require('sequelize').fn('COUNT', require('sequelize').col('Booking.id')), 'bookings']
+          [require('sequelize').fn('COUNT', require('sequelize').col('Booking.id')), 'bookings'],
+          [require('sequelize').col('room.roomType.name'), 'roomTypeName']
         ],
         include: [
           {
@@ -70,7 +65,7 @@ class RevenueController {
               {
                 model: RoomType,
                 as: 'roomType',
-                attributes: ['name']
+                attributes: []
               }
             ],
             required: true
@@ -80,7 +75,8 @@ class RevenueController {
             as: 'payment',
             attributes: [],
             where: {
-              paymentStatus: 'paid'
+              paymentStatus: 'paid',
+              ...paymentDateFilter
             },
             required: true
           }
@@ -89,7 +85,27 @@ class RevenueController {
         order: [[require('sequelize').literal('revenue'), 'DESC']]
       });
 
-      // Recent transactions (from bookings with payments)
+      // Get all room types to include those with no revenue
+      const allRoomTypes = await RoomType.findAll({
+        attributes: ['id', 'name']
+      });
+
+      // Merge with all room types, filling missing ones with 0 revenue
+      const allRoomTypeNames = allRoomTypes.map(rt => rt.name);
+      const revenueByRoomTypeMap = new Map(
+        revenueByRoomType.map(item => [item.dataValues.roomTypeName, {
+          revenue: parseFloat(item.dataValues.revenue) || 0,
+          bookings: parseInt(item.dataValues.bookings) || 0
+        }])
+      );
+
+      const completeRevenueByRoomType = allRoomTypes.map(rt => ({
+        type: rt.name,
+        revenue: revenueByRoomTypeMap.get(rt.name)?.revenue || 0,
+        bookings: revenueByRoomTypeMap.get(rt.name)?.bookings || 0
+      })).sort((a, b) => b.revenue - a.revenue);
+
+      // Recent transactions (from bookings with payments) - always show latest 10 without date filter
       const recentTransactions = await Booking.findAll({
         include: [
           {
@@ -116,7 +132,7 @@ class RevenueController {
             ]
           }
         ],
-        order: [['createdAt', 'DESC']],
+        order: [[{ model: Payment, as: 'payment' }, 'createdAt', 'DESC']],
         limit: 10
       });
 
@@ -126,18 +142,16 @@ class RevenueController {
         revenue: parseFloat(item.dataValues.revenue) || 0
       }));
 
-      const formattedRevenueByRoomType = revenueByRoomType.map(item => ({
-        type: item.dataValues.room?.roomType?.name || 'Unknown',
-        revenue: parseFloat(item.dataValues.revenue) || 0,
-        bookings: parseInt(item.dataValues.bookings) || 0
-      }));
+      console.log('Raw revenueByRoomType:', JSON.stringify(revenueByRoomType, null, 2));
+
+      const formattedRevenueByRoomType = completeRevenueByRoomType;
 
       const formattedTransactions = recentTransactions.map(booking => ({
         id: booking.id,
         bookingId: booking.id,
         amount: booking.payment?.amount || booking.totalPrice,
         status: booking.payment?.paymentStatus || 'pending',
-        date: booking.createdAt,
+        date: booking.payment?.createdAt || booking.createdAt,
         guest: booking.user?.fullName || 'Unknown',
         roomType: booking.room?.roomType?.name || booking.room?.roomNumber || 'Unknown'
       }));
@@ -148,10 +162,6 @@ class RevenueController {
         data: {
           totalRevenue: parseFloat(totalRevenueResult) || 0,
           totalBookings,
-          occupancyRate,
-          totalRooms,
-          occupiedRooms,
-          monthlyRevenue: formattedRevenueByMonth.reduce((sum, item) => sum + item.revenue, 0),
           revenueByMonth: formattedRevenueByMonth,
           revenueByRoomType: formattedRevenueByRoomType,
           recentTransactions: formattedTransactions

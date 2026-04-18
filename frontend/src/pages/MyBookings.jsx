@@ -223,7 +223,7 @@ const MyBookings = () => {
                         {booking.room?.roomType?.name?.charAt(0) || 'R'}
                       </div>
                       <div className="text-white/90 text-xs">
-                        {booking.room?.roomType?.maxCapacity || 2} Guests
+                        {booking.room?.roomType?.maxCapacity ? `${booking.room.roomType.maxCapacity} Guests` : 'N/A'}
                       </div>
                     </div>
                   </div>
@@ -237,9 +237,12 @@ const MyBookings = () => {
                 {/* Card Content */}
                 <div className="flex-1 p-6 flex flex-col">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {booking.room?.roomType?.name || 'Room'}
-                    </h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {booking.room?.roomType?.name || 'Room'}
+                      </h3>
+                      <span className="text-sm font-medium text-gray-500">#{booking.id}</span>
+                    </div>
                     
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center space-x-2 text-gray-600">
@@ -251,7 +254,7 @@ const MyBookings = () => {
                       
                       <div className="flex items-center space-x-2 text-gray-600">
                         <Users className="w-4 h-4" />
-                        <span>Max {booking.room?.roomType?.maxCapacity || 2} guests</span>
+                        <span>Max {booking.room?.roomType?.maxCapacity ? `${booking.room.roomType.maxCapacity} guests` : 'N/A'}</span>
                       </div>
                       
                       {booking.specialRequests && (
@@ -277,12 +280,13 @@ const MyBookings = () => {
                     <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
                       {booking.status === 'pending' && (
                         <Button 
-                          variant="outline" 
                           size="sm"
-                          className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-50"
-                          onClick={() => window.location.href = `/booking/${booking.room?.roomTypeId}`}
+                          className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
+                          onClick={() => navigate(`/booking/${booking.room?.roomTypeId}`, { 
+                            state: { bookingId: booking.id } 
+                          })}
                         >
-                          Modify
+                          Continue Payment
                         </Button>
                       )}
                       {booking.status === 'confirmed' && (
