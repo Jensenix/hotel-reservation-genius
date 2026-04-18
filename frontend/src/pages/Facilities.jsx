@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
-import Card from '../components/ui/Card';
 import Loading from '../components/ui/Loading';
 import Button from '../components/common/Button';
 import { 
   Shield, 
   Star, 
   CheckCircle,
-  Sparkles
+  Sparkles,
+  Wifi,
+  Utensils,
+  Dumbbell,
+  Car,
+  Coffee,
+  Waves,
+  Home as HomeIcon,
+  MapPin,
+  Users,
+  Clock,
+  ChevronRight,
+  ChevronLeft,
+  Play,
+  Pause
 } from 'lucide-react';
 
 const Facilities = () => {
@@ -84,16 +97,18 @@ const Facilities = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-        <div className="container mx-auto px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
+        <div className="container mx-auto px-4 py-20">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Sparkles className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
-              <Sparkles className="w-6 h-6 text-amber-500" />
+            <div className="flex items-center justify-center space-x-3 mb-8">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Facilities</h1>
-            <Loading text="Loading facilities..." size="lg" />
+            <h1 className="text-5xl font-light text-slate-800 mb-6 tracking-tight">
+              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+            </h1>
+            <Loading text="Discovering our world-class amenities..." size="lg" />
           </div>
         </div>
       </div>
@@ -102,16 +117,18 @@ const Facilities = () => {
 
   if (facilities.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-        <div className="container mx-auto px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
+        <div className="container mx-auto px-4 py-20">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Sparkles className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
-              <Sparkles className="w-6 h-6 text-amber-500" />
+            <div className="flex items-center justify-center space-x-3 mb-8">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Facilities</h1>
-            <p className="text-gray-600 text-lg">No facilities available at the moment.</p>
+            <h1 className="text-5xl font-light text-slate-800 mb-6 tracking-tight">
+              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+            </h1>
+            <p className="text-xl text-slate-600 font-light">Our exceptional facilities are being prepared for your arrival</p>
           </div>
         </div>
       </div>
@@ -119,47 +136,49 @@ const Facilities = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
       <div className="container mx-auto px-4">
-        {/* Hero Section */}
+        {/* Hero Section - Luxury Upgrade */}
         <section className="py-20">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Sparkles className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">WORLD-CLASS AMENITIES</span>
-              <Sparkles className="w-6 h-6 text-amber-500" />
+          <div className="text-center mb-20">
+            <div className="flex items-center justify-center space-x-3 mb-8">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Premium Facilities</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Experience world-class amenities designed for your comfort and enjoyment
+            <h1 className="text-6xl font-light text-slate-800 mb-8 tracking-tight">
+              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+            </h1>
+            <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-light mb-12">
+              Experience world-class amenities meticulously designed to elevate your stay to extraordinary heights of comfort and sophistication
             </p>
-            <div className="flex items-center justify-center space-x-6 mt-8">
-              <div className="flex items-center space-x-2 text-amber-600">
+            <div className="flex items-center justify-center space-x-8">
+              <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
                 <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">24/7 Service</span>
+                <span className="font-medium tracking-wide">24/7 Service</span>
               </div>
-              <div className="flex items-center space-x-2 text-amber-600">
+              <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
                 <Star className="w-5 h-5" />
-                <span className="font-medium">Premium Quality</span>
+                <span className="font-medium tracking-wide">Premium Quality</span>
               </div>
-              <div className="flex items-center space-x-2 text-amber-600">
+              <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
                 <Shield className="w-5 h-5" />
-                <span className="font-medium">Safe & Clean</span>
+                <span className="font-medium tracking-wide">Safe & Clean</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Carousel Section */}
-        <div className="mb-16">
-          <div className="relative max-w-4xl mx-auto">
+        {/* Featured Carousel - Luxury Upgrade */}
+        <div className="mb-24">
+          <div className="relative max-w-5xl mx-auto">
             {/* Carousel Container */}
-            <div className="relative overflow-hidden rounded-2xl">
-              <div className="relative h-96">
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-slate-100">
+              <div className="relative h-[500px]">
                 {facilities.map((facility, index) => (
                   <div
                     key={facility.id}
-                    className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
                       index === currentIndex 
                         ? 'opacity-100 translate-x-0' 
                         : index < currentIndex 
@@ -167,28 +186,45 @@ const Facilities = () => {
                         : 'opacity-0 translate-x-full'
                     }`}
                   >
-                    <Card 
-                      className="h-full cursor-pointer hover:shadow-2xl transition-all duration-300"
+                    <div 
+                      className="h-full cursor-pointer hover:shadow-2xl transition-all duration-500 bg-white"
                       onClick={() => handleCardClick(facility)}
                     >
                       <div className="h-full flex flex-col">
                         {/* Facility Image Placeholder */}
-                        <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-600 rounded-t-xl flex items-center justify-center mb-4">
-                          <span className="text-white text-6xl font-bold">
-                            {facility.facilityName?.charAt(0) || 'F'}
-                          </span>
+                        <div className="h-64 bg-gradient-to-br from-amber-400 to-amber-600 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-black/10"></div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="w-24 h-24 bg-white/90 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+                                <span className="text-4xl font-bold text-amber-600">
+                                  {facility.facilityName?.charAt(0) || 'F'}
+                                </span>
+                              </div>
+                              <p className="text-white font-semibold tracking-wide text-lg">Premium Facility</p>
+                            </div>
+                          </div>
                         </div>
                         
-                        <div className="flex-1 p-6">
-                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                            {facility.facilityName || 'Unknown Facility'}
+                        <div className="flex-1 p-10">
+                          <h3 className="text-3xl font-light text-slate-800 mb-4 tracking-tight">
+                            {facility.facilityName || 'Luxury Facility'}
                           </h3>
-                          <p className="text-gray-600 line-clamp-3">
-                            {facility.iconUrl ? `Facility with icon: ${facility.iconUrl}` : 'No description available'}
+                          <p className="text-slate-600 leading-relaxed font-light text-lg mb-6">
+                            {facility.iconUrl ? `Exclusive facility featuring ${facility.iconUrl}` : 'Experience unparalleled luxury and comfort in our premium facilities designed for the most discerning guests'}
                           </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2 text-amber-600">
+                              <Star className="w-5 h-5 fill-current" />
+                              <span className="font-medium tracking-wide">5-Star Service</span>
+                            </div>
+                            <button className="text-amber-600 font-medium tracking-wide hover:text-amber-700 transition-colors">
+                              Explore More →
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -196,131 +232,156 @@ const Facilities = () => {
               {/* Navigation Buttons */}
               <button
                 onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-4 rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-slate-200"
                 aria-label="Previous facility"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
+                <ChevronLeft className="w-6 h-6" />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 p-4 rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-slate-200"
                 aria-label="Next facility"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                <ChevronRight className="w-6 h-6" />
               </button>
 
               {/* Auto-play Toggle Button */}
               <button
                 onClick={toggleAutoPlay}
-                className="absolute bottom-4 right-4 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                className="absolute bottom-6 right-6 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-slate-200"
                 aria-label={isAutoPlaying ? "Pause auto-play" : "Start auto-play"}
               >
                 {isAutoPlaying ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Pause className="w-5 h-5" />
                 ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Play className="w-5 h-5" />
                 )}
               </button>
             </div>
 
             {/* Dots Indicator */}
-            <div className="flex justify-center mt-6 space-x-2">
+            <div className="flex justify-center mt-8 space-x-3">
               {facilities.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`h-3 rounded-full transition-all duration-500 ${
                     index === currentIndex
-                      ? 'bg-blue-600 w-8'
-                      : 'bg-gray-300 hover:bg-gray-400'
+                      ? 'bg-amber-600 w-12 shadow-lg'
+                      : 'bg-slate-300 hover:bg-slate-400'
                   }`}
-                  aria-label={`Go to slide ${index + 1}`}
+                  aria-label={`Go to facility ${index + 1}`}
                 />
               ))}
             </div>
           </div>
         </div>
 
-        {/* Selected Facility Details */}
+        {/* Selected Facility Details - Luxury Modal */}
         {selectedFacility && (
-          <div className="mb-16">
-            <Card className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="mb-24">
+            <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div>
-                  <div className="h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white text-8xl font-bold">
-                      {selectedFacility.facilityName?.charAt(0) || 'F'}
-                    </span>
+                  <div className="h-80 bg-gradient-to-br from-amber-400 to-amber-600 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-32 h-32 bg-white/90 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                          <span className="text-6xl font-bold text-amber-600">
+                            {selectedFacility.facilityName?.charAt(0) || 'F'}
+                          </span>
+                        </div>
+                        <p className="text-white font-semibold tracking-wide text-xl">Premium Facility</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    {selectedFacility.facilityName || 'Unknown Facility'}
+                <div className="p-12">
+                  <h2 className="text-4xl font-light text-slate-800 mb-6 tracking-tight">
+                    {selectedFacility.facilityName || 'Luxury Facility'}
                   </h2>
-                  <div className="prose prose-lg text-gray-600">
-                    <p className="leading-relaxed">
-                      {selectedFacility.iconUrl ? `Facility icon: ${selectedFacility.iconUrl}` : 'No description available'}
+                  <div className="prose prose-lg text-slate-600 mb-8">
+                    <p className="leading-relaxed font-light text-lg">
+                      {selectedFacility.iconUrl ? `Exclusive facility featuring premium ${selectedFacility.iconUrl} services` : 'Experience unparalleled luxury and sophistication in our premium facilities, meticulously designed to provide the ultimate comfort and convenience for our most discerning guests'}
                     </p>
                   </div>
-                  <div className="mt-6">
-                    <Button 
-                      variant="outline"
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-center space-x-3 text-amber-600">
+                      <Star className="w-5 h-5 fill-current" />
+                      <span className="font-medium tracking-wide">5-Star Premium Service</span>
+                    </div>
+                    <div className="flex items-center space-x-3 text-slate-600">
+                      <Clock className="w-5 h-5" />
+                      <span className="font-medium tracking-wide">24/7 Availability</span>
+                    </div>
+                    <div className="flex items-center space-x-3 text-slate-600">
+                      <Shield className="w-5 h-5" />
+                      <span className="font-medium tracking-wide">Premium Quality Assurance</span>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <button 
+                      className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-0 tracking-wide"
                       onClick={() => setSelectedFacility(null)}
                     >
                       Close Details
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
-        {/* All Facilities Grid */}
-        <div>
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            All Facilities
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* All Facilities Grid - Luxury Upgrade */}
+        <div className="pb-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-light text-slate-800 mb-4 tracking-tight">
+              All <span className="font-semibold text-amber-600">Premium Facilities</span>
+            </h2>
+            <p className="text-xl text-slate-600 font-light max-w-3xl mx-auto">
+              Explore our complete collection of world-class amenities designed for your ultimate comfort
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {facilities.map((facility) => (
-              <Card 
+              <div 
                 key={facility.id}
-                className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105"
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer hover:scale-105 border border-slate-100 overflow-hidden"
                 onClick={() => handleCardClick(facility)}
               >
-                <div className="h-32 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
-                  <span className="text-white text-4xl font-bold">
-                    {facility.facilityName?.charAt(0) || 'F'}
-                  </span>
+                <div className="h-48 bg-gradient-to-br from-amber-400 to-amber-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-white/90 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <span className="text-2xl font-bold text-amber-600">
+                          {facility.facilityName?.charAt(0) || 'F'}
+                        </span>
+                      </div>
+                      <p className="text-white font-semibold tracking-wide text-sm">Premium</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {facility.facilityName || 'Unknown Facility'}
+                  <h3 className="text-xl font-light text-slate-800 mb-3 tracking-tight">
+                    {facility.facilityName || 'Luxury Facility'}
                   </h3>
-                  <p className="text-gray-600 line-clamp-2 mb-4">
-                    {facility.iconUrl ? `Icon: ${facility.iconUrl}` : 'No description available'}
+                  <p className="text-slate-600 leading-relaxed font-light mb-6 line-clamp-2">
+                    {facility.iconUrl ? `Premium ${facility.iconUrl} facility` : 'Experience luxury and comfort in our premium facilities'}
                   </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
+                  <button 
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300 border-0 tracking-wide text-sm"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleCardClick(facility);
                     }}
                   >
-                    View Details
-                  </Button>
+                    Discover More
+                  </button>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
