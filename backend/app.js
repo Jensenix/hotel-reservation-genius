@@ -15,6 +15,7 @@ const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
 const bookingExtraServiceRoutes = require('./routes/bookingExtraServiceRoutes');
 const revenueRoutes = require('./routes/revenueRoutes');
 const roomAvailabilityRoutes = require('./routes/roomAvailabilityRoutes');
+const guestRoutes = require('./routes/guestRoutes');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/payment-methods', paymentMethodRoutes);
 app.use('/api/booking-extra-services', bookingExtraServiceRoutes);
 app.use('/api/revenue', revenueRoutes);
 app.use('/api/room-availability', roomAvailabilityRoutes);
+app.use('/api/guests', guestRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
