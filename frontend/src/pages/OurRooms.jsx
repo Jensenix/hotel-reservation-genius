@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import { 
@@ -34,7 +34,7 @@ const OurRooms = () => {
   const fetchRooms = async () => {
     try {
       // Fetch room types with their facilities from backend
-      const response = await apiService.getRoomTypesWithFacilities();
+      const response = await apiService.roomTypes.getAllWithFacilities();
       const roomTypesWithFacilities = response.data.data;
       
       console.log('Room Types with Facilities:', roomTypesWithFacilities);
@@ -43,7 +43,7 @@ const OurRooms = () => {
       console.error('Error fetching room types with facilities:', error);
       // Fallback to regular room types
       try {
-        const fallbackResponse = await apiService.getRoomTypes();
+        const fallbackResponse = await apiService.roomTypes.getAll();
         setRooms(fallbackResponse.data.data);
       } catch (fallbackError) {
         console.error('Fallback also failed:', fallbackError);

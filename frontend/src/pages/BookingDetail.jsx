@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 import { 
   Calendar, 
   Users, 
@@ -23,7 +23,7 @@ const BookingDetail = () => {
   useEffect(() => {
     const fetchBookingDetail = async () => {
       try {
-        const response = await apiService.getBookingById(id);
+        const response = await apiService.bookings.getById(id);
         setBooking(response.data.data);
       } catch (error) {
         console.error('Error fetching booking detail:', error);

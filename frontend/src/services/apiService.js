@@ -51,6 +51,7 @@ export const roomTypeAPI = {
   create: (data) => api.post('/room-types', data),
   update: (id, data) => api.put(`/room-types/${id}`, data),
   delete: (id) => api.delete(`/room-types/${id}`),
+  getAllWithFacilities: () => api.get('/room-types/with-facilities'),
 };
 
 // Rooms APIs
@@ -70,8 +71,26 @@ export const bookingAPI = {
   create: (data) => api.post('/bookings', data),
   update: (id, data) => api.put(`/bookings/${id}`, data),
   delete: (id) => api.delete(`/bookings/${id}`),
-  getUserBookings: () => api.get('/bookings/user'),
-  getAdminBookings: (params) => api.get('/bookings/admin', { params }),
+  getUserBookings: () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user?.id;
+    return api.get(`/bookings/user/${userId}`);
+  },
+  getAdminBookings: (params) => api.get('/bookings/admin/all', { params }),
+  checkAvailability: (params) => api.get('/bookings/check-availability', { params }),
+  confirmBooking: (bookingId) => api.put(`/bookings/admin/${bookingId}/confirm`),
+  checkInGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-in`),
+  checkOutGuest: (bookingId) => api.put(`/bookings/admin/${bookingId}/check-out`),
+  cancelBooking: (bookingId, data) => api.put(`/bookings/admin/${bookingId}/cancel`, data),
+};
+
+// Payment Methods APIs
+export const paymentMethodAPI = {
+  getAll: () => api.get('/payment-methods'),
+  getById: (id) => api.get(`/payment-methods/${id}`),
+  create: (data) => api.post('/payment-methods', data),
+  update: (id, data) => api.put(`/payment-methods/${id}`, data),
+  delete: (id) => api.delete(`/payment-methods/${id}`),
 };
 
 // Payments APIs
@@ -80,6 +99,22 @@ export const paymentAPI = {
   getById: (id) => api.get(`/payments/${id}`),
   create: (data) => api.post('/payments', data),
   update: (id, data) => api.put(`/payments/${id}`, data),
+};
+
+// Extra Services APIs
+export const extraServiceAPI = {
+  getAll: () => api.get('/extra-services'),
+  getById: (id) => api.get(`/extra-services/${id}`),
+  create: (data) => api.post('/extra-services', data),
+  update: (id, data) => api.put(`/extra-services/${id}`, data),
+  delete: (id) => api.delete(`/extra-services/${id}`),
+};
+
+// Booking Extra Services APIs
+export const bookingExtraServiceAPI = {
+  create: (data) => api.post('/booking-extra-services', data),
+  getByBookingId: (bookingId) => api.get(`/booking-extra-services/booking/${bookingId}`),
+  delete: (id) => api.delete(`/booking-extra-services/${id}`),
 };
 
 // Facilities APIs
@@ -128,7 +163,10 @@ const apiService = {
   roomTypes: roomTypeAPI,
   rooms: roomAPI,
   bookings: bookingAPI,
+  paymentMethods: paymentMethodAPI,
   payments: paymentAPI,
+  extraServices: extraServiceAPI,
+  bookingExtraServices: bookingExtraServiceAPI,
   facilities: facilityAPI,
   reviews: reviewAPI,
   revenue: revenueAPI,

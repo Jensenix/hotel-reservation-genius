@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import Loading from '../../components/ui/Loading';
 import AdminLayout from '../../components/layout/AdminLayout';
-import { apiService } from '../../services/api';
+import apiService from '../../services/apiService';
 
 const RevenueDashboard = () => {
   const [revenueData, setRevenueData] = useState(null);
@@ -30,7 +30,7 @@ const RevenueDashboard = () => {
       }
       
       console.log('Fetching revenue data with params:', params);
-      const response = await apiService.getRevenueStats(params);
+      const response = await apiService.revenue.getStats(params);
       
       if (response.data.success) {
         console.log('Revenue data received:', response.data.data);

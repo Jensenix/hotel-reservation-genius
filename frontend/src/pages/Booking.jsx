@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiService } from '../services/api';
-import api from '../services/api';
+import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
@@ -56,7 +55,7 @@ const Booking = () => {
       // Fetch booking details to populate form
       const fetchBookingDetails = async () => {
         try {
-          const response = await apiService.getBookingById(state.bookingId);
+          const response = await apiService.bookings.getById(state.bookingId);
           const booking = response.data.data;
           
           // Set booking data from existing booking
@@ -129,7 +128,7 @@ const Booking = () => {
   const fetchRoomDetails = async () => {
     try {
       // For now, we'll use roomType as room since we don't have actual rooms
-      const response = await apiService.getRoomTypeById(roomId);
+      const response = await apiService.roomTypes.getById(roomId);
       const roomType = response.data.data;
       
       // Create a room-like object from roomType
@@ -147,7 +146,7 @@ const Booking = () => {
 
   const fetchPaymentMethods = async () => {
     try {
-      const response = await apiService.getPaymentMethods();
+      const response = await apiService.paymentMethods.getAll();
       setPaymentMethods(response.data.data);
     } catch (error) {
       console.error('Error fetching payment methods:', error);
@@ -156,7 +155,7 @@ const Booking = () => {
 
   const fetchExtraServices = async () => {
     try {
-      const response = await apiService.getExtraServices();
+      const response = await apiService.extraServices.getAll();
       setExtraServices(response.data.data);
     } catch (error) {
       console.error('Error fetching extra services:', error);
@@ -236,7 +235,7 @@ const Booking = () => {
         };
 
         console.log('Creating booking with pending status:', bookingPayload);
-        const bookingResponse = await apiService.createBooking(bookingPayload);
+        const bookingResponse = await apiService.bookings.create(bookingPayload);
         const booking = bookingResponse.data.data;
         
         setBookingId(booking.id);
@@ -279,7 +278,7 @@ const Booking = () => {
 
       if (bookingExtraServicesPayloads.length > 0) {
         for (const payload of bookingExtraServicesPayloads) {
-          await api.post('/booking-extra-services', payload);
+          await apiService.bookingExtraServices.create(payload);
         }
       }
 
@@ -292,7 +291,7 @@ const Booking = () => {
         transactionTime: new Date().toISOString()
       };
 
-      const paymentResponse = await apiService.createPayment(paymentPayload);
+      const paymentResponse = await apiService.payments.create(paymentPayload);
       console.log('Payment response:', paymentResponse.data);
 
       if (paymentResponse.data.success) {

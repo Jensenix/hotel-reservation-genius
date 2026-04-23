@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const Login = () => {
 
     try {
       // Call login API
-      const response = await apiService.login({
+      const response = await apiService.auth.login({
         email: formData.email,
         password: formData.password
       });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import Loading from '../components/ui/Loading';
@@ -27,7 +27,7 @@ const MyBookings = () => {
   useEffect(() => {
     const fetchUserBookings = async () => {
       try {
-        const response = await apiService.getBookings();
+        const response = await apiService.bookings.getUserBookings();
         const allBookings = response.data.data;
         
         // Filter bookings for current user only

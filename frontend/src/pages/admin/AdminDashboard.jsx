@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '../../services/api';
+import apiService from '../../services/apiService';
 import Card from '../../components/ui/Card';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
@@ -34,7 +34,7 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       console.log('Fetching admin bookings with filters:', filters);
-      const response = await apiService.getAdminBookings(filters);
+      const response = await apiService.bookings.getAdminBookings(filters);
       console.log('Admin bookings response:', response.data);
       
       if (response.data.success) {
@@ -77,16 +77,16 @@ const AdminDashboard = () => {
 
       switch (actionType) {
         case 'confirm':
-          response = await apiService.confirmBooking(bookingId);
+          response = await apiService.bookings.confirmBooking(bookingId);
           break;
         case 'check-in':
-          response = await apiService.checkInGuest(bookingId);
+          response = await apiService.bookings.checkInGuest(bookingId);
           break;
         case 'check-out':
-          response = await apiService.checkOutGuest(bookingId);
+          response = await apiService.bookings.checkOutGuest(bookingId);
           break;
         case 'cancel':
-          response = await apiService.cancelBooking(bookingId, { reason: cancelReason });
+          response = await apiService.bookings.cancelBooking(bookingId, { reason: cancelReason });
           break;
         default:
           return;
@@ -110,7 +110,7 @@ const AdminDashboard = () => {
       setShowDetailModal(true);
       
       // Fetch booking details (includes extra services with through table data)
-      const bookingResponse = await apiService.getBookingById(booking.id);
+      const bookingResponse = await apiService.bookings.getById(booking.id);
       const bookingData = bookingResponse.data.data;
       
       setBookingDetails(bookingData);

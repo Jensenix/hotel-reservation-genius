@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import { 
@@ -36,7 +36,7 @@ const Home = () => {
 
   const fetchFeaturedRooms = async () => {
     try {
-      const response = await apiService.getRoomTypes();
+      const response = await apiService.roomTypes.getAll();
       setFeaturedRooms(response.data.data.slice(0, 3)); // Show first 3 rooms
     } catch (error) {
       console.error('Error fetching featured rooms:', error);

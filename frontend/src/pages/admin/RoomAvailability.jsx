@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import Loading from '../../components/ui/Loading';
 import AdminLayout from '../../components/layout/AdminLayout';
-import { apiService } from '../../services/api';
+import apiService from '../../services/apiService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles/datepicker.css';
@@ -34,7 +34,7 @@ const RoomAvailability = () => {
       console.log('Selected Date ISO:', selectedDate.toISOString());
       console.log('Converted to local string:', dateString);
       console.log('Fetching availability for date:', dateString);
-      const response = await apiService.getRoomAvailabilityStats({
+      const response = await apiService.roomAvailability.getStats({
         date: dateString
       });
 

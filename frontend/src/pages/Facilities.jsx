@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
+import apiService from '../services/apiService';
 import Loading from '../components/ui/Loading';
 import Button from '../components/common/Button';
 import { 
@@ -49,7 +49,7 @@ const Facilities = () => {
 
   const fetchFacilities = async () => {
     try {
-      const response = await apiService.getFacilities();
+      const response = await apiService.facilities.getAll();
       console.log('Facilities response:', response.data);
       console.log('Facilities array:', response.data.data);
       console.log('Number of facilities:', response.data.data?.length);

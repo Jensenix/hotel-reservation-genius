@@ -25,8 +25,10 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       
+      {/* Public Routes */}
+      <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+      
       {/* Protected Routes */}
-      <Route path="/" element={isAuthenticated ? <MainLayout><Home /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/our-rooms" element={isAuthenticated ? <MainLayout><OurRooms /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/facilities" element={isAuthenticated ? <MainLayout><Facilities /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/my-bookings" element={isAuthenticated ? <MainLayout><MyBookings /></MainLayout> : <Navigate to="/login" />} />

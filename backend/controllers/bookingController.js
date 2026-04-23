@@ -533,6 +533,62 @@ class BookingController {
     }
   }
 
+  // Get bookings for current user
+  async getUserBookings(req, res) {
+    try {
+      // Get user ID from route parameters
+      const { userId } = req.params;
+      
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'User ID is required'
+        });
+      }
+
+      const bookings = await Booking.findAll({
+        where: { userId },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'fullName', 'email', 'phoneNumber']
+          },
+          {
+            model: Room,
+            as: 'room',
+            include: [
+              {
+                model: RoomType,
+                as: 'roomType',
+                attributes: ['id', 'name', 'basePrice', 'maxCapacity']
+              }
+            ]
+          },
+          {
+            model: Payment,
+            as: 'payment',
+            attributes: ['id', 'paymentMethodId', 'amount', 'paymentStatus', 'transactionTime']
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'User bookings retrieved successfully',
+        data: bookings
+      });
+    } catch (error) {
+      console.error('Error getting user bookings:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting user bookings',
+        error: error.message
+      });
+    }
+  }
+
   // Admin: Get all bookings with filters
   async getAllBookingsAdmin(req, res) {
     try {
