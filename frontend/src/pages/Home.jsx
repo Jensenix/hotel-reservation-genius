@@ -48,7 +48,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" 
+      <section className="relative h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat -mt-32" 
              style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url(https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)'}}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70"></div>
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
