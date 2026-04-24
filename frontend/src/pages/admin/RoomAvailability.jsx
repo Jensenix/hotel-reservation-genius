@@ -108,27 +108,35 @@ const RoomAvailability = () => {
                 </h1>
                 <p className="text-slate-500 text-sm tracking-wide uppercase">Real-time Room Status & Management</p>
               </div>
-              <div className="hidden md:flex items-center gap-2">
-                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-                <span className="text-amber-600 text-xs font-semibold tracking-widest">GENIUS SOCIETY HOTEL</span>
-                <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
-              <div className="flex items-end">
-                <Button 
-                  onClick={() => {
-                    const today = new Date();
-                    console.log('Today button clicked:', today);
-                    console.log('Today ISO:', today.toISOString());
-                    console.log('Today local date:', today.getDate());
-                    setSelectedDate(today);
-                  }}
-                  variant="secondary"
-                >
-                  Today
-                </Button>
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="hidden md:flex items-center gap-2">
+                  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+                  <span className="text-amber-600 text-xs font-semibold tracking-widest">GENIUS SOCIETY HOTEL</span>
+                  <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => setSelectedDate(date)}
+                      dateFormat="MMMM d, yyyy"
+                      placeholderText="Select date"
+                      className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm bg-white shadow-sm"
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => {
+                      const today = new Date();
+                      setSelectedDate(today);
+                    }}
+                    variant="secondary"
+                  >
+                    Today
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
         {/* Overall Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

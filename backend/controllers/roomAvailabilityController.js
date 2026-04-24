@@ -34,6 +34,8 @@ class RoomAvailabilityController {
         const totalPhysicalRooms = roomType.rooms.length;
         
         // Get all bookings that overlap with the target date
+        // Room is occupied if: checkInDate <= targetDate AND checkOutDate > targetDate
+        // If checkOutDate == targetDate, room is available (checkout at 12 PM, check-in at 2 PM)
         const bookings = await Booking.findAll({
           include: [
             {
@@ -47,10 +49,8 @@ class RoomAvailabilityController {
           ],
           where: {
             status: { [Op.ne]: 'cancelled' },
-            [Op.and]: [
-              { checkInDate: { [Op.lte]: targetDateEnd } },
-              { checkOutDate: { [Op.gt]: targetDateStart } }
-            ]
+            checkInDate: { [Op.lte]: targetDate },
+            checkOutDate: { [Op.gt]: targetDate }
           }
         });
 

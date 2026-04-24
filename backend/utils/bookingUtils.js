@@ -19,16 +19,14 @@ class BookingUtils {
     }
 
     // Check for overlapping bookings (excluding cancelled ones)
+    // Room is occupied if: checkInDate <= newCheckOut AND checkOutDate > newCheckIn
+    // This allows same-day check-in after checkout (checkout at 12 PM, check-in at 2 PM)
+    // If checkOutDate == newCheckIn, room is available
     const where = {
       roomId,
       status: { [require('sequelize').Op.ne]: 'cancelled' },
-      [require('sequelize').Op.or]: [
-        {
-          // New booking starts during existing booking
-          checkInDate: { [require('sequelize').Op.lt]: checkOutDate },
-          checkOutDate: { [require('sequelize').Op.gt]: checkInDate }
-        }
-      ]
+      checkInDate: { [require('sequelize').Op.lte]: checkOutDate },
+      checkOutDate: { [require('sequelize').Op.gt]: checkInDate }
     };
 
     // Exclude current booking if updating
