@@ -1,363 +1,220 @@
-# Genius Society Hotel Reservation System
+<div align="center">
 
-A modern hotel reservation system built with Node.js, Express, React, and PostgreSQL. Features a 5-star luxury hotel design with comprehensive booking management, room availability tracking, and revenue analytics.
+  EN
+</div>
 
-## Features
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-18-43853D?logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Sequelize-52B0E7?logo=sequelize&logoColor=white" alt="Sequelize">
+</p>
 
-- **User Management**: User registration, authentication, and profile management
-- **Room Booking**: Browse room types, check availability, and make reservations
-- **Admin Dashboard**: Complete admin panel for booking management and analytics
-- **Room Availability**: Real-time room availability tracking and management
-- **Revenue Analytics**: Comprehensive revenue statistics and reporting
-- **Facilities Management**: Hotel facilities display and management
-- **Modern UI**: 5-star luxury hotel design with amber theme
-- **Responsive Design**: Mobile-friendly interface
+<p align="center" style="margin-top: -12px;">
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/License-MIT-22C55E?logo=opensourceinitiative&logoColor=white" alt="MIT">
+</p>
 
-## Tech Stack
+<div align="center">
 
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **PostgreSQL** - Database
-- **Sequelize** - ORM for database operations
-- **JWT** - Authentication
-- **bcrypt** - Password hashing
+# ✨ Genius Society — Hotel Reservation System
+### Modern, full-stack hotel booking platform with admin analytics and real-time availability
+</div>
 
-### Frontend
-- **React** - UI framework
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Styling
-- **Lucide React** - Icons
-- **Axios** - HTTP client
+## 🚀 Why Genius Society
 
-## Prerequisites
+<div style="max-width: 720px;">
 
-Before you begin, ensure you have the following installed:
+Genius Society is a modern hotel reservation system built for 5‑star properties. It pairs a polished, responsive React frontend with a robust Node/Express backend and PostgreSQL storage to deliver secure user flows, reliable booking orchestration, and actionable revenue analytics. The architecture handles real-world needs like concurrency, data integrity, and production deployment readiness.</div>
 
-- **Node.js** (v16 or higher)
-- **npm** (v8 or higher) or **yarn** (v1.22 or higher)
-- **PostgreSQL** (v12 or higher)
-- **Git** for version control
+<br>
 
-## Installation & Setup
+- ⚡ End-to-end booking flows with real-time availability checks  
+- 🔐 JWT auth, password hashing, and standard security hygiene (COMING SOON)
+- 📊 Built-in admin analytics and revenue reporting  
+- 🎨 Luxury-themed responsive UI (Tailwind)  
+- 🛠️ Open-source, modular, and easy to extend
 
-### 1. Clone the Repository
 
+
+## 🎯 Features
+
+### A) Core Reservation Features
+
+1. 👥 User Management — registration, authentication, profile management  
+2. 🛏️ Room Browsing — view room types, descriptions, and facilities  
+3. 📅 Booking Flow — check availability, create, update, and cancel reservations  
+4. 🧾 Admin Dashboard — manage bookings, rooms, and view analytics  
+5. 🔁 Room Availability — live availability tracking and management endpoints  
+6. 💸 Revenue Analytics — revenue statistics and reporting endpoints  
+7. 🧰 Facilities Management — list and manage hotel facilities  
+8. 🎨 UI Theme — luxury amber-themed design with responsive layouts  
+9. 📱 Responsive — mobile-friendly pages and layouts  
+10. 🔒 Secure Defaults — input validation, sanitized filenames, and size checks
+
+### B) Platform & System Capabilities
+
+11. 🗄️ Relational Storage — PostgreSQL with Sequelize ORM  
+12. 🔐 Authentication — JWT-based session handling and bcrypt hashing  
+13. ⚙️ Migrations & Seeders — Sequelize-powered schema and sample data management  
+14. 🧪 Test Scripts — basic test harness for backend and frontend  
+15. 🔁 Hot Reloading — development-friendly live reload for both frontend and backend  
+16. 🧩 Modular Structure — clear separation of controllers, services, and routes  
+17. 📦 Production Build — frontend build artifacts and production server start scripts
+
+## 🧠 Architecture Highlights
+
+- Split frontend (React + Tailwind) and backend (Node + Express) for clear responsibilities  
+- PostgreSQL manages transactional booking data; Sequelize provides a migration/seed workflow  
+- Stateless API design with JWT authentication for scalable deployments  
+- Admin analytics derived from aggregated revenue and booking records
+
+## 💡 Design Considerations
+
+- Bookings require strict availability checks to avoid double-booking  
+- Migrations and seeders provide a reproducible dev database state  
+- Environment variables are used for secrets and database configuration  
+- Frontend and backend run independently during development for fast iteration
+
+## 🔧 Processing Models
+
+### 🔄 Server-Side Booking Flow (Transactional)
+1. User selects room type and dates → request validated  
+2. Backend checks availability against bookings + room inventory  
+3. If available, booking record created within a transaction  
+4. Confirmation returned to user; admin dashboards updated  
+5. Cancellations release inventory and update analytics
+
+### ⚡ Client-Side Interactions (Instant)
+1. User navigates UI and previews room details  
+2. Client performs lightweight validation and date selection UI updates  
+3. Final booking submission calls the server API for transactional processing
+
+## 🏗️ Architecture & Stack
+
+<div style="max-width: 760px; line-height: 1.65;">
+
+- **Frontend (React + Tailwind)** — UI, client routing, API integration, and responsive pages.  
+  <br />
+  <img src="https://skillicons.dev/icons?i=react,tailwind,vite" />
+
+- **Backend (Node.js + Express)** — REST API, authentication, business logic, and migrations.  
+  <br />
+  <img src="https://skillicons.dev/icons?i=nodejs,express" />
+
+- **Database (PostgreSQL + Sequelize)** — persistent storage, migrations, and seeders.  
+  <br />
+  <img src="https://skillicons.dev/icons?i=postgres" />
+
+</div>
+
+## ⚙️ Environment Variables
+
+### Backend (root/backend .env)
+
+```env
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=postgres://postgres:password@localhost:5432/hotel_reservation
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=hotel_reservation
+DB_USER=postgres
+DB_PASS=your_password
+JWT_SECRET=your_jwt_secret
+```
+
+### Frontend (root/frontend .env)
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:3000/api
+```
+For local testing keep API base URL pointing at the local backend. For production, switch to your hosted API endpoint (example: https://your-domain/api).
+
+## 🚀 Local Development
+
+### 1. CLONE THE REPOSITORY
 ```bash
-git clone <repository-url>
+git clone https://github.com/<your-org>/hotel-reservation-genius.git
 cd hotel-reservation-genius
 ```
 
-### 2. Database Setup
-
-#### Create PostgreSQL Database
-
-```sql
--- Connect to PostgreSQL
-psql -U postgres
-
--- Create database
-CREATE DATABASE hotel_reservation;
-
--- Create user (optional)
-CREATE USER hotel_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE hotel_reservation TO hotel_user;
-```
-
-#### Update Database Configuration
-
-Navigate to the backend directory and update the database configuration:
-
+### 2. RUN BACKEND
 ```bash
 cd backend
-```
-
-Edit the database configuration in your environment or config file:
-
-```javascript
-// In your database config or .env file
-const config = {
-  development: {
-    username: 'postgres', // or your database user
-    password: 'your_password', // your database password
-    database: 'hotel_reservation',
-    host: 'localhost',
-    dialect: 'postgres',
-    logging: console.log
-  }
-};
-```
-
-### 3. Backend Setup
-
-#### Install Dependencies
-
-```bash
-cd backend
-npm install
-```
-
-#### Run Database Migrations
-
-```bash
-# Run all migrations
-npm run migrate
-
-# Or run manually
-npx sequelize-cli db:migrate
-```
-
-#### Seed Database (Optional)
-
-```bash
-# Seed with sample data
-npm run seed
-
-# Or run manually
-npx sequelize-cli db:seed:all
-```
-
-#### Start Backend Server
-
-```bash
-# Development mode
+npm install 
 npm run dev
-
-# Production mode
-npm start
 ```
 
-The backend server will run on `http://localhost:3000`
-
-### 4. Frontend Setup
-
-#### Install Dependencies
-
-```bash
-cd ../frontend
-npm install
-```
-
-#### Start Frontend Development Server
-
-```bash
-npm start
-```
-
-The frontend application will run on `http://localhost:3000` or `http://localhost:3001` (if port 3000 is occupied)
-
-## Project Structure
-
-```
-hotel-reservation-genius/
-|
-+-- backend/
-|   +-- config/           # Database and app configuration
-|   +-- controllers/       # Route controllers
-|   +-- models/           # Sequelize models
-|   +-- routes/           # API routes
-|   +-- migrations/       # Database migrations
-|   +-- seeders/          # Database seeders
-|   +-- middleware/       # Custom middleware
-|   +-- services/         # Business logic services
-|   +-- app.js            # Express app setup
-|   +-- package.json
-|   +-- server.js         # Server entry point
-|
-+-- frontend/
-|   +-- public/           # Static files
-|   +-- src/
-|   |   +-- components/    # React components
-|   |   +-- context/       # React context
-|   |   +-- layouts/       # Layout components
-|   |   +-- pages/         # Page components
-|   |   +-- services/      # API services
-|   |   +-- utils/         # Utility functions
-|   |   +-- App.js         # Main App component
-|   |   +-- index.js       # React entry point
-|   +-- package.json
-|
-+-- README.md
-```
-
-## Available Scripts
-
-### Backend Scripts
-
-```bash
-# Start server in development mode
-npm run dev
-
-# Start server in production mode
-npm start
-
-# Run database migrations
-npm run migrate
-
-# Undo last migration
-npm run migrate:undo
-
-# Seed database
-npm run seed
-
-# Run tests
-npm test
-```
-
-### Frontend Scripts
-
-```bash
-# Start development server
-npm start
-
-# Build for production
-npm run build
-
-# Run tests
-npm test
-
-# Eject (one-way operation)
-npm run eject
-```
-
-## Default Users
-
-After seeding the database, you can use these default accounts:
-
-### Admin User
-- **Email**: admin@geniussocietyhotel.com
-- **Password**: admin123
-
-### Regular User
-- **Email**: john.doe@example.com
-- **Password**: password123
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-
-### Room Types
-- `GET /api/room-types` - Get all room types
-- `GET /api/room-types/:id` - Get room type by ID
-- `GET /api/room-types/with-facilities` - Get room types with facilities
-
-### Bookings
-- `GET /api/bookings` - Get all bookings (admin)
-- `GET /api/bookings/user/:userId` - Get user bookings
-- `POST /api/bookings` - Create new booking
-- `PUT /api/bookings/:id` - Update booking
-- `DELETE /api/bookings/:id` - Cancel booking
-
-### Facilities
-- `GET /api/facilities` - Get all facilities
-
-### Revenue
-- `GET /api/revenue/stats` - Get revenue statistics
-
-### Availability
-- `GET /api/availability/stats` - Get room availability stats
-
-## Troubleshooting
-
-### Common Issues
-
-#### Database Connection Error
-```bash
-# Check if PostgreSQL is running
-pg_isready
-
-# Check database exists
-psql -l
-
-# Verify connection string
-psql -h localhost -U postgres -d hotel_reservation
-```
-
-#### Port Already in Use
-```bash
-# Find process using port
-netstat -ano | findstr :3000
-
-# Kill process on Windows
-taskkill /PID <PID> /F
-
-# Kill process on macOS/Linux
-kill -9 <PID>
-```
-
-#### Migration Issues
-```bash
-# Reset database (WARNING: This will delete all data)
-npx sequelize-cli db:migrate:undo:all
-npx sequelize-cli db:migrate
-
-# Check migration status
-npx sequelize-cli db:migrate:status
-```
-
-#### Frontend Build Issues
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear npm cache
-npm cache clean --force
-```
-
-### Development Tips
-
-1. **Hot Reloading**: Both frontend and backend support hot reloading during development
-2. **Database Logging**: Enable database query logging in development mode
-3. **Environment Variables**: Use `.env` files for environment-specific configuration
-4. **API Testing**: Use tools like Postman or Insomnia to test API endpoints
-
-## Production Deployment
-
-### Environment Setup
-
-1. Set environment variables:
-```bash
-NODE_ENV=production
-DB_HOST=your-production-db-host
-DB_NAME=hotel_reservation
-DB_USER=your-production-user
-DB_PASS=your-production-password
-JWT_SECRET=your-jwt-secret
-PORT=3000
-```
-
-2. Build frontend:
+### 3. RUN FRONTEND
 ```bash
 cd frontend
-npm run build
-```
-
-3. Start backend server:
-```bash
-cd backend
+npm install
 npm start
 ```
+The frontend typically serves on http://localhost:3000 (or :3001 if 3000 is occupied). The backend API is available at http://localhost:3000/api.
 
-## Contributing
+## 🔒 Security Notes
+- JWT authentication and bcrypt password hashing for credentials
+- Input validation for booking and user endpoints
+- Sanitize filenames and validate file sizes if uploads are introduced
+- Use environment variables for secrets; never commit .env files
+
+## 🤝 Contributing
+PRs and improvements are welcome. Suggested workflow:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch (git checkout -b feature/awesome)
+3. Commit your changes (git commit -m 'Add awesome feature')
+4. Push to your branch (git push origin feature/awesome)
+5. Open a Pull Request and describe the change
 
-## License
+If you plan a larger change, open an issue first to align on scope.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📜 License
+Licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
-## Support
 
-For support and questions, please contact the development team or create an issue in the repository.
+## 🙏 Acknowledgements
+- Sequelize project and migration tooling
+- Express and React communities
+- Open-source contributors and libraries used
 
----
+## 👤 Contributors
 
-**Happy Coding!** Enjoy building and using the Genius Society Hotel Reservation System!
+Made with ❤️ by the Genius Society team:
+
+<table>
+  <tr>
+    <td align="center" width="180">
+      <a href="https://github.com/Dendroculus">
+        <img src="https://github.com/Dendroculus.png?size=96" width="96" alt="Dendroculus avatar"><br>
+        <b>Dendroculus</b><br>
+        <sub><b>Documenter and Maintainer</b></sub>
+      </a>
+    </td>
+    <td align="center" width="180">
+      <a href="https://github.com/Jensenix">
+        <img src="https://github.com/Jensenix.png?size=96" width="96" alt="Jensenix avatar"><br>
+        <b>Jensenix</b><br>
+        <sub><b>Backend Dev & Project Owner</b></sub>
+      </a>
+    </td>
+    <td align="center" width="180">
+      <a href="https://github.com/Serthonss">
+        <img src="https://github.com/Serthonss.png?size=96" width="96" alt="Serthonss avatar"><br>
+        <b>Serthonss</b><br>
+        <sub><b>Frontend Dev and Tester</b></sub>
+      </a>
+    </td>
+    <td align="center" width="180">
+      <a href="https://github.com/vincentlawi">
+        <img src="https://github.com/vincentlawi.png?size=96" width="96" alt="vincentlawi avatar"><br>
+        <b>vincentlawi</b><br>
+        <sub><b>UI/UX Designer</b></sub>
+      </a>
+    </td>
+
+  </tr>
+</table>
