@@ -125,13 +125,6 @@ DB_PASS=your_password
 JWT_SECRET=your_jwt_secret
 ```
 
-### Frontend (root/frontend .env)
-
-```env
-REACT_APP_API_BASE_URL=http://localhost:3000/api
-```
-For local testing keep API base URL pointing at the local backend. For production, switch to your hosted API endpoint (example: https://your-domain/api).
-
 ## 🚀 Local Development
 
 ### 1. CLONE THE REPOSITORY
@@ -144,6 +137,8 @@ cd hotel-reservation-genius
 ```bash
 cd backend
 npm install 
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 npm run dev
 ```
 
