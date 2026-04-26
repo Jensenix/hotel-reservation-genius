@@ -62,6 +62,7 @@ export const roomAPI = {
   update: (id, data) => api.put(`/rooms/${id}`, data),
   delete: (id) => api.delete(`/rooms/${id}`),
   getAvailable: (params) => api.get('/rooms/available', { params }),
+  getAllWithRoomType: () => api.get('/rooms/with-room-type'),
 };
 
 // Bookings APIs

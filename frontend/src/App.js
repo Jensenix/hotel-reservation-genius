@@ -13,6 +13,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import RevenueDashboard from './pages/admin/RevenueDashboard';
 import RoomAvailability from './pages/admin/RoomAvailability';
 import Guests from './pages/admin/Guests';
+import RoomManagement from './pages/admin/RoomManagement';
+import RoomTypeDetail from './pages/admin/RoomTypeDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -50,6 +52,8 @@ function AppRoutes() {
       <Route path="/admin/revenue" element={isAuthenticated && isAdmin ? <RevenueDashboard /> : <Navigate to="/login" />} />
       <Route path="/admin/availability" element={isAuthenticated && isAdmin ? <RoomAvailability /> : <Navigate to="/login" />} />
       <Route path="/admin/guests" element={isAuthenticated && isAdmin ? <Guests /> : <Navigate to="/login" />} />
+      <Route path="/admin/rooms" element={isAuthenticated && isAdmin ? <RoomManagement /> : <Navigate to="/login" />} />
+      <Route path="/admin/rooms/:roomTypeId" element={isAuthenticated && isAdmin ? <RoomTypeDetail /> : <Navigate to="/login" />} />
     </Routes>
   );
 }

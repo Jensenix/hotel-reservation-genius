@@ -220,6 +220,46 @@ class RoomController {
       });
     }
   }
+
+  // Get all rooms with room type
+  async getAllWithRoomType(req, res) {
+    try {
+      const { status, roomTypeId } = req.query;
+
+      const where = {};
+      if (status) {
+        where.status = status;
+      }
+      if (roomTypeId) {
+        where.roomTypeId = roomTypeId;
+      }
+
+      const rooms = await Room.findAll({
+        where,
+        include: [
+          {
+            model: RoomType,
+            as: 'roomType',
+            attributes: ['id', 'name', 'description', 'basePrice', 'maxCapacity']
+          }
+        ],
+        order: [['floor', 'ASC'], ['roomNumber', 'ASC']]
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Rooms with room type retrieved successfully',
+        data: rooms
+      });
+    } catch (error) {
+      console.error('Error getting rooms with room type:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting rooms with room type',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new RoomController();
