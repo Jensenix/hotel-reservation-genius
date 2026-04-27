@@ -4,7 +4,6 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import apiService from '../services/apiService';
 import MainLayout from '../layouts/MainLayout';
 import Card from '../components/ui/Card';
-import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
 import { Star, MessageSquare, Calendar, Clock, Edit, Search } from 'lucide-react';
 
@@ -185,22 +184,18 @@ const Reviews = () => {
 
   return (
     <MainLayout>
-      <div className="bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 pb-8">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl border-b border-slate-700">
-          <div className="container mx-auto px-6 py-8">
-            <div>
-              <h1 className="text-4xl font-light tracking-tight mb-2">
-                Guest <span className="font-semibold text-amber-400">Reviews</span>
-              </h1>
-              <p className="text-slate-300 text-sm tracking-wide uppercase">
-                Read and share experiences
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <div className="bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
         <div className="container mx-auto px-6 py-8">
+          {/* Page Title */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              Guest Reviews
+            </h1>
+            <p className="text-slate-600">
+              Read and share experiences
+            </p>
+          </div>
+
           {/* Tabs */}
           <div className="flex gap-4 mb-8">
             <button
@@ -339,19 +334,19 @@ const Reviews = () => {
                     {/* Actions (only for own reviews) */}
                     {user && review.userId === user.id && (
                       <div className="flex items-center gap-2 pt-3 border-t border-slate-200">
-                        <Button
+                        <button
                           onClick={() => handleOpenReviewModal(review)}
-                          className="bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300 px-3 py-1.5 text-xs"
+                          className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 flex items-center justify-center"
                         >
                           <Edit className="w-3 h-3 mr-1" />
                           Edit
-                        </Button>
-                        <Button
+                        </button>
+                        <button
                           onClick={() => handleDeleteReview(review.id)}
-                          className="bg-red-100 hover:bg-red-200 text-red-700 border-2 border-red-300 px-3 py-1.5 text-xs"
+                          className="flex-1 bg-white hover:bg-red-50 text-red-600 border-2 border-red-200 hover:border-red-300 px-3 py-2 text-xs font-semibold rounded-lg shadow-sm transition-all duration-300 flex items-center justify-center"
                         >
                           Delete
-                        </Button>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -400,19 +395,19 @@ const Reviews = () => {
             </div>
 
             <div className="flex gap-4 pt-4">
-              <Button
+              <button
                 type="button"
                 onClick={handleCloseReviewModal}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300"
+                className="flex-1 bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
               >
                 Cancel
-              </Button>
-              <Button
+              </button>
+              <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border border-amber-400"
+                className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg px-6 py-3 rounded-xl font-semibold transition-all duration-300"
               >
                 {editingReview ? 'Update Review' : 'Submit Review'}
-              </Button>
+              </button>
             </div>
           </form>
         </Modal>

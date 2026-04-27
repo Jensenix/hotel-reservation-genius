@@ -410,11 +410,14 @@ const AdminDashboard = () => {
         <Modal
           isOpen={showActionModal}
           onClose={() => setShowActionModal(false)}
-          title={`${actionType.charAt(0).toUpperCase() + actionType.slice(1).replace('-', ' ')} Booking #${selectedBooking?.id}`}
+          title={actionType === 'cancel' ? `Cancel Booking #${selectedBooking?.id}` : `${actionType.charAt(0).toUpperCase() + actionType.slice(1).replace('-', ' ')} Booking #${selectedBooking?.id}`}
         >
           <div className="space-y-4">
             {actionType === 'cancel' ? (
               <div>
+                <p className="text-gray-600 mb-4">
+                  Please provide a reason for cancelling this booking. This action cannot be undone.
+                </p>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Cancel Reason
                 </label>
@@ -449,13 +452,14 @@ const AdminDashboard = () => {
                 variant="outline"
                 onClick={() => setShowActionModal(false)}
               >
-                Cancel
+                Back
               </Button>
               <Button
                 onClick={executeAction}
                 disabled={actionType === 'cancel' && !cancelReason.trim()}
+                className={actionType === 'cancel' ? 'bg-red-600 hover:bg-red-700 text-white' : ''}
               >
-                {actionType.charAt(0).toUpperCase() + actionType.slice(1).replace('-', ' ')}
+                {actionType === 'cancel' ? 'Yes, Cancel Booking' : actionType.charAt(0).toUpperCase() + actionType.slice(1).replace('-', ' ')}
               </Button>
             </div>
           </div>
@@ -477,7 +481,7 @@ const AdminDashboard = () => {
               <p className="mt-2 text-gray-600">Loading booking details...</p>
             </div>
           ) : bookingDetails ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* Guest & Room Info - Combined */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">

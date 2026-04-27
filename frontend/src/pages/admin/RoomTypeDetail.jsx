@@ -125,95 +125,105 @@ const RoomTypeDetail = () => {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl border-b border-slate-700">
-          <div className="container mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
+        <div className="container mx-auto px-6 py-8">
+          {/* Page Header - Luxury Style */}
+          <div className="mb-12">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Link to="/admin/rooms">
-                  <Button className="bg-slate-700 hover:bg-slate-600 text-white border-2 border-slate-600">
+                  <Button className="bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white border-0 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
                     <ArrowLeft className="w-5 h-5" />
                   </Button>
                 </Link>
                 <div>
-                  <h1 className="text-4xl font-light tracking-tight mb-2">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+                    <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">Room Type Details</span>
+                    <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
+                  </div>
+                  <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
                     {roomType.name}
                   </h1>
-                  <p className="text-slate-300 text-sm tracking-wide uppercase">
-                    Room Type Details & Physical Rooms
+                  <p className="text-slate-500 text-sm tracking-wide">
+                    Physical Rooms Management
                   </p>
                 </div>
               </div>
               <Button
                 onClick={() => handleOpenRoomModal()}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg border border-emerald-400"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xl border-0 px-8 py-3 rounded-xl font-semibold transition-all duration-300"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Add Physical Room
               </Button>
             </div>
           </div>
-        </div>
 
-        <div className="container mx-auto px-6 py-8">
-          {/* Room Type Info Card */}
-          <Card className="bg-gradient-to-br from-slate-900 to-slate-800 text-white border-2 border-slate-700 shadow-xl mb-8">
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Room Type Info Card - Luxury */}
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl shadow-2xl border border-slate-700 p-8 mb-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500 opacity-5 rounded-full -mr-20 -mt-20"></div>
+            <div className="relative">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-400">
+                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-2xl border-2 border-amber-400">
                     <Layers className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">Room Type</p>
-                    <p className="text-2xl font-bold">{roomType.name}</p>
+                    <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Room Type</p>
+                    <p className="text-2xl font-light">{roomType.name}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-emerald-400">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl border-2 border-emerald-400">
                     <Bed className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-emerald-400 text-xs uppercase tracking-wider mb-1">Physical Rooms</p>
-                    <p className="text-2xl font-bold">{rooms.length}</p>
+                    <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">Physical Rooms</p>
+                    <p className="text-2xl font-light">{rooms.length}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-blue-400">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl border-2 border-blue-400">
                     <DollarSign className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-blue-400 text-xs uppercase tracking-wider mb-1">Base Price</p>
-                    <p className="text-2xl font-bold">${roomType.basePrice}/night</p>
+                    <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Base Price</p>
+                    <p className="text-2xl font-light">${roomType.basePrice}/night</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-purple-400">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl border-2 border-purple-400">
                     <Users className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-purple-400 text-xs uppercase tracking-wider mb-1">Max Capacity</p>
-                    <p className="text-2xl font-bold">{roomType.maxCapacity} guests</p>
+                    <p className="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-1">Max Capacity</p>
+                    <p className="text-2xl font-light">{roomType.maxCapacity} guests</p>
                   </div>
                 </div>
               </div>
 
               {roomType.description && (
-                <div className="mt-6 pt-6 border-t border-slate-700">
-                  <p className="text-slate-300">{roomType.description}</p>
+                <div className="mt-8 pt-8 border-t border-slate-700">
+                  <p className="text-slate-300 leading-relaxed">{roomType.description}</p>
                 </div>
               )}
             </div>
-          </Card>
+          </div>
 
-          {/* Physical Rooms Grid */}
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900">Physical Rooms</h2>
-            <p className="text-slate-600">{rooms.length} rooms found</p>
+          {/* Physical Rooms Section Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-light text-slate-800 mb-2 tracking-tight">
+                  Physical <span className="font-semibold text-amber-600">Rooms</span>
+                </h2>
+                <p className="text-slate-500 text-sm">{rooms.length} rooms found</p>
+              </div>
+            </div>
           </div>
 
           {loading ? (
@@ -221,25 +231,25 @@ const RoomTypeDetail = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {rooms.map((room) => (
-                <Card key={room.id} className="bg-white border-2 border-slate-200 shadow-lg hover:shadow-xl transition-all">
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                          <Bed className="w-6 h-6 text-white" />
+                <div key={room.id} className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 group">
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                          <Bed className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                          <p className="font-bold text-slate-900 text-xl">{room.roomNumber}</p>
+                          <p className="font-semibold text-slate-900 text-xl">{room.roomNumber}</p>
                           <p className="text-slate-500 text-sm">Floor {room.floor}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                       <Button
                         onClick={() => handleOpenRoomModal(room)}
-                        className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300 text-sm py-2"
+                        className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 px-4 py-2 text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
                       >
                         <Edit className="w-4 h-4 mr-1" />
                         Edit
@@ -249,26 +259,26 @@ const RoomTypeDetail = () => {
                           setDeletingRoom(room);
                           setShowDeleteModal(true);
                         }}
-                        className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 border-2 border-red-300 text-sm py-2"
+                        className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 px-4 py-2 text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
                         Delete
                       </Button>
                     </div>
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           )}
 
           {rooms.length === 0 && !loading && (
-            <div className="text-center py-16 bg-white border-2 border-dashed border-slate-300 rounded-xl">
-              <Bed className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <div className="text-center py-20 bg-white rounded-2xl shadow-xl border-2 border-dashed border-slate-300">
+              <Bed className="w-24 h-24 text-slate-300 mx-auto mb-6" />
               <p className="text-slate-500 text-lg mb-2">No physical rooms added yet</p>
-              <p className="text-slate-400 text-sm mb-6">Click "Add Physical Room" to create the first room</p>
+              <p className="text-slate-400 text-sm mb-8">Click "Add Physical Room" to create the first room</p>
               <Button
                 onClick={() => handleOpenRoomModal()}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg border border-emerald-400"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 px-8 py-3 rounded-xl font-semibold"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add First Room
@@ -313,13 +323,13 @@ const RoomTypeDetail = () => {
               <Button
                 type="button"
                 onClick={handleCloseRoomModal}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300"
+                className="flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border border-amber-400"
+                className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300"
               >
                 {editingRoom ? 'Update Room' : 'Add Room'}
               </Button>
@@ -346,13 +356,13 @@ const RoomTypeDetail = () => {
                   setShowDeleteModal(false);
                   setDeletingRoom(null);
                 }}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300"
+                className="flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleDelete}
-                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg border border-red-400"
+                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300"
               >
                 Delete Room
               </Button>
