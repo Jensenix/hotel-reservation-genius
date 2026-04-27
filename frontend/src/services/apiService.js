@@ -10,13 +10,9 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor (no token for now)
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error) => {
@@ -29,7 +25,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
@@ -158,6 +153,15 @@ export const guestsAPI = {
   getStats: (params) => api.get('/guests/stats', { params }),
 };
 
+// Users APIs
+export const userAPI = {
+  getAll: () => api.get('/users'),
+  getById: (id) => api.get(`/users/${id}`),
+  create: (data) => api.post('/users', data),
+  update: (id, data) => api.put(`/users/${id}`, data),
+  delete: (id) => api.delete(`/users/${id}`),
+};
+
 // Export all APIs
 const apiService = {
   auth: authAPI,
@@ -173,6 +177,7 @@ const apiService = {
   revenue: revenueAPI,
   roomAvailability: roomAvailabilityAPI,
   guests: guestsAPI,
+  users: userAPI,
 };
 
 export default apiService;

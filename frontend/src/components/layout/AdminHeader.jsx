@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, DollarSign, Home, Users, BarChart3, LogOut, Menu, X, Building2 } from 'lucide-react';
+import { LayoutDashboard, DollarSign, Home, Users, LogOut, Menu, X, Building2 } from 'lucide-react';
 
 // FIXED: Admin header with proper auth context
 const AdminHeader = () => {
@@ -27,7 +27,6 @@ const AdminHeader = () => {
     { path: '/admin/availability', label: 'Availability', icon: Home },
     { path: '/admin/guests', label: 'Guests', icon: Users },
     { path: '/admin/rooms', label: 'Rooms', icon: Building2 },
-    { path: '/admin/reports', label: 'Reports', icon: BarChart3 },
   ];
 
   console.log('Admin Nav Items:', adminNavItems);

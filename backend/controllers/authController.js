@@ -62,7 +62,7 @@ class AuthController {
   // Register user
   async register(req, res) {
     try {
-      const { fullName, email, password, phoneNumber } = req.body;
+      const { fullName, email, password, phoneNumber, role } = req.body;
 
       // Manual validation
       if (!fullName || !email || !password) {
@@ -87,7 +87,7 @@ class AuthController {
         email,
         password, // In production, hash this password
         phoneNumber,
-        role: 'user' // Default role
+        role: role || 'guest' // Default to 'guest' if not provided
       });
 
       // Return user data without password

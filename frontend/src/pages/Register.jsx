@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 
@@ -54,7 +55,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -63,34 +64,27 @@ const Register = () => {
     setError('');
 
     try {
-      // For now, simulate registration (we'll implement actual auth later)
-      const newUser = {
+      // Call actual API register
+      const response = await apiService.auth.register({
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber,
         role: 'guest'
-      };
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      });
 
       setSuccess(true);
-      
+
       // Auto-login after successful registration
       setTimeout(() => {
-        const userData = {
-          id: Date.now(), // Temporary ID
-          email: formData.email,
-          fullName: formData.fullName,
-          role: 'guest'
-        };
+        const userData = response.data.data;
         login(userData);
         navigate('/');
       }, 2000);
 
     } catch (error) {
-      setError('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      setError(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
