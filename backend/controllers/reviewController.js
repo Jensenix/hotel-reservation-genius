@@ -91,8 +91,6 @@ class ReviewController {
         ]
       });
 
-      console.log('All reviews data sample:', JSON.stringify(rows[0] || {}, null, 2));
-
       return res.status(200).json({
         success: true,
         message: 'Reviews retrieved successfully',
@@ -148,8 +146,6 @@ class ReviewController {
           }
         ]
       });
-
-      console.log('User reviews data:', JSON.stringify(reviews, null, 2));
 
       return res.status(200).json({
         success: true,

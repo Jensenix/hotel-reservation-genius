@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
@@ -19,6 +19,7 @@ import {
 
 const OurRooms = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -31,13 +32,35 @@ const OurRooms = () => {
     fetchRooms();
   }, []);
 
+  // Parse query params on mount
+  useEffect(() => {
+    const capacity = searchParams.get('capacity') || '';
+    const priceRange = searchParams.get('priceRange') || '';
+    const sortBy = searchParams.get('sortBy') || 'name';
+
+    setFilters({
+      capacity,
+      priceRange,
+      sortBy
+    });
+  }, [searchParams]);
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.capacity) params.set('capacity', filters.capacity);
+    if (filters.priceRange) params.set('priceRange', filters.priceRange);
+    if (filters.sortBy !== 'name') params.set('sortBy', filters.sortBy);
+
+    setSearchParams(params, { replace: true });
+  }, [filters, setSearchParams]);
+
   const fetchRooms = async () => {
     try {
       // Fetch room types with their facilities from backend
       const response = await apiService.roomTypes.getAllWithFacilities();
       const roomTypesWithFacilities = response.data.data;
-      
-      console.log('Room Types with Facilities:', roomTypesWithFacilities);
+
       setRooms(roomTypesWithFacilities);
     } catch (error) {
       console.error('Error fetching room types with facilities:', error);

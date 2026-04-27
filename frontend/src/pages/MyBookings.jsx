@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
@@ -21,6 +21,7 @@ import {
 const MyBookings = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, confirmed, checked_in, checked_out, cancelled
@@ -30,11 +31,10 @@ const MyBookings = () => {
       try {
         const response = await apiService.bookings.getUserBookings();
         const allBookings = response.data.data;
-        
+
         // Filter bookings for current user only
         const userBookings = allBookings.filter(booking => booking.userId === user.id);
-        
-        console.log('User bookings:', userBookings);
+
         setBookings(userBookings);
       } catch (error) {
         console.error('Error fetching user bookings:', error);
@@ -47,6 +47,20 @@ const MyBookings = () => {
       fetchUserBookings();
     }
   }, [user]);
+
+  // Parse query params on mount
+  useEffect(() => {
+    const statusFilter = searchParams.get('status') || 'all';
+    setFilter(statusFilter);
+  }, [searchParams]);
+
+  // Update URL when filter changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filter !== 'all') params.set('status', filter);
+
+    setSearchParams(params, { replace: true });
+  }, [filter, setSearchParams]);
 
   const filteredBookings = bookings.filter(booking => {
     if (filter === 'all') return true;

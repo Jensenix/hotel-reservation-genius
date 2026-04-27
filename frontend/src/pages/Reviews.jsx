@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import apiService from '../services/apiService';
 import MainLayout from '../layouts/MainLayout';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
-import { Star, MessageSquare, Calendar, Clock, Edit, Filter, Search } from 'lucide-react';
+import { Star, MessageSquare, Calendar, Clock, Edit, Search } from 'lucide-react';
 
 const Reviews = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [activeTab, setActiveTab] = useState('all'); // 'all' or 'my'
   const [allReviews, setAllReviews] = useState([]);
   const [myReviews, setMyReviews] = useState([]);
@@ -32,6 +34,27 @@ const Reviews = () => {
     fetchReviews();
   }, []);
 
+  // Parse query params on mount
+  useEffect(() => {
+    const tab = searchParams.get('tab') || 'all';
+    const search = searchParams.get('search') || '';
+    const rating = searchParams.get('rating') || '';
+
+    setActiveTab(tab);
+    setSearchTerm(search);
+    setRatingFilter(rating);
+  }, [searchParams]);
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (activeTab !== 'all') params.set('tab', activeTab);
+    if (searchTerm) params.set('search', searchTerm);
+    if (ratingFilter) params.set('rating', ratingFilter);
+
+    setSearchParams(params, { replace: true });
+  }, [activeTab, searchTerm, ratingFilter, setSearchParams]);
+
   // Check if navigated from MyBookings with bookingId
   useEffect(() => {
     if (location.state?.bookingId) {
@@ -45,7 +68,7 @@ const Reviews = () => {
       // Clear the state to avoid re-opening modal on refresh
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state]);
+  }, [location.state, navigate]);
 
   const fetchReviews = async () => {
     try {
@@ -54,8 +77,6 @@ const Reviews = () => {
         apiService.reviews.getAll(),
         user ? apiService.reviews.getUserReviews(user.id) : Promise.resolve({ data: { data: [] } })
       ]);
-      console.log('All reviews response:', allResponse.data);
-      console.log('My reviews response:', myResponse.data);
       setAllReviews(allResponse.data.data || []);
       setMyReviews(myResponse.data.data || []);
     } catch (error) {
