@@ -16,6 +16,9 @@ import RoomAvailability from './pages/admin/RoomAvailability';
 import Guests from './pages/admin/Guests';
 import RoomManagement from './pages/admin/RoomManagement';
 import RoomTypeDetail from './pages/admin/RoomTypeDetail';
+import FacilitiesManagement from './pages/admin/FacilitiesManagement';
+import ExtraServicesManagement from './pages/admin/ExtraServicesManagement';
+import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagement';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -56,6 +59,9 @@ function AppRoutes() {
       <Route path="/admin/guests" element={isAuthenticated && isAdmin ? <Guests /> : <Navigate to="/login" />} />
       <Route path="/admin/rooms" element={isAuthenticated && isAdmin ? <RoomManagement /> : <Navigate to="/login" />} />
       <Route path="/admin/rooms/:roomTypeId" element={isAuthenticated && isAdmin ? <RoomTypeDetail /> : <Navigate to="/login" />} />
+      <Route path="/admin/facilities" element={isAuthenticated && isAdmin ? <FacilitiesManagement /> : <Navigate to="/login" />} />
+      <Route path="/admin/extra-services" element={isAuthenticated && isAdmin ? <ExtraServicesManagement /> : <Navigate to="/login" />} />
+      <Route path="/admin/payment-methods" element={isAuthenticated && isAdmin ? <PaymentMethodsManagement /> : <Navigate to="/login" />} />
     </Routes>
   );
 }

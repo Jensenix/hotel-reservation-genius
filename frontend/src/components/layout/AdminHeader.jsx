@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, DollarSign, Home, Users, LogOut, Menu, X, Building2 } from 'lucide-react';
+import { LayoutDashboard, DollarSign, Home, Users, LogOut, Menu, X, Building2, ChevronDown, Coffee, CreditCard, Settings } from 'lucide-react';
 
 // FIXED: Admin header with proper auth context
 const AdminHeader = () => {
@@ -12,6 +12,19 @@ const AdminHeader = () => {
   // Force console log on every render
   console.log('AdminHeader rendered - User:', user?.fullName, 'Role:', user?.role, 'Location:', location.pathname);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [managementDropdownOpen, setManagementDropdownOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (managementDropdownOpen && !event.target.closest('.management-dropdown')) {
+        setManagementDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [managementDropdownOpen]);
 
   
   const handleLogout = () => {
@@ -27,6 +40,12 @@ const AdminHeader = () => {
     { path: '/admin/availability', label: 'Availability', icon: Home },
     { path: '/admin/guests', label: 'Guests', icon: Users },
     { path: '/admin/rooms', label: 'Rooms', icon: Building2 },
+  ];
+
+  const managementItems = [
+    { path: '/admin/facilities', label: 'Facilities', icon: Coffee },
+    { path: '/admin/extra-services', label: 'Extra Services', icon: Settings },
+    { path: '/admin/payment-methods', label: 'Payment Methods', icon: CreditCard },
   ];
 
   console.log('Admin Nav Items:', adminNavItems);
@@ -64,6 +83,42 @@ const AdminHeader = () => {
                 <span>{item.label}</span>
               </Link>
             ))}
+            
+            {/* Management Dropdown */}
+            <div className="relative management-dropdown">
+              <button
+                onClick={() => setManagementDropdownOpen(!managementDropdownOpen)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  managementItems.some(item => isActive(item.path))
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                <Settings size={16} />
+                <span>Management</span>
+                <ChevronDown size={14} className={`transition-transform duration-200 ${managementDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {managementDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50">
+                  {managementItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setManagementDropdownOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                        isActive(item.path)
+                          ? 'bg-blue-600 text-white'
+                          : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                      }`}
+                    >
+                      <item.icon size={16} />
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* User Menu */}
@@ -118,6 +173,26 @@ const AdminHeader = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
+              
+              {/* Mobile Management Items */}
+              <div className="pt-2 pb-2 border-t border-slate-700">
+                <div className="px-3 py-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">Management</div>
+                {managementItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium transition-all duration-200 ${
+                      isActive(item.path)
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                    }`}
+                  >
+                    <item.icon size={18} />
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
               
               {/* Mobile User Info */}
               <div className="pt-4 pb-3 border-t border-slate-700 mt-3">
