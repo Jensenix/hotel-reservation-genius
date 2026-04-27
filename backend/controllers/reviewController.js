@@ -1,4 +1,4 @@
-const { Review, Booking, User } = require('../models');
+const { Review, Booking, User, Room, RoomType } = require('../models');
 const pagination = require('../utils/pagination');
 
 class ReviewController {
@@ -70,7 +70,18 @@ class ReviewController {
           {
             model: Booking,
             as: 'booking',
-            include: ['room']
+            include: [
+              {
+                model: Room,
+                as: 'room',
+                include: [
+                  {
+                    model: RoomType,
+                    as: 'roomType'
+                  }
+                ]
+              }
+            ]
           },
           {
             model: User,
@@ -79,6 +90,8 @@ class ReviewController {
           }
         ]
       });
+
+      console.log('All reviews data sample:', JSON.stringify(rows[0] || {}, null, 2));
 
       return res.status(200).json({
         success: true,
@@ -96,6 +109,63 @@ class ReviewController {
     }
   }
 
+  // Get reviews by user ID
+  async getUserReviews(req, res) {
+    try {
+      const { userId } = req.query;
+
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'userId is required'
+        });
+      }
+
+      const reviews = await Review.findAll({
+        where: { userId },
+        order: [['createdAt', 'DESC']],
+        include: [
+          {
+            model: Booking,
+            as: 'booking',
+            include: [
+              {
+                model: Room,
+                as: 'room',
+                include: [
+                  {
+                    model: RoomType,
+                    as: 'roomType'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            model: User,
+            as: 'user',
+            attributes: { exclude: ['password'] }
+          }
+        ]
+      });
+
+      console.log('User reviews data:', JSON.stringify(reviews, null, 2));
+
+      return res.status(200).json({
+        success: true,
+        message: 'User reviews retrieved successfully',
+        data: reviews
+      });
+    } catch (error) {
+      console.error('Error getting user reviews:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error getting user reviews',
+        error: error.message
+      });
+    }
+  }
+
   // Get review by ID
   async getReviewById(req, res) {
     try {
@@ -106,7 +176,18 @@ class ReviewController {
           {
             model: Booking,
             as: 'booking',
-            include: ['room']
+            include: [
+              {
+                model: Room,
+                as: 'room',
+                include: [
+                  {
+                    model: RoomType,
+                    as: 'roomType'
+                  }
+                ]
+              }
+            ]
           },
           {
             model: User,

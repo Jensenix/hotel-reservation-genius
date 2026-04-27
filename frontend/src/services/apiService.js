@@ -129,7 +129,7 @@ export const reviewAPI = {
   create: (data) => api.post('/reviews', data),
   update: (id, data) => api.put(`/reviews/${id}`, data),
   delete: (id) => api.delete(`/reviews/${id}`),
-  getUserReviews: () => api.get('/reviews/user'),
+  getUserReviews: (userId) => api.get('/reviews/user', { params: { userId } }),
 };
 
 // Revenue APIs

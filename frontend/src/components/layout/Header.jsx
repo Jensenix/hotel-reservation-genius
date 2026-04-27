@@ -73,11 +73,17 @@ const Header = () => {
             >
               Facilities
             </Link>
-            <Link 
-              to="/my-bookings" 
+            <Link
+              to="/my-bookings"
               className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
             >
               My Bookings
+            </Link>
+            <Link
+              to="/reviews"
+              className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
+            >
+              Reviews
             </Link>
             <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-2 font-medium shadow-lg">
               Book Now

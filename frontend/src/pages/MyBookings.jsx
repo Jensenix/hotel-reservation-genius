@@ -5,16 +5,17 @@ import apiService from '../services/apiService';
 import Card from '../components/ui/Card';
 import Button from '../components/common/Button';
 import Loading from '../components/ui/Loading';
-import { 
-  Calendar, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  AlertCircle, 
-  Filter, 
-  Search, 
+import {
+  Calendar,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Filter,
+  Search,
   Shield,
-  Users
+  Users,
+  Star
 } from 'lucide-react';
 
 const MyBookings = () => {
@@ -298,11 +299,21 @@ const MyBookings = () => {
                         </Button>
                       )}
                       {booking.status === 'checked_in' && (
-                        <Button 
+                        <Button
                           size="sm"
                           className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                         >
                           Check Out
+                        </Button>
+                      )}
+                      {booking.status === 'checked_out' && (
+                        <Button
+                          size="sm"
+                          className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+                          onClick={() => navigate('/reviews', { state: { bookingId: booking.id } })}
+                        >
+                          <Star className="w-4 h-4 mr-1" />
+                          Write Review
                         </Button>
                       )}
                     </div>
