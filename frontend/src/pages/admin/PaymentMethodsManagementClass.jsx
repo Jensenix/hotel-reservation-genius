@@ -27,16 +27,22 @@ class PaymentMethodsManagement extends BaseAdminManagement {
 
   getInitialFormData() {
     return {
-      name: '',
-      type: '',
-      description: '',
-      isActive: true,
-      config: ''
+      methodName: '',
+      accountNumber: '',
+      isActive: true
+    };
+  }
+
+  getFormDataFromItem(item) {
+    return {
+      methodName: item.name || item.methodName || '',
+      accountNumber: item.config || item.accountNumber || '',
+      isActive: item.isActive !== false
     };
   }
 
   mapApiResponse(apiData) {
-    console.log('Raw API Data (Payment Methods):', apiData);
+    console.log('🔍 Raw API Data (Payment Methods):', apiData);
     
     const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
       id: item.id,
@@ -47,7 +53,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
       config: item.accountNumber || item.config || 'N/A'
     })) : [];
     
-    console.log('Mapped Payment Methods Data:', mappedData);
+    console.log('✅ Mapped Payment Methods Data:', mappedData.length, 'items');
     return mappedData;
   }
 
@@ -80,18 +86,6 @@ class PaymentMethodsManagement extends BaseAdminManagement {
     if (lowerName.includes('apple') || lowerName.includes('google') || lowerName.includes('digital')) return 'mobile';
     if (lowerName.includes('cash')) return 'cash';
     return 'card';
-  }
-
-  // Get type color for badges
-  getTypeColor(type) {
-    const colors = {
-      card: 'bg-blue-100 text-blue-800 border-blue-200',
-      wallet: 'bg-purple-100 text-purple-800 border-purple-200',
-      bank: 'bg-green-100 text-green-800 border-green-200',
-      mobile: 'bg-orange-100 text-orange-800 border-orange-200',
-      cash: 'bg-yellow-100 text-yellow-800 border-yellow-200'
-    };
-    return colors[type] || colors.card;
   }
 
   // Icon mapping
@@ -138,8 +132,11 @@ class PaymentMethodsManagement extends BaseAdminManagement {
           </label>
           <input
             type="text"
-            value={formData.name}
-            onChange={(e) => this.handleInputChange('name', e.target.value)}
+            value={formData.methodName}
+            onChange={(e) => {
+              console.log('🔍 Method Name changed:', e.target.value);
+              this.handleInputChange('methodName', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
             placeholder="e.g., Credit Card, PayPal"
             required
@@ -148,60 +145,36 @@ class PaymentMethodsManagement extends BaseAdminManagement {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Type
-          </label>
-          <select
-            value={formData.type}
-            onChange={(e) => this.handleInputChange('type', e.target.value)}
-            className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
-            required
-          >
-            <option value="">Select Type</option>
-            <option value="card">Card</option>
-            <option value="wallet">Digital Wallet</option>
-            <option value="bank">Bank Transfer</option>
-            <option value="mobile">Mobile Payment</option>
-            <option value="cash">Cash</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => this.handleInputChange('description', e.target.value)}
-            className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white resize-none"
-            rows={3}
-            placeholder="Describe the payment method..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Configuration
+            Account Number
           </label>
           <input
             type="text"
-            value={formData.config}
-            onChange={(e) => this.handleInputChange('config', e.target.value)}
+            value={formData.accountNumber}
+            onChange={(e) => {
+              console.log('🔍 Account Number changed:', e.target.value);
+              this.handleInputChange('accountNumber', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
-            placeholder="e.g., stripe_key, paypal_email, bank_account"
+            placeholder="e.g., 1234-5678-9012-3456"
+            required
           />
         </div>
 
         <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Active Status
+          </label>
           <label className="flex items-center space-x-3">
             <input
               type="checkbox"
               checked={formData.isActive}
-              onChange={(e) => this.handleInputChange('isActive', e.target.checked)}
-              className="w-4 h-4 text-amber-600 border-2 border-slate-300 rounded focus:ring-2 focus:ring-amber-500"
+              onChange={(e) => {
+                console.log('🔍 Active Status changed:', e.target.checked);
+                this.handleInputChange('isActive', e.target.checked);
+              }}
+              className="w-5 h-5 text-amber-500 border-2 border-slate-300 rounded focus:ring-amber-500"
             />
-            <span className="text-sm font-medium text-slate-700">
-              Active (enabled for use)
-            </span>
+            <span className="text-slate-700">Enable this payment method</span>
           </label>
         </div>
       </>
@@ -246,11 +219,6 @@ class PaymentMethodsManagement extends BaseAdminManagement {
                 <h3 className="text-2xl font-light text-white mb-2 tracking-tight">
                   {payment.name}
                 </h3>
-                <div className="flex items-center space-x-2 mb-3">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${this.getTypeColor(payment.type)}`}>
-                    {payment.type}
-                  </span>
-                </div>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   {payment.description || 'No description'}
                 </p>

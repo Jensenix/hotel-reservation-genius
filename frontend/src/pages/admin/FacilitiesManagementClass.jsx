@@ -27,23 +27,28 @@ class FacilitiesManagement extends BaseAdminManagement {
 
   getInitialFormData() {
     return {
-      name: '',
-      description: '',
-      icon: ''
+      facilityName: '',
+      iconUrl: ''
+    };
+  }
+
+  getFormDataFromItem(item) {
+    return {
+      facilityName: item.name || item.facilityName || '',
+      iconUrl: item.icon || item.iconUrl || ''
     };
   }
 
   mapApiResponse(apiData) {
-    console.log('Raw API Data (Facilities):', apiData);
+    console.log('🔍 Raw API Data (Facilities):', apiData);
     
     const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
       id: item.id,
       name: item.facilityName || item.name || 'Unknown Facility',
-      description: item.description || '',
       icon: item.iconUrl || item.icon || 'default'
     })) : [];
     
-    console.log('Mapped Facilities Data:', mappedData);
+    console.log('✅ Mapped Facilities Data:', mappedData.length, 'items');
     return mappedData;
   }
 
@@ -111,8 +116,11 @@ class FacilitiesManagement extends BaseAdminManagement {
           </label>
           <input
             type="text"
-            value={formData.name}
-            onChange={(e) => this.handleInputChange('name', e.target.value)}
+            value={formData.facilityName}
+            onChange={(e) => {
+              console.log('🔍 Facility Name changed:', e.target.value);
+              this.handleInputChange('facilityName', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
             placeholder="e.g., Swimming Pool, Fitness Center"
             required
@@ -121,25 +129,15 @@ class FacilitiesManagement extends BaseAdminManagement {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => this.handleInputChange('description', e.target.value)}
-            className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white resize-none"
-            rows={3}
-            placeholder="Describe the facility..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            Icon Identifier
+            Icon URL
           </label>
           <input
             type="text"
-            value={formData.icon}
-            onChange={(e) => this.handleInputChange('icon', e.target.value)}
+            value={formData.iconUrl}
+            onChange={(e) => {
+              console.log('🔍 Icon URL changed:', e.target.value);
+              this.handleInputChange('iconUrl', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
             placeholder="e.g., pool, fitness, spa"
           />

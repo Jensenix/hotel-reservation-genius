@@ -16,9 +16,9 @@ import RoomAvailability from './pages/admin/RoomAvailability';
 import Guests from './pages/admin/Guests';
 import RoomManagement from './pages/admin/RoomManagement';
 import RoomTypeDetail from './pages/admin/RoomTypeDetail';
-import FacilitiesManagement from './pages/admin/FacilitiesManagement';
-import ExtraServicesManagement from './pages/admin/ExtraServicesManagement';
-import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagement';
+import FacilitiesManagement from './pages/admin/FacilitiesManagementClass';
+import ExtraServicesManagement from './pages/admin/ExtraServicesManagementClass';
+import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagementClass';
 import Login from './pages/Login';
 import Register from './pages/Register';
 

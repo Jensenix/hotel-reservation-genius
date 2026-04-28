@@ -23,6 +23,8 @@ class BaseAdminManagement extends React.Component {
       deleteTarget: null,
       formData: this.getInitialFormData()
     };
+    
+    // No manual binding needed - using arrow functions for all methods
   }
 
   // Abstract methods to be implemented by child classes
@@ -70,47 +72,89 @@ class BaseAdminManagement extends React.Component {
   // Common data operations
   async fetchData() {
     try {
+      console.log(`🔄 Fetching data for ${this.getPageTitle()}...`);
       this.setState({ loading: true, error: null });
       const endpoint = this.getApiEndpoint();
       const response = await this.props.apiService[endpoint].getAll();
       
-      const mappedData = this.mapApiResponse(response.data || []);
+      console.log(`🔍 Raw API Response:`, response);
+      console.log(`🔍 Response Data:`, response.data);
+      
+      // Handle different response structures
+      let dataToMap = response.data;
+      if (response.data && response.data.data && Array.isArray(response.data.data)) {
+        dataToMap = response.data.data;
+      } else if (response.data && Array.isArray(response.data)) {
+        dataToMap = response.data;
+      }
+      
+      const mappedData = this.mapApiResponse(dataToMap || []);
       this.setState({ data: mappedData, loading: false });
       
-      console.log(`${this.getPageTitle()} - Data loaded:`, mappedData);
+      console.log(`✅ ${this.getPageTitle()} - Data loaded:`, mappedData.length, 'items');
     } catch (error) {
-      console.error(`Error fetching ${this.getPageTitle()}:`, error);
+      console.error(`❌ Error fetching ${this.getPageTitle()}:`, error);
       this.setState({ error, loading: false });
       
       // Fallback to mock data if API fails
       const mockData = this.getMockData();
       if (mockData) {
+        console.log(`🔄 Using mock data:`, mockData.length, 'items');
         this.setState({ data: mockData, loading: false });
       }
     }
   }
 
-  async handleSubmit(e) {
+  handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('🔍 handleSubmit called!');
+    console.log('🔍 Form Data:', this.state.formData);
+    console.log('🔍 Editing Item:', this.state.editingItem);
+    console.log('🔍 Props API Service:', this.props.apiService);
+    
     try {
       const endpoint = this.getApiEndpoint();
-      const apiService = this.props.apiService[endpoint];
+      console.log('🔍 Endpoint:', endpoint);
       
-      if (this.state.editingItem) {
-        await apiService.update(this.state.editingItem.id, this.state.formData);
-      } else {
-        await apiService.create(this.state.formData);
+      const apiService = this.props.apiService[endpoint];
+      console.log('🔍 API Service Object:', apiService);
+      
+      if (!apiService) {
+        throw new Error(`API Service not found for endpoint: ${endpoint}`);
       }
       
+      if (this.state.editingItem) {
+        console.log('🔍 Calling update with:', this.state.editingItem.id, this.state.formData);
+        const result = await apiService.update(this.state.editingItem.id, this.state.formData);
+        console.log('🔍 Update result:', result);
+      } else {
+        console.log('🔍 Calling create with:', this.state.formData);
+        const result = await apiService.create(this.state.formData);
+        console.log('🔍 Create result:', result);
+      }
+      
+      console.log('🔄 Closing modal and refreshing data...');
       this.closeModal();
       await this.fetchData();
+      console.log('✅ Data refresh complete!');
     } catch (error) {
-      console.error(`Error saving ${this.getItemName()}:`, error);
-      alert(`Error saving ${this.getItemName()}: ` + (error.response?.data?.message || error.message));
+      console.error(`❌ Error saving ${this.getItemName()}:`, error);
+      console.error('❌ Error response:', error.response);
+      console.error('❌ Error data:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      console.error('❌ Error status text:', error.response?.statusText);
+      console.error('❌ Full error object:', JSON.stringify(error, null, 2));
+      
+      const errorMessage = error.response?.data?.message || 
+                           error.response?.data?.error || 
+                           error.message || 
+                           'Unknown error occurred';
+      
+      alert(`❌ Error saving ${this.getItemName()}: ${errorMessage}`);
     }
   }
 
-  async handleDelete() {
+  handleDelete = async () => {
     try {
       const endpoint = this.getApiEndpoint();
       await this.props.apiService[endpoint].delete(this.state.deleteTarget.id);
@@ -352,7 +396,10 @@ class BaseAdminManagement extends React.Component {
         onClose={this.closeModal}
         title={this.getFormTitle()}
       >
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={(e) => {
+            console.log('🔍 Form onSubmit triggered!');
+            this.handleSubmit(e);
+          }}>
           <div className="space-y-6">
             {this.renderFormFields()}
           </div>

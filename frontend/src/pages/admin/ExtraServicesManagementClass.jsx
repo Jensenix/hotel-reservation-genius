@@ -27,15 +27,24 @@ class ExtraServicesManagement extends BaseAdminManagement {
 
   getInitialFormData() {
     return {
-      name: '',
+      serviceName: '',
       description: '',
       price: '',
-      icon: ''
+      iconUrl: ''
+    };
+  }
+
+  getFormDataFromItem(item) {
+    return {
+      serviceName: item.name || item.serviceName || '',
+      description: item.description || '',
+      price: item.price || '',
+      iconUrl: item.icon || item.iconUrl || ''
     };
   }
 
   mapApiResponse(apiData) {
-    console.log('Raw API Data (Extra Services):', apiData);
+    console.log('🔍 Raw API Data (Extra Services):', apiData);
     
     const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
       id: item.id,
@@ -45,7 +54,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
       icon: item.iconUrl || item.icon || 'default'
     })) : [];
     
-    console.log('Mapped Services Data:', mappedData);
+    console.log('✅ Mapped Services Data:', mappedData.length, 'items');
     return mappedData;
   }
 
@@ -123,8 +132,11 @@ class ExtraServicesManagement extends BaseAdminManagement {
           </label>
           <input
             type="text"
-            value={formData.name}
-            onChange={(e) => this.handleInputChange('name', e.target.value)}
+            value={formData.serviceName}
+            onChange={(e) => {
+              console.log('🔍 Service Name changed:', e.target.value);
+              this.handleInputChange('serviceName', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
             placeholder="e.g., Room Service, Airport Transfer"
             required
@@ -137,7 +149,10 @@ class ExtraServicesManagement extends BaseAdminManagement {
           </label>
           <textarea
             value={formData.description}
-            onChange={(e) => this.handleInputChange('description', e.target.value)}
+            onChange={(e) => {
+              console.log('🔍 Description changed:', e.target.value);
+              this.handleInputChange('description', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white resize-none"
             rows={3}
             placeholder="Describe the service..."
@@ -162,12 +177,15 @@ class ExtraServicesManagement extends BaseAdminManagement {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Icon Identifier
+            Icon URL
           </label>
           <input
             type="text"
-            value={formData.icon}
-            onChange={(e) => this.handleInputChange('icon', e.target.value)}
+            value={formData.iconUrl}
+            onChange={(e) => {
+              console.log('🔍 Icon URL changed:', e.target.value);
+              this.handleInputChange('iconUrl', e.target.value);
+            }}
             className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
             placeholder="e.g., room_service, transfer, spa"
           />
