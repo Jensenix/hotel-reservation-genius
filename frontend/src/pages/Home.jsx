@@ -67,9 +67,9 @@ const Home = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
-            <Link to="/rooms">
+            <Link to="/facilities">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 text-lg font-semibold shadow-xl border-2 border-amber-400">
-                Explore Rooms
+                Explore Facilities
               </Button>
             </Link>
             <Link to="/our-rooms">
@@ -328,7 +328,7 @@ const Home = () => {
           </div>
           
           <div className="text-center mt-16">
-            <Link to="/gallery">
+            <Link to="/#">
               <button className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-12 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-0 tracking-wide">
                 View Full Gallery
                 <ChevronRight className="w-5 h-5 ml-2 inline transition-transform group-hover:translate-x-1" />

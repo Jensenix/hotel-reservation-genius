@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import apiService from '../services/apiService';
-import MainLayout from '../layouts/MainLayout';
 import Card from '../components/ui/Card';
 import Modal from '../components/common/Modal';
 import { Star, MessageSquare, Calendar, Clock, Edit, Search } from 'lucide-react';
@@ -183,7 +182,6 @@ const Reviews = () => {
   });
 
   return (
-    <MainLayout>
       <div className="bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
         <div className="container mx-auto px-6 py-8">
           {/* Page Title */}
@@ -412,7 +410,6 @@ const Reviews = () => {
           </form>
         </Modal>
       </div>
-    </MainLayout>
   );
 };
 

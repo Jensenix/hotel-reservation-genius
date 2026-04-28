@@ -112,7 +112,7 @@ const MyBookings = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-16 pb-16">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-6">
               <Calendar className="w-6 h-6 text-amber-500" />
@@ -129,7 +129,7 @@ const MyBookings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 pb-16">
         {/* Hero Section */}
         <section className="py-20">
           <div className="text-center mb-16">
@@ -296,7 +296,7 @@ const MyBookings = () => {
                       {booking.status === 'pending' && (
                         <Button 
                           size="sm"
-                          className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
+                          className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                           onClick={() => navigate(`/booking/${booking.room?.roomTypeId}`, { 
                             state: { bookingId: booking.id } 
                           })}
@@ -307,7 +307,7 @@ const MyBookings = () => {
                       {booking.status === 'confirmed' && (
                         <Button 
                           size="sm"
-                          className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
+                          className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                         >
                           Check In
                         </Button>
@@ -315,7 +315,7 @@ const MyBookings = () => {
                       {booking.status === 'checked_in' && (
                         <Button
                           size="sm"
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                          className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                         >
                           Check Out
                         </Button>
@@ -323,7 +323,7 @@ const MyBookings = () => {
                       {booking.status === 'checked_out' && (
                         <Button
                           size="sm"
-                          className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+                          className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                           onClick={() => navigate('/reviews', { state: { bookingId: booking.id } })}
                         >
                           <Star className="w-4 h-4 mr-1" />
