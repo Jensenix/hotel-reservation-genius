@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiService from '../../services/apiService';
 import Card from '../../components/ui/Card';
 import Button from '../../components/common/Button';
@@ -8,14 +8,16 @@ import AdminLayout from '../../components/layout/AdminLayout';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    const [filters, setFilters] = useState({
-    status: '',
-    search: '',
-    page: 1,
-    limit: 10
+  // Initialize filters from URL query params
+  const [filters, setFilters] = useState({
+    status: searchParams.get('status') || '',
+    search: searchParams.get('search') || '',
+    page: parseInt(searchParams.get('page')) || 1,
+    limit: parseInt(searchParams.get('limit')) || 10
   });
   const [pagination, setPagination] = useState({});
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -25,10 +27,62 @@ const AdminDashboard = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const searchInputRef = useRef(null);
 
+  // Debounced search
   useEffect(() => {
-    fetchBookings();
-  }, [filters.status, filters.page, filters.limit]);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      fetchBookings();
+    }, 500); // 500ms debounce
+
+    setSearchTimeout(timeout);
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [filters.status, filters.search, filters.page, filters.limit]);
+
+  // Sync URL params with component state
+  useEffect(() => {
+    const urlStatus = searchParams.get('status') || '';
+    const urlSearch = searchParams.get('search') || '';
+    const urlPage = parseInt(searchParams.get('page')) || 1;
+    const urlLimit = parseInt(searchParams.get('limit')) || 10;
+
+    // Update state if URL params differ from current state
+    if (urlStatus !== filters.status || 
+        urlSearch !== filters.search || 
+        urlPage !== filters.page || 
+        urlLimit !== filters.limit) {
+      setFilters({
+        status: urlStatus,
+        search: urlSearch,
+        page: urlPage,
+        limit: urlLimit
+      });
+    }
+  }, [searchParams]);
+
+  // Auto-focus search input
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []); // Only run once on mount
+
+  // Re-focus search input after loading completes
+  useEffect(() => {
+    if (!loading && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [loading]); // Re-focus when loading state changes
 
   const fetchBookings = async () => {
     try {
@@ -59,8 +113,24 @@ const AdminDashboard = () => {
       if (key !== 'page') {
         newFilters.page = 1;
       }
+      
+      // Update URL query params
+      updateURLParams(newFilters);
+      
       return newFilters;
     });
+  };
+
+  const updateURLParams = (filters) => {
+    const params = new URLSearchParams();
+    
+    // Only add non-empty params to URL
+    if (filters.status) params.set('status', filters.status);
+    if (filters.search) params.set('search', filters.search);
+    if (filters.page > 1) params.set('page', filters.page.toString());
+    if (filters.limit !== 10) params.set('limit', filters.limit.toString());
+    
+    setSearchParams(params);
   };
 
   
@@ -233,6 +303,8 @@ const AdminDashboard = () => {
                   <option value="">All Status</option>
                   <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>
+                  <option value="checked-in">Checked In</option>
+                  <option value="checked-out">Checked Out</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
@@ -241,6 +313,7 @@ const AdminDashboard = () => {
                   Search
                 </label>
                 <input
+                  ref={searchInputRef}
                   type="text"
                   placeholder="Search by guest name or booking ID..."
                   value={filters.search}
@@ -348,12 +421,30 @@ const AdminDashboard = () => {
           </div>
 
           {/* Pagination */}
-          {pagination.totalPages > 1 && (
+          {pagination.totalPages > 0 && (
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="text-sm text-gray-700">
-                Showing {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} to{' '}
-                {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of{' '}
-                {pagination.totalItems} results
+              <div className="flex items-center gap-4">
+                <div className="text-sm text-gray-700">
+                  Showing {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} to{' '}
+                  {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of{' '}
+                  {pagination.totalItems} results
+                </div>
+                
+                {/* Limit Selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Show:</span>
+                  <select
+                    value={filters.limit}
+                    onChange={(e) => handleFilterChange('limit', parseInt(e.target.value))}
+                    className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={30}>30</option>
+                    <option value={50}>50</option>
+                  </select>
+                  <span className="text-sm text-gray-600">per page</span>
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Button

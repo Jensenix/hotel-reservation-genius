@@ -602,14 +602,51 @@ class BookingController {
         limit = 10 
       } = req.query;
 
+      // Validate and sanitize inputs
+      const sanitizedPage = Math.max(1, parseInt(page) || 1);
+      const sanitizedLimit = Math.min(100, Math.max(1, parseInt(limit) || 10));
+      
       const where = {};
       
-      if (status) where.status = status;
-      if (checkInDate) where.checkInDate = { [require('sequelize').Op.gte]: checkInDate };
-      if (checkOutDate) where.checkOutDate = { [require('sequelize').Op.lte]: checkOutDate };
-      if (userId) where.userId = userId;
+      // Validate status (whitelist) - map frontend status to database values
+      const statusMapping = {
+        'pending': 'pending',
+        'confirmed': 'confirmed', 
+        'checked-in': 'checked_in',
+        'checked-out': 'checked_out',
+        'cancelled': 'cancelled'
+      };
+      
+      if (status && statusMapping[status]) {
+        where.status = statusMapping[status];
+      }
+      
+      // Validate date format
+      if (checkInDate && !isNaN(Date.parse(checkInDate))) {
+        where.checkInDate = { [require('sequelize').Op.gte]: checkInDate };
+      }
+      if (checkOutDate && !isNaN(Date.parse(checkOutDate))) {
+        where.checkOutDate = { [require('sequelize').Op.lte]: checkOutDate };
+      }
+      
+      // Validate userId
+      if (userId) {
+        const userIdNum = parseInt(userId);
+        if (!isNaN(userIdNum) && userIdNum > 0) {
+          where.userId = userIdNum;
+        }
+      }
       if (search) {
-        where.id = { [require('sequelize').Op.eq]: parseInt(search) };
+        const searchId = parseInt(search);
+        if (!isNaN(searchId) && searchId > 0) {
+          // Search by booking ID
+          where.id = { [require('sequelize').Op.eq]: searchId };
+        } else {
+          // Search by guest name only
+          where[require('sequelize').Op.or] = [
+            { '$user.fullName$': { [require('sequelize').Op.iLike]: `%${search}%` } }
+          ];
+        }
       }
 
       const { count, rows: bookings } = await Booking.findAndCountAll({
@@ -638,20 +675,34 @@ class BookingController {
           }
         ],
         order: [['createdAt', 'DESC']],
-        limit: parseInt(limit),
-        offset: (parseInt(page) - 1) * parseInt(limit)
+        limit: sanitizedLimit,
+        offset: (sanitizedPage - 1) * sanitizedLimit
       });
+
+      // Map database status back to frontend format
+      const responseStatusMapping = {
+        'pending': 'pending',
+        'confirmed': 'confirmed',
+        'checked_in': 'checked-in',
+        'checked_out': 'checked-out',
+        'cancelled': 'cancelled'
+      };
+
+      const mappedBookings = bookings.map(booking => ({
+        ...booking.toJSON(),
+        status: responseStatusMapping[booking.status] || booking.status
+      }));
 
       return res.status(200).json({
         success: true,
         message: 'Bookings retrieved successfully',
         data: {
-          bookings,
+          bookings: mappedBookings,
           pagination: {
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(count / limit),
+            currentPage: sanitizedPage,
+            totalPages: Math.ceil(count / sanitizedLimit),
             totalItems: count,
-            itemsPerPage: parseInt(limit)
+            itemsPerPage: sanitizedLimit
           }
         }
       });
