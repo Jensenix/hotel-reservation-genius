@@ -50,6 +50,7 @@ const RoomTypeDetail = () => {
       setRooms(typeRooms);
     } catch (error) {
       console.error('Error fetching rooms:', error);
+      setRooms([]);
     } finally {
       setLoading(false);
     }

@@ -50,6 +50,17 @@ class RoomService extends BaseService {
     if (roomTypeId) where.roomTypeId = roomTypeId;
     if (floor) where.floor = floor;
 
+    // Jika limit tidak diset, ambil semua (no pagination)
+    if (!limit) {
+      const result = await super.getAll({
+        where,
+        order: [['createdAt', 'DESC']],
+        include: [{ model: RoomType, as: 'roomType' }, { model: Booking, as: 'bookings' }]
+      });
+      return result; // Return array langsung
+    }
+
+    // Jika limit diset, gunakan pagination
     const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
     const { count, rows } = await super.getAll({
       where, 

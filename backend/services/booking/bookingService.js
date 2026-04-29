@@ -20,7 +20,7 @@ class BookingService extends BaseService {
    * @returns {Promise<Object>} The created booking.
    * @throws {Error} If required fields are missing or no rooms are available.
    */
-  async create({ userId, roomTypeId, checkInDate, checkOutDate, totalPrice, status }) {
+  async createBooking({ userId, roomTypeId, checkInDate, checkOutDate, totalPrice, status }) {
     if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
       const err = new Error('userId, roomTypeId, checkInDate, and checkOutDate are required');
       err.statusCode = 400; 
@@ -93,7 +93,7 @@ class BookingService extends BaseService {
    * @returns {Promise<Object>} The booking data with nested associations.
    * @throws {Error} If the booking is not found.
    */
-  async getById(id) {
+  async getBookingById(id) {
     return super.getById(id, {
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
@@ -310,6 +310,27 @@ class BookingService extends BaseService {
         itemsPerPage: sanitizedLimit 
       }
     };
+  }
+
+  /**
+   * Updates an existing booking.
+   * @param {string|number} id - The ID of the booking to update.
+   * @param {Object} data - The data to update.
+   * @returns {Promise<Object>} The updated booking.
+   * @throws {Error} If the booking is not found.
+   */
+  async updateBooking(id, data) {
+    return this.update(id, data);
+  }
+
+  /**
+   * Deletes a booking.
+   * @param {string|number} id - The ID of the booking to delete.
+   * @returns {Promise<Object>} The deleted booking.
+   * @throws {Error} If the booking is not found.
+   */
+  async deleteBooking(id) {
+    return this.delete(id);
   }
 }
 
