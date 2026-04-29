@@ -293,7 +293,7 @@ class BookingService extends BaseService {
         { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'maxCapacity'] }], attributes: ['id', 'roomNumber', 'status'] },
         { model: Payment, as: 'payment' }
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['id', 'DESC']],
       limit: sanitizedLimit,
       offset: (sanitizedPage - 1) * sanitizedLimit
     });
