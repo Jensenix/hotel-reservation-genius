@@ -1,12 +1,16 @@
 const { Facility, RoomType } = require('../models');
 
 class FacilityController {
-  // Create new facility
+  /**
+   * Creates a new facility.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the new facility.
+   */
   async createFacility(req, res) {
     try {
       const { facilityName, iconUrl } = req.body;
 
-      // Manual validation
       if (!facilityName) {
         return res.status(400).json({
           success: false,
@@ -34,7 +38,12 @@ class FacilityController {
     }
   }
 
-  // Get all facilities
+  /**
+   * Retrieves all facilities.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing an array of facilities.
+   */
   async getAllFacilities(req, res) {
     try {
       const facilities = await Facility.findAll({
@@ -56,7 +65,12 @@ class FacilityController {
     }
   }
 
-  // Get facility by ID
+  /**
+   * Retrieves a specific facility by its ID, along with associated room types.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with facility data.
+   */
   async getFacilityById(req, res) {
     try {
       const { id } = req.params;
@@ -92,7 +106,12 @@ class FacilityController {
     }
   }
 
-  // Update facility
+  /**
+   * Updates an existing facility.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated facility data.
+   */
   async updateFacility(req, res) {
     try {
       const { id } = req.params;
@@ -127,7 +146,12 @@ class FacilityController {
     }
   }
 
-  // Delete facility
+  /**
+   * Deletes a facility.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deleteFacility(req, res) {
     try {
       const { id } = req.params;

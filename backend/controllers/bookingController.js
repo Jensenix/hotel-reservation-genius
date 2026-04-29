@@ -3,12 +3,16 @@ const pagination = require('../utils/pagination');
 const BookingUtils = require('../utils/bookingUtils');
 
 class BookingController {
-  // Create new booking
+  /**
+   * Creates a new booking.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the created booking.
+   */
   async createBooking(req, res) {
     try {
       const { userId, roomTypeId, checkInDate, checkOutDate, totalPrice, status } = req.body;
 
-      // Manual validation
       if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
         return res.status(400).json({
           success: false,
@@ -16,7 +20,6 @@ class BookingController {
         });
       }
 
-      // Find available room for this room type
       const availableRoom = await BookingUtils.findAvailableRoom(roomTypeId, checkInDate, checkOutDate);
       if (!availableRoom) {
         return res.status(400).json({
@@ -26,9 +29,8 @@ class BookingController {
       }
 
       const roomId = availableRoom.id;
-
-      // Calculate total price if not provided
       let calculatedPrice = totalPrice;
+      
       if (!totalPrice) {
         calculatedPrice = await BookingUtils.calculateTotalPrice(roomTypeId, checkInDate, checkOutDate);
       }
@@ -57,27 +59,20 @@ class BookingController {
     }
   }
 
-  // Get all bookings with pagination and filtering
+  /**
+   * Retrieves all bookings with pagination and filtering.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing bookings and pagination details.
+   */
   async getAllBookings(req, res) {
     try {
       const { page = 1, limit = 10, status, userId, roomId } = req.query;
-
       const where = {};
 
-      // Filter by status
-      if (status) {
-        where.status = status;
-      }
-
-      // Filter by user
-      if (userId) {
-        where.userId = userId;
-      }
-
-      // Filter by room
-      if (roomId) {
-        where.roomId = roomId;
-      }
+      if (status) where.status = status;
+      if (userId) where.userId = userId;
+      if (roomId) where.roomId = roomId;
 
       const parsedLimit = parseInt(limit);
       const offset = (parseInt(page) - 1) * parsedLimit;
@@ -128,50 +123,23 @@ class BookingController {
     }
   }
 
-  // Get booking by ID
+  /**
+   * Retrieves a specific booking by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the booking details.
+   */
   async getBookingById(req, res) {
     try {
       const { id } = req.params;
 
       const booking = await Booking.findByPk(id, {
         include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: { exclude: ['password'] }
-          },
-          {
-            model: Room,
-            as: 'room',
-            include: [
-              {
-                model: RoomType,
-                as: 'roomType',
-                attributes: ['id', 'name', 'basePrice', 'maxCapacity']
-              }
-            ]
-          },
-          {
-            model: Payment,
-            as: 'payment',
-            include: [
-              {
-                model: PaymentMethod,
-                as: 'paymentMethod'
-              }
-            ]
-          },
-          {
-            model: Review,
-            as: 'reviews'
-          },
-          {
-            model: ExtraService,
-            as: 'extraServices',
-            through: {
-              attributes: ['quantity', 'subtotal']
-            }
-          }
+          { model: User, as: 'user', attributes: { exclude: ['password'] } },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
+          { model: Payment, as: 'payment', include: [{ model: PaymentMethod, as: 'paymentMethod' }] },
+          { model: Review, as: 'reviews' },
+          { model: ExtraService, as: 'extraServices', through: { attributes: ['quantity', 'subtotal'] } }
         ]
       });
 
@@ -197,7 +165,12 @@ class BookingController {
     }
   }
 
-  // Update booking
+  /**
+   * Updates an existing booking.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated booking.
+   */
   async updateBooking(req, res) {
     try {
       const { id } = req.params;
@@ -236,7 +209,12 @@ class BookingController {
     }
   }
 
-  // Delete booking
+  /**
+   * Deletes a booking by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deleteBooking(req, res) {
     try {
       const { id } = req.params;
@@ -266,7 +244,12 @@ class BookingController {
     }
   }
 
-  // Check room availability
+  /**
+   * Checks the availability of a specific room.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with availability status.
+   */
   async checkRoomAvailability(req, res) {
     try {
       const { roomId, checkInDate, checkOutDate } = req.query;
@@ -283,12 +266,7 @@ class BookingController {
       return res.status(200).json({
         success: true,
         message: 'Room availability checked successfully',
-        data: {
-          roomId,
-          checkInDate,
-          checkOutDate,
-          available: isAvailable
-        }
+        data: { roomId, checkInDate, checkOutDate, available: isAvailable }
       });
     } catch (error) {
       console.error('Error checking room availability:', error);
@@ -300,7 +278,12 @@ class BookingController {
     }
   }
 
-  // Get available rooms for date range
+  /**
+   * Retrieves available rooms for a given date range.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing an array of available rooms.
+   */
   async getAvailableRooms(req, res) {
     try {
       const { checkInDate, checkOutDate, roomTypeId } = req.query;
@@ -329,7 +312,12 @@ class BookingController {
     }
   }
 
-  // Admin: Confirm booking
+  /**
+   * Confirms a pending booking.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the confirmed booking.
+   */
   async confirmBooking(req, res) {
     try {
       const { id } = req.params;
@@ -337,11 +325,7 @@ class BookingController {
       const booking = await Booking.findByPk(id, {
         include: [
           { model: require('../models').User, as: 'user' },
-          { 
-            model: require('../models').Room, 
-            as: 'room', 
-            include: [{ model: require('../models').RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] 
-          },
+          { model: require('../models').Room, as: 'room', include: [{ model: require('../models').RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
           { model: require('../models').Payment, as: 'payment' }
         ]
       });
@@ -377,7 +361,12 @@ class BookingController {
     }
   }
 
-  // Admin: Check-in guest
+  /**
+   * Processes a guest check-in.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming the check-in.
+   */
   async checkInGuest(req, res) {
     try {
       const { id } = req.params;
@@ -404,14 +393,8 @@ class BookingController {
         });
       }
 
-      // Update room status to occupied
       await booking.room.update({ status: 'occupied' });
-      
-      // Update booking status
-      await booking.update({ 
-        status: 'checked_in',
-        actualCheckIn: new Date()
-      });
+      await booking.update({ status: 'checked_in', actualCheckIn: new Date() });
 
       return res.status(200).json({
         success: true,
@@ -428,7 +411,12 @@ class BookingController {
     }
   }
 
-  // Admin: Check-out guest
+  /**
+   * Processes a guest check-out.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming the check-out.
+   */
   async checkOutGuest(req, res) {
     try {
       const { id } = req.params;
@@ -455,14 +443,8 @@ class BookingController {
         });
       }
 
-      // Update room status to available/cleaning
       await booking.room.update({ status: 'available' });
-      
-      // Update booking status
-      await booking.update({ 
-        status: 'checked_out',
-        actualCheckOut: new Date()
-      });
+      await booking.update({ status: 'checked_out', actualCheckOut: new Date() });
 
       return res.status(200).json({
         success: true,
@@ -479,7 +461,12 @@ class BookingController {
     }
   }
 
-  // Admin: Cancel booking (soft delete)
+  /**
+   * Cancels a booking (soft delete or status update).
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming cancellation.
+   */
   async cancelBooking(req, res) {
     try {
       const { id } = req.params;
@@ -507,7 +494,6 @@ class BookingController {
         });
       }
 
-      // Update room status to available if it was occupied
       if (booking.room.status === 'occupied') {
         await booking.room.update({ status: 'available' });
       }
@@ -533,10 +519,14 @@ class BookingController {
     }
   }
 
-  // Get bookings for current user
+  /**
+   * Retrieves all bookings for a specific user.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the user's bookings.
+   */
   async getUserBookings(req, res) {
     try {
-      // Get user ID from route parameters
       const { userId } = req.params;
       
       if (!userId) {
@@ -549,27 +539,9 @@ class BookingController {
       const bookings = await Booking.findAll({
         where: { userId },
         include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'fullName', 'email', 'phoneNumber']
-          },
-          {
-            model: Room,
-            as: 'room',
-            include: [
-              {
-                model: RoomType,
-                as: 'roomType',
-                attributes: ['id', 'name', 'basePrice', 'maxCapacity']
-              }
-            ]
-          },
-          {
-            model: Payment,
-            as: 'payment',
-            attributes: ['id', 'paymentMethodId', 'amount', 'paymentStatus', 'transactionTime']
-          }
+          { model: User, as: 'user', attributes: ['id', 'fullName', 'email', 'phoneNumber'] },
+          { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
+          { model: Payment, as: 'payment', attributes: ['id', 'paymentMethodId', 'amount', 'paymentStatus', 'transactionTime'] }
         ],
         order: [['createdAt', 'DESC']]
       });
@@ -589,26 +561,21 @@ class BookingController {
     }
   }
 
-  // Admin: Get all bookings with filters
+  /**
+   * Retrieves all bookings with extended admin filters and formatting.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with filtered admin bookings.
+   */
   async getAllBookingsAdmin(req, res) {
     try {
-      const { 
-        status, 
-        search,
-        checkInDate, 
-        checkOutDate, 
-        userId, 
-        page = 1, 
-        limit = 10 
-      } = req.query;
+      const { status, search, checkInDate, checkOutDate, userId, page = 1, limit = 10 } = req.query;
 
-      // Validate and sanitize inputs
       const sanitizedPage = Math.max(1, parseInt(page) || 1);
       const sanitizedLimit = Math.min(100, Math.max(1, parseInt(limit) || 10));
       
       const where = {};
       
-      // Validate status (whitelist) - map frontend status to database values
       const statusMapping = {
         'pending': 'pending',
         'confirmed': 'confirmed', 
@@ -621,7 +588,6 @@ class BookingController {
         where.status = statusMapping[status];
       }
       
-      // Validate date format
       if (checkInDate && !isNaN(Date.parse(checkInDate))) {
         where.checkInDate = { [require('sequelize').Op.gte]: checkInDate };
       }
@@ -629,20 +595,18 @@ class BookingController {
         where.checkOutDate = { [require('sequelize').Op.lte]: checkOutDate };
       }
       
-      // Validate userId
       if (userId) {
         const userIdNum = parseInt(userId);
         if (!isNaN(userIdNum) && userIdNum > 0) {
           where.userId = userIdNum;
         }
       }
+
       if (search) {
         const searchId = parseInt(search);
         if (!isNaN(searchId) && searchId > 0) {
-          // Search by booking ID
           where.id = { [require('sequelize').Op.eq]: searchId };
         } else {
-          // Search by guest name only
           where[require('sequelize').Op.or] = [
             { '$user.fullName$': { [require('sequelize').Op.iLike]: `%${search}%` } }
           ];
@@ -652,34 +616,15 @@ class BookingController {
       const { count, rows: bookings } = await Booking.findAndCountAll({
         where,
         include: [
-          { 
-            model: require('../models').User, 
-            as: 'user', 
-            attributes: ['id', 'fullName', 'email', 'phoneNumber'] 
-          },
-          { 
-            model: require('../models').Room, 
-            as: 'room', 
-            include: [
-              { 
-                model: require('../models').RoomType, 
-                as: 'roomType', 
-                attributes: ['id', 'name', 'maxCapacity'] 
-              }
-            ],
-            attributes: ['id', 'roomNumber', 'status']
-          },
-          { 
-            model: require('../models').Payment, 
-            as: 'payment' 
-          }
+          { model: require('../models').User, as: 'user', attributes: ['id', 'fullName', 'email', 'phoneNumber'] },
+          { model: require('../models').Room, as: 'room', include: [{ model: require('../models').RoomType, as: 'roomType', attributes: ['id', 'name', 'maxCapacity'] }], attributes: ['id', 'roomNumber', 'status'] },
+          { model: require('../models').Payment, as: 'payment' }
         ],
         order: [['createdAt', 'DESC']],
         limit: sanitizedLimit,
         offset: (sanitizedPage - 1) * sanitizedLimit
       });
 
-      // Map database status back to frontend format
       const responseStatusMapping = {
         'pending': 'pending',
         'confirmed': 'confirmed',

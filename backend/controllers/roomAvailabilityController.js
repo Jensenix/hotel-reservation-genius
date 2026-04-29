@@ -1,24 +1,28 @@
 const { Room, RoomType, Booking } = require('../models');
 
 class RoomAvailabilityController {
-  // Get room availability statistics by room type
+  /**
+   * Retrieves room availability statistics overall and by room type for a given date.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.query - The query parameters.
+   * @param {string} [req.query.date] - The target date to check availability. Defaults to today.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with overall and per-room-type availability statistics.
+   */
   static async getRoomAvailability(req, res) {
     try {
       const { date } = req.query;
       
       const Op = require('sequelize').Op;
       
-      // Default to today if no date provided
       const targetDate = date ? new Date(date) : new Date();
       
-      // Set date boundaries for the target day
       const targetDateStart = new Date(targetDate);
       targetDateStart.setHours(0, 0, 0, 0);
       
       const targetDateEnd = new Date(targetDate);
       targetDateEnd.setHours(23, 59, 59, 999);
 
-      // Get all room types with their physical rooms
       const roomTypes = await RoomType.findAll({
         include: [
           {
@@ -33,9 +37,6 @@ class RoomAvailabilityController {
       const availabilityData = await Promise.all(roomTypes.map(async (roomType) => {
         const totalPhysicalRooms = roomType.rooms.length;
         
-        // Get all bookings that overlap with the target date
-        // Room is occupied if: checkInDate <= targetDate AND checkOutDate > targetDate
-        // If checkOutDate == targetDate, room is available (checkout at 12 PM, check-in at 2 PM)
         const bookings = await Booking.findAll({
           include: [
             {
@@ -54,20 +55,16 @@ class RoomAvailabilityController {
           }
         });
 
-        // Get booked room IDs for this date
         const bookedRoomIds = bookings.map(b => b.roomId);
         
-        // Count rooms by physical status
         const maintenanceRooms = roomType.rooms.filter(r => r.status === 'maintenance').length;
         const cleaningRooms = roomType.rooms.filter(r => r.status === 'cleaning').length;
         
-        // Calculate available rooms: not booked AND not in maintenance/cleaning
         const availableRooms = roomType.rooms.filter(
           room => !bookedRoomIds.includes(room.id) && 
                    room.status === 'available'
         ).length;
         
-        // Calculate occupied rooms: either booked OR status is occupied
         const occupiedRooms = roomType.rooms.filter(
           room => bookedRoomIds.includes(room.id) || room.status === 'occupied'
         ).length;
@@ -76,7 +73,6 @@ class RoomAvailabilityController {
           ? Math.round((availableRooms / totalPhysicalRooms) * 100) 
           : 0;
 
-        // Detailed room list with accurate status
         const rooms = roomType.rooms.map(room => {
           const isBooked = bookedRoomIds.includes(room.id);
           let status = room.status;
@@ -114,7 +110,6 @@ class RoomAvailabilityController {
         };
       }));
 
-      // Calculate overall statistics
       const overall = {
         totalRooms: roomTypes.reduce((sum, rt) => sum + rt.rooms.length, 0),
         availableRooms: availabilityData.reduce((sum, rt) => sum + rt.availableRooms, 0),
@@ -149,7 +144,16 @@ class RoomAvailabilityController {
     }
   }
 
-  // Get detailed availability for a specific room type
+  /**
+   * Retrieves detailed availability for a specific room type.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string} req.params.roomTypeId - The ID of the room type.
+   * @param {Object} req.query - The query parameters.
+   * @param {string} [req.query.date] - The specific date to check.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing detailed availability for the room type.
+   */
   static async getRoomTypeAvailability(req, res) {
     try {
       const { roomTypeId } = req.params;
@@ -157,7 +161,6 @@ class RoomAvailabilityController {
 
       const Op = require('sequelize').Op;
 
-      // Get room type with rooms
       const roomType = await RoomType.findByPk(roomTypeId, {
         include: [
           {

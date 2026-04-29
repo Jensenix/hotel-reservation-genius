@@ -1,21 +1,23 @@
 const { Booking, Payment, Room, RoomType } = require('../models');
 
 class RevenueController {
-  // Get revenue statistics
+  /**
+   * Aggregates and returns revenue statistics including total revenue, monthly trends, and room type breakdowns.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the calculated revenue statistics.
+   */
   static async getRevenueStats(req, res) {
     try {
       const { startDate, endDate } = req.query;
       
       const Op = require('sequelize').Op;
 
-      // Build payment date filter
       const paymentDateFilter = {};
       if (startDate && endDate) {
-        // Set startDate to beginning of day (00:00:00)
         const startDateTime = new Date(startDate);
         startDateTime.setHours(0, 0, 0, 0);
 
-        // Set endDate to end of day (23:59:59) to include entire day
         const endDateTime = new Date(endDate);
         endDateTime.setHours(23, 59, 59, 999);
 
@@ -24,7 +26,6 @@ class RevenueController {
         };
       }
 
-      // Total revenue from payments
       const totalRevenueResult = await Payment.sum('amount', {
         where: {
           paymentStatus: 'paid',
@@ -32,10 +33,8 @@ class RevenueController {
         }
       });
 
-      // Total bookings
       const totalBookings = await Booking.count();
 
-      // Revenue by month (from payments)
       const revenueByMonth = await Payment.findAll({
         attributes: [
           [require('sequelize').fn('DATE_TRUNC', 'month', require('sequelize').col('Payment.createdAt')), 'month'],
@@ -49,7 +48,6 @@ class RevenueController {
         order: [[require('sequelize').fn('DATE_TRUNC', 'month', require('sequelize').col('Payment.createdAt')), 'ASC']]
       });
 
-      // Revenue by room type
       const revenueByRoomType = await Booking.findAll({
         attributes: [
           [require('sequelize').fn('SUM', require('sequelize').col('Booking.totalPrice')), 'revenue'],
@@ -85,12 +83,10 @@ class RevenueController {
         order: [[require('sequelize').literal('revenue'), 'DESC']]
       });
 
-      // Get all room types to include those with no revenue
       const allRoomTypes = await RoomType.findAll({
         attributes: ['id', 'name']
       });
 
-      // Merge with all room types, filling missing ones with 0 revenue
       const allRoomTypeNames = allRoomTypes.map(rt => rt.name);
       const revenueByRoomTypeMap = new Map(
         revenueByRoomType.map(item => [item.dataValues.roomTypeName, {
@@ -105,7 +101,6 @@ class RevenueController {
         bookings: revenueByRoomTypeMap.get(rt.name)?.bookings || 0
       })).sort((a, b) => b.revenue - a.revenue);
 
-      // Recent transactions (from bookings with payments) - always show latest 10 without date filter
       const recentTransactions = await Booking.findAll({
         include: [
           {
@@ -136,13 +131,10 @@ class RevenueController {
         limit: 10
       });
 
-      // Format response
       const formattedRevenueByMonth = revenueByMonth.map(item => ({
         month: new Date(item.dataValues.month).toLocaleDateString('en-US', { month: 'short' }),
         revenue: parseFloat(item.dataValues.revenue) || 0
       }));
-
-      console.log('Raw revenueByRoomType:', JSON.stringify(revenueByRoomType, null, 2));
 
       const formattedRevenueByRoomType = completeRevenueByRoomType;
 

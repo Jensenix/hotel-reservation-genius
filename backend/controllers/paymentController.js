@@ -2,12 +2,16 @@ const { Payment, Booking, PaymentMethod } = require('../models');
 const pagination = require('../utils/pagination');
 
 class PaymentController {
-  // Create new payment
+  /**
+   * Creates a new payment and updates corresponding booking status.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing payment and updated booking data.
+   */
   async createPayment(req, res) {
     try {
       const { bookingId, paymentMethodId, amount, paymentStatus, transactionTime } = req.body;
 
-      // Manual validation
       if (!bookingId || !amount) {
         return res.status(400).json({
           success: false,
@@ -15,7 +19,6 @@ class PaymentController {
         });
       }
 
-      // Validate payment method exists
       if (paymentMethodId) {
         const paymentMethod = await PaymentMethod.findByPk(paymentMethodId);
         if (!paymentMethod) {
@@ -34,13 +37,11 @@ class PaymentController {
         transactionTime: transactionTime || new Date()
       });
 
-      // Update booking status from pending to confirmed
       const booking = await Booking.findByPk(bookingId);
       if (booking) {
         await booking.update({ status: 'confirmed' });
       }
 
-      // Get updated booking to return in response
       const updatedBooking = await Booking.findByPk(bookingId);
 
       return res.status(201).json({
@@ -61,19 +62,22 @@ class PaymentController {
     }
   }
 
-  // Get all payments with pagination and filtering
+  /**
+   * Retrieves all payments with support for pagination and filtering.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the list of payments and pagination details.
+   */
   async getAllPayments(req, res) {
     try {
       const { page = 1, limit, paymentStatus, bookingId } = req.query;
 
       const where = {};
 
-      // Filter by status
       if (paymentStatus) {
         where.paymentStatus = paymentStatus;
       }
 
-      // Filter by booking
       if (bookingId) {
         where.bookingId = bookingId;
       }
@@ -114,7 +118,12 @@ class PaymentController {
     }
   }
 
-  // Get payment by ID
+  /**
+   * Retrieves a specific payment by ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the payment data.
+   */
   async getPaymentById(req, res) {
     try {
       const { id } = req.params;
@@ -155,7 +164,12 @@ class PaymentController {
     }
   }
 
-  // Update payment
+  /**
+   * Updates payment record details.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated payment details.
+   */
   async updatePayment(req, res) {
     try {
       const { id } = req.params;
@@ -193,7 +207,12 @@ class PaymentController {
     }
   }
 
-  // Delete payment
+  /**
+   * Deletes a payment record.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deletePayment(req, res) {
     try {
       const { id } = req.params;

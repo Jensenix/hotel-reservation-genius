@@ -1,12 +1,16 @@
 const { PaymentMethod, Payment } = require('../models');
 
 class PaymentMethodController {
-  // Create new payment method
+  /**
+   * Creates a new payment method.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the newly created payment method.
+   */
   async createPaymentMethod(req, res) {
     try {
       const { methodName, accountNumber, isActive } = req.body;
 
-      // Manual validation
       if (!methodName) {
         return res.status(400).json({
           success: false,
@@ -35,14 +39,18 @@ class PaymentMethodController {
     }
   }
 
-  // Get all payment methods with filtering
+  /**
+   * Retrieves all available payment methods.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the array of payment methods.
+   */
   async getAllPaymentMethods(req, res) {
     try {
       const { isActive } = req.query;
 
       const where = {};
 
-      // Filter by active status
       if (isActive !== undefined) {
         where.isActive = isActive === 'true';
       }
@@ -73,7 +81,12 @@ class PaymentMethodController {
     }
   }
 
-  // Get payment method by ID
+  /**
+   * Retrieves a specific payment method by ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the payment method details.
+   */
   async getPaymentMethodById(req, res) {
     try {
       const { id } = req.params;
@@ -109,7 +122,12 @@ class PaymentMethodController {
     }
   }
 
-  // Update payment method
+  /**
+   * Updates an existing payment method.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated payment method.
+   */
   async updatePaymentMethod(req, res) {
     try {
       const { id } = req.params;
@@ -145,7 +163,12 @@ class PaymentMethodController {
     }
   }
 
-  // Delete payment method
+  /**
+   * Deletes a payment method.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deletePaymentMethod(req, res) {
     try {
       const { id } = req.params;

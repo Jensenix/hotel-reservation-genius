@@ -1,12 +1,17 @@
 const { User, Booking, Payment, Review } = require('../models');
 const { Op } = require('sequelize');
 
+/**
+ * Retrieves a paginated list of guests, optionally filtered by search term, along with booking statistics.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @returns {Promise<void>} Sends a JSON response with guest data and pagination info.
+ */
 const getGuests = async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '', role = 'guest' } = req.query;
     const offset = (page - 1) * limit;
 
-    // Build search condition
     const whereCondition = {
       role: role
     };
@@ -26,12 +31,10 @@ const getGuests = async (req, res) => {
       ];
     }
 
-    // Get total count first (without includes to avoid JOIN counting duplicates)
     const count = await User.count({
       where: whereCondition
     });
 
-    // Get guests with their booking statistics
     const { rows: guests } = await User.findAndCountAll({
       where: whereCondition,
       include: [
@@ -55,7 +58,6 @@ const getGuests = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    // Format guest data with statistics
     const formattedGuests = guests.map(guest => {
       const bookings = guest.bookings || [];
       const paidBookings = bookings.filter(booking => 
@@ -101,6 +103,12 @@ const getGuests = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves detailed information about a specific guest, including their full booking history and reviews.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @returns {Promise<void>} Sends a JSON response with detailed guest data.
+ */
 const getGuestDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -131,7 +139,6 @@ const getGuestDetails = async (req, res) => {
       return res.status(404).json({ message: 'Guest not found' });
     }
 
-    // Calculate statistics
     const bookings = guest.bookings || [];
     const paidBookings = bookings.filter(booking => 
       booking.payment && booking.payment.paymentStatus === 'paid'

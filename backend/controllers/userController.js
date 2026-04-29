@@ -2,12 +2,22 @@ const { User, Booking, Review } = require('../models');
 const pagination = require('../utils/pagination');
 
 class UserController {
-  // Create new user
+  /**
+   * Creates a new user.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.body - The request body with user details.
+   * @param {string} req.body.fullName - Full name of the user.
+   * @param {string} req.body.email - Email address of the user.
+   * @param {string} req.body.password - Password for the user.
+   * @param {string} [req.body.phoneNumber] - Phone number of the user.
+   * @param {string} [req.body.role] - User role, defaults to 'guest'.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the newly created user data.
+   */
   async createUser(req, res) {
     try {
       const { fullName, email, password, phoneNumber, role } = req.body;
 
-      // Manual validation
       if (!fullName || !email || !password) {
         return res.status(400).json({
           success: false,
@@ -15,7 +25,6 @@ class UserController {
         });
       }
 
-      // Check if email already exists
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
         return res.status(400).json({
@@ -47,19 +56,27 @@ class UserController {
     }
   }
 
-  // Get all users with pagination and filtering
+  /**
+   * Retrieves all users with optional pagination, role filtering, and searching.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.query - The query parameters.
+   * @param {number} [req.query.page] - The page number for pagination.
+   * @param {number} [req.query.limit] - The number of users per page.
+   * @param {string} [req.query.role] - The role to filter by.
+   * @param {string} [req.query.search] - Search term matching email or full name.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the paginated list of users.
+   */
   async getAllUsers(req, res) {
     try {
       const { page = 1, limit, role, search } = req.query;
 
       const where = {};
 
-      // Filter by role
       if (role) {
         where.role = role;
       }
 
-      // Search by name or email
       if (search) {
         where[require('sequelize').Op.or] = [
           { fullName: { [require('sequelize').Op.like]: `%${search}%` } },
@@ -93,7 +110,14 @@ class UserController {
     }
   }
 
-  // Get user by ID
+  /**
+   * Retrieves a specific user by their ID, including their bookings and reviews.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the user.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the user details.
+   */
   async getUserById(req, res) {
     try {
       const { id } = req.params;
@@ -135,7 +159,15 @@ class UserController {
     }
   }
 
-  // Update user
+  /**
+   * Updates a user's details.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the user.
+   * @param {Object} req.body - The user data to update.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated user details.
+   */
   async updateUser(req, res) {
     try {
       const { id } = req.params;
@@ -150,7 +182,6 @@ class UserController {
         });
       }
 
-      // Check if email already exists (if email is being changed)
       if (email && email !== user.email) {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
@@ -184,7 +215,14 @@ class UserController {
     }
   }
 
-  // Delete user
+  /**
+   * Deletes a user by their ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the user.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming the deletion.
+   */
   async deleteUser(req, res) {
     try {
       const { id } = req.params;

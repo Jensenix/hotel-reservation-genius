@@ -1,12 +1,19 @@
 const { User } = require('../models');
 
 class AuthController {
-  // Login user
+  /**
+   * Authenticates a user and returns their data.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.body - The request body.
+   * @param {string} req.body.email - User's email.
+   * @param {string} req.body.password - User's password.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with authentication status and user data.
+   */
   async login(req, res) {
     try {
       const { email, password } = req.body;
 
-      // Manual validation
       if (!email || !password) {
         return res.status(400).json({
           success: false,
@@ -14,7 +21,6 @@ class AuthController {
         });
       }
 
-      // Find user by email
       const user = await User.findOne({
         where: { email }
       });
@@ -26,8 +32,6 @@ class AuthController {
         });
       }
 
-      // Check password (assuming password is stored as plain text for now)
-      // In production, you should hash passwords with bcrypt
       if (user.password !== password) {
         return res.status(401).json({
           success: false,
@@ -35,7 +39,6 @@ class AuthController {
         });
       }
 
-      // Return user data without password
       const userData = {
         id: user.id,
         fullName: user.fullName,
@@ -59,12 +62,22 @@ class AuthController {
     }
   }
 
-  // Register user
+  /**
+   * Registers a new user.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.body - The request body.
+   * @param {string} req.body.fullName - User's full name.
+   * @param {string} req.body.email - User's email.
+   * @param {string} req.body.password - User's password.
+   * @param {string} [req.body.phoneNumber] - User's phone number.
+   * @param {string} [req.body.role] - User's role.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with registration status and user data.
+   */
   async register(req, res) {
     try {
       const { fullName, email, password, phoneNumber, role } = req.body;
 
-      // Manual validation
       if (!fullName || !email || !password) {
         return res.status(400).json({
           success: false,
@@ -72,7 +85,6 @@ class AuthController {
         });
       }
 
-      // Check if email already exists
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
         return res.status(400).json({
@@ -81,16 +93,14 @@ class AuthController {
         });
       }
 
-      // Create new user
       const user = await User.create({
         fullName,
         email,
-        password, // In production, hash this password
+        password,
         phoneNumber,
-        role: role || 'guest' // Default to 'guest' if not provided
+        role: role || 'guest'
       });
 
-      // Return user data without password
       const userData = {
         id: user.id,
         fullName: user.fullName,

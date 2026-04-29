@@ -2,12 +2,21 @@ const { Room, RoomType, Booking } = require('../models');
 const pagination = require('../utils/pagination');
 
 class RoomController {
-  // Create new room
+  /**
+   * Creates a new room.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.body - The request body.
+   * @param {string} req.body.roomNumber - The room number.
+   * @param {string|number} req.body.roomTypeId - The ID of the associated room type.
+   * @param {number} req.body.floor - The floor number.
+   * @param {string} [req.body.status] - The initial status of the room.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the created room data.
+   */
   async createRoom(req, res) {
     try {
       const { roomNumber, roomTypeId, floor, status } = req.body;
 
-      // Manual validation
       if (!roomNumber || !roomTypeId) {
         return res.status(400).json({
           success: false,
@@ -15,7 +24,6 @@ class RoomController {
         });
       }
 
-      // Check if room number already exists
       const existingRoom = await Room.findOne({ where: { roomNumber } });
       if (existingRoom) {
         return res.status(400).json({
@@ -46,24 +54,32 @@ class RoomController {
     }
   }
 
-  // Get all rooms with pagination and filtering
+  /**
+   * Retrieves all rooms with optional pagination and filtering.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.query - The query parameters.
+   * @param {number} [req.query.page] - The page number for pagination.
+   * @param {number} [req.query.limit] - The number of items per page.
+   * @param {string} [req.query.status] - The status to filter by.
+   * @param {string|number} [req.query.roomTypeId] - The room type ID to filter by.
+   * @param {number} [req.query.floor] - The floor to filter by.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing a paginated list of rooms.
+   */
   async getAllRooms(req, res) {
     try {
       const { page = 1, limit, status, roomTypeId, floor } = req.query;
 
       const where = {};
 
-      // Filter by status
       if (status) {
         where.status = status;
       }
 
-      // Filter by room type
       if (roomTypeId) {
         where.roomTypeId = roomTypeId;
       }
 
-      // Filter by floor
       if (floor) {
         where.floor = floor;
       }
@@ -103,7 +119,14 @@ class RoomController {
     }
   }
 
-  // Get room by ID
+  /**
+   * Retrieves a specific room by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the room data.
+   */
   async getRoomById(req, res) {
     try {
       const { id } = req.params;
@@ -143,7 +166,15 @@ class RoomController {
     }
   }
 
-  // Update room
+  /**
+   * Updates an existing room's details.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room.
+   * @param {Object} req.body - The data to update.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the updated room data.
+   */
   async updateRoom(req, res) {
     try {
       const { id } = req.params;
@@ -158,7 +189,6 @@ class RoomController {
         });
       }
 
-      // Check if room number already exists (if room number is being changed)
       if (roomNumber && roomNumber !== room.roomNumber) {
         const existingRoom = await Room.findOne({ where: { roomNumber } });
         if (existingRoom) {
@@ -191,7 +221,14 @@ class RoomController {
     }
   }
 
-  // Delete room
+  /**
+   * Deletes a room by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming the deletion.
+   */
   async deleteRoom(req, res) {
     try {
       const { id } = req.params;
@@ -221,7 +258,15 @@ class RoomController {
     }
   }
 
-  // Get all rooms with room type
+  /**
+   * Retrieves all rooms, including their associated room type data.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.query - The query parameters.
+   * @param {string} [req.query.status] - Optional status filter.
+   * @param {string|number} [req.query.roomTypeId] - Optional room type ID filter.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing rooms with their room type info.
+   */
   async getAllWithRoomType(req, res) {
     try {
       const { status, roomTypeId } = req.query;

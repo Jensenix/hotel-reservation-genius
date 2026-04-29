@@ -1,12 +1,17 @@
 const { RoomType, Room, Facility } = require('../models');
 
 class RoomTypeController {
-  // Create new room type
+  /**
+   * Creates a new room type.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.body - The request body containing room type details.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the newly created room type.
+   */
   async createRoomType(req, res) {
     try {
       const { name, description, basePrice, maxCapacity } = req.body;
 
-      // Manual validation
       if (!name || !basePrice || !maxCapacity) {
         return res.status(400).json({
           success: false,
@@ -36,21 +41,28 @@ class RoomTypeController {
     }
   }
 
-  // Get all room types with filtering
+  /**
+   * Retrieves all room types with optional filtering for price and search terms.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.query - The query parameters.
+   * @param {number} [req.query.minPrice] - Minimum base price filter.
+   * @param {number} [req.query.maxPrice] - Maximum base price filter.
+   * @param {string} [req.query.search] - Search term for room type names.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the list of matching room types.
+   */
   async getAllRoomTypes(req, res) {
     try {
       const { minPrice, maxPrice, search } = req.query;
 
       const where = {};
 
-      // Filter by price range
       if (minPrice || maxPrice) {
         where.basePrice = {};
         if (minPrice) where.basePrice[require('sequelize').Op.gte] = minPrice;
         if (maxPrice) where.basePrice[require('sequelize').Op.lte] = maxPrice;
       }
 
-      // Search by name
       if (search) {
         where.name = { [require('sequelize').Op.like]: `%${search}%` };
       }
@@ -85,14 +97,19 @@ class RoomTypeController {
     }
   }
 
-  // Get all room types with their facilities
+  /**
+   * Retrieves all room types along with their associated facilities.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with room types and facilities.
+   */
   async getAllRoomTypesWithFacilities(req, res) {
     try {
       const roomTypes = await RoomType.findAll({
         include: [{
           model: Facility,
           as: 'facilities',
-          through: { attributes: [] } // Exclude junction table attributes
+          through: { attributes: [] } 
         }],
         order: [['basePrice', 'ASC']]
       });
@@ -112,7 +129,14 @@ class RoomTypeController {
     }
   }
 
-  // Get room type by ID
+  /**
+   * Retrieves a specific room type by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room type.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the room type details.
+   */
   async getRoomTypeById(req, res) {
     try {
       const { id } = req.params;
@@ -152,7 +176,15 @@ class RoomTypeController {
     }
   }
 
-  // Update room type
+  /**
+   * Updates an existing room type.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room type.
+   * @param {Object} req.body - The room type attributes to update.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated room type.
+   */
   async updateRoomType(req, res) {
     try {
       const { id } = req.params;
@@ -189,7 +221,14 @@ class RoomTypeController {
     }
   }
 
-  // Delete room type
+  /**
+   * Deletes a room type by its ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} req.params - The route parameters.
+   * @param {string|number} req.params.id - The ID of the room type.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming the deletion.
+   */
   async deleteRoomType(req, res) {
     try {
       const { id } = req.params;

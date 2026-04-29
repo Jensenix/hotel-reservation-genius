@@ -2,12 +2,16 @@ const { Review, Booking, User, Room, RoomType } = require('../models');
 const pagination = require('../utils/pagination');
 
 class ReviewController {
-  // Create new review
+  /**
+   * Creates a new review for a booking.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the created review data.
+   */
   async createReview(req, res) {
     try {
       const { bookingId, userId, rating, comment } = req.body;
 
-      // Manual validation
       if (!bookingId || !userId || !rating) {
         return res.status(400).json({
           success: false,
@@ -37,24 +41,26 @@ class ReviewController {
     }
   }
 
-  // Get all reviews with pagination and filtering
+  /**
+   * Retrieves all reviews with support for pagination and filtering.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the reviews and pagination information.
+   */
   async getAllReviews(req, res) {
     try {
       const { page = 1, limit, rating, userId, bookingId } = req.query;
 
       const where = {};
 
-      // Filter by rating
       if (rating) {
         where.rating = rating;
       }
 
-      // Filter by user
       if (userId) {
         where.userId = userId;
       }
 
-      // Filter by booking
       if (bookingId) {
         where.bookingId = bookingId;
       }
@@ -107,7 +113,12 @@ class ReviewController {
     }
   }
 
-  // Get reviews by user ID
+  /**
+   * Retrieves all reviews left by a specific user.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the user's reviews.
+   */
   async getUserReviews(req, res) {
     try {
       const { userId } = req.query;
@@ -162,7 +173,12 @@ class ReviewController {
     }
   }
 
-  // Get review by ID
+  /**
+   * Retrieves a specific review by ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the review data.
+   */
   async getReviewById(req, res) {
     try {
       const { id } = req.params;
@@ -215,7 +231,12 @@ class ReviewController {
     }
   }
 
-  // Update review
+  /**
+   * Updates an existing review.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the updated review.
+   */
   async updateReview(req, res) {
     try {
       const { id } = req.params;
@@ -252,7 +273,12 @@ class ReviewController {
     }
   }
 
-  // Delete review
+  /**
+   * Deletes a review.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deleteReview(req, res) {
     try {
       const { id } = req.params;

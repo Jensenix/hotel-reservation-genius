@@ -1,17 +1,20 @@
 const { BookingExtraService, ExtraService, Booking } = require('../models');
 
-// Create booking extra service
+/**
+ * Assigns an extra service to a booking.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @returns {Promise<Object>} JSON response with the created booking extra service.
+ */
 exports.createBookingExtraService = async (req, res) => {
   try {
     const { bookingId, extraServiceId, quantity, subtotal } = req.body;
 
-    // Validate booking exists
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    // Validate extra service exists
     const extraService = await ExtraService.findByPk(extraServiceId);
     if (!extraService) {
       return res.status(404).json({ message: 'Extra service not found' });
@@ -34,7 +37,12 @@ exports.createBookingExtraService = async (req, res) => {
   }
 };
 
-// Get booking extra services by booking ID
+/**
+ * Retrieves all extra services associated with a specific booking ID.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @returns {Promise<Object>} JSON response containing the list of booking extra services.
+ */
 exports.getBookingExtraServicesByBookingId = async (req, res) => {
   try {
     const { bookingId } = req.params;
@@ -57,7 +65,12 @@ exports.getBookingExtraServicesByBookingId = async (req, res) => {
   }
 };
 
-// Delete booking extra service
+/**
+ * Deletes an extra service tied to a booking.
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @returns {Promise<Object>} JSON response confirming deletion.
+ */
 exports.deleteBookingExtraService = async (req, res) => {
   try {
     const { id } = req.params;

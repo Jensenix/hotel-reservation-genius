@@ -1,12 +1,16 @@
 const { ExtraService } = require('../models');
 
 class ExtraServiceController {
-  // Create new extra service
+  /**
+   * Creates a new extra service.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the created extra service.
+   */
   async createExtraService(req, res) {
     try {
       const { serviceName, price } = req.body;
 
-      // Manual validation
       if (!serviceName || !price) {
         return res.status(400).json({
           success: false,
@@ -34,7 +38,12 @@ class ExtraServiceController {
     }
   }
 
-  // Get all extra services
+  /**
+   * Retrieves all available extra services.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing a list of extra services.
+   */
   async getAllExtraServices(req, res) {
     try {
       const extraServices = await ExtraService.findAll({
@@ -56,7 +65,12 @@ class ExtraServiceController {
     }
   }
 
-  // Get extra service by ID
+  /**
+   * Retrieves a specific extra service by ID.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response containing the extra service data.
+   */
   async getExtraServiceById(req, res) {
     try {
       const { id } = req.params;
@@ -85,7 +99,12 @@ class ExtraServiceController {
     }
   }
 
-  // Update extra service
+  /**
+   * Updates an existing extra service.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response with the updated extra service.
+   */
   async updateExtraService(req, res) {
     try {
       const { id } = req.params;
@@ -120,7 +139,12 @@ class ExtraServiceController {
     }
   }
 
-  // Delete extra service
+  /**
+   * Deletes an extra service.
+   * @param {Object} req - The Express request object.
+   * @param {Object} res - The Express response object.
+   * @returns {Promise<Object>} JSON response confirming deletion.
+   */
   async deleteExtraService(req, res) {
     try {
       const { id } = req.params;
