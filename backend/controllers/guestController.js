@@ -1,4 +1,4 @@
-const guestService = require('../services/guestService');
+const guestService = require('../services/users/guestService');
 
 class GuestController {
   /**

@@ -1,5 +1,5 @@
-const { User, Booking, Review } = require('../models');
-const pagination = require('../utils/pagination');
+const { User, Booking, Review } = require('../../models');
+const pagination = require('../../utils/pagination');
 const { Op } = require('sequelize');
 
 class UserService {

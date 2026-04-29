@@ -1,4 +1,4 @@
-const facilityService = require('../services/facilityService');
+const facilityService = require('../services/room/facilityService');
 
 class FacilityController {
   async createFacility(req, res) {

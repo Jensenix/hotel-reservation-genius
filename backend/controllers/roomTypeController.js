@@ -1,4 +1,4 @@
-const roomTypeService = require('../services/roomTypeService');
+const roomTypeService = require('../services/room/roomTypeService');
 
 class RoomTypeController {
   async createRoomType(req, res) {

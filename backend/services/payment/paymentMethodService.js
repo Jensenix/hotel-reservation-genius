@@ -1,4 +1,4 @@
-    const { PaymentMethod, Payment } = require('../models');
+    const { PaymentMethod, Payment } = require('../../models');
 
 class PaymentMethodService {
   /**

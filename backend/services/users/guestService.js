@@ -1,4 +1,4 @@
-const { User, Booking, Payment, Review } = require('../models');
+const { User, Booking, Payment, Review } = require('../../models');
 const { Op } = require('sequelize');
 
 class GuestService {
