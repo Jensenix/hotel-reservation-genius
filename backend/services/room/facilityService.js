@@ -26,6 +26,29 @@ class FacilityService extends BaseService {
       order: [['createdAt', 'DESC']]
     });
   }
+
+  // Alias methods for controller compatibility
+  async createFacility(data) {
+    return this.create(data);
+  }
+
+  async getAllFacilities() {
+    return this.getAll();
+  }
+
+  async getFacilityById(id) {
+    return this.getById(id, {
+      include: [{ model: RoomType, as: 'roomTypes' }]
+    });
+  }
+
+  async updateFacility(id, data) {
+    return this.update(id, data);
+  }
+
+  async deleteFacility(id) {
+    return this.delete(id);
+  }
 }
 
 module.exports = new FacilityService();

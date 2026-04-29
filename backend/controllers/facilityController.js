@@ -10,7 +10,7 @@ class FacilityController {
 
   async getAllFacilities(req, res) {
     try {
-      const data = await facilityService.getAllFacilities();
+      const data = await facilityService.getAll();
       res.status(200).json({ success: true, message: 'Facilities retrieved successfully', data });
     } catch (error) { res.status(500).json({ success: false, message: 'Error getting facilities', error: error.message }); }
   }

@@ -10,7 +10,7 @@ class ExtraServiceController {
 
   async getAllExtraServices(req, res) {
     try {
-      const data = await extraServiceService.getAllExtraServices();
+      const data = await extraServiceService.getAll();
       res.status(200).json({ success: true, message: 'Extra services retrieved successfully', data });
     } catch (error) { res.status(500).json({ success: false, message: 'Error getting extra services', error: error.message }); }
   }
