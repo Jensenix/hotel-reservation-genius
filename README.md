@@ -116,10 +116,10 @@ Genius Society is a modern hotel reservation system built for 5‑star propertie
 ```env
 NODE_ENV=development
 PORT=3000
-DATABASE_URL=postgres://postgres:password@localhost:5432/hotel_reservation
+DATABASE_URL=postgres://postgres:password@localhost:5432/hotel_reservation_db
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=hotel_reservation
+DB_NAME=hotel_reservation_db
 DB_USER=postgres
 DB_PASS=your_password
 JWT_SECRET=your_jwt_secret
@@ -134,6 +134,8 @@ cd hotel-reservation-genius
 ```
 
 ### 2. RUN BACKEND
+BEFORE RUNNING, ENSURE POSTGRESQL IS INSTALLED AND A DATABASE NAMED `hotel_reservation_db` IS CREATED. THEN, UPDATE THE `.env` FILE WITH YOUR DATABASE CREDENTIALS.
+
 ```bash
 cd backend
 npm install 
