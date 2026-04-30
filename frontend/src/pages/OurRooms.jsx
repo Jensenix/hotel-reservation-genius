@@ -25,7 +25,8 @@ const OurRooms = () => {
   const [filters, setFilters] = useState({
     capacity: '',
     priceRange: '',
-    sortBy: 'name'
+    sortBy: 'name',
+    search: ''
   });
 
   useEffect(() => {
@@ -37,11 +38,13 @@ const OurRooms = () => {
     const capacity = searchParams.get('capacity') || '';
     const priceRange = searchParams.get('priceRange') || '';
     const sortBy = searchParams.get('sortBy') || 'name';
+    const search = searchParams.get('search') || '';
 
     setFilters({
       capacity,
       priceRange,
-      sortBy
+      sortBy,
+      search
     });
   }, [searchParams]);
 
@@ -51,6 +54,7 @@ const OurRooms = () => {
     if (filters.capacity) params.set('capacity', filters.capacity);
     if (filters.priceRange) params.set('priceRange', filters.priceRange);
     if (filters.sortBy !== 'name') params.set('sortBy', filters.sortBy);
+    if (filters.search) params.set('search', filters.search);
 
     setSearchParams(params, { replace: true });
   }, [filters, setSearchParams]);
@@ -84,8 +88,11 @@ const OurRooms = () => {
       mid: room.basePrice > 100 && room.basePrice <= 200,
       luxury: room.basePrice > 200
     }[filters.priceRange];
+    let matchesSearch = !filters.search || 
+      room.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      room.description?.toLowerCase().includes(filters.search.toLowerCase());
     
-    return matchesCapacity && matchesPrice;
+    return matchesCapacity && matchesPrice && matchesSearch;
   }).sort((a, b) => {
     switch (filters.sortBy) {
       case 'price-low':
@@ -181,6 +188,8 @@ const OurRooms = () => {
                   <input
                     type="text"
                     placeholder="Search rooms..."
+                    value={filters.search}
+                    onChange={(e) => setFilters({...filters, search: e.target.value})}
                     className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>

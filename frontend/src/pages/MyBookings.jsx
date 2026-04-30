@@ -25,6 +25,7 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, confirmed, checked_in, checked_out, cancelled
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchUserBookings = async () => {
@@ -51,20 +52,30 @@ const MyBookings = () => {
   // Parse query params on mount
   useEffect(() => {
     const statusFilter = searchParams.get('status') || 'all';
+    const searchQuery = searchParams.get('search') || '';
     setFilter(statusFilter);
+    setSearch(searchQuery);
   }, [searchParams]);
 
   // Update URL when filter changes
   useEffect(() => {
     const params = new URLSearchParams();
     if (filter !== 'all') params.set('status', filter);
+    if (search) params.set('search', search);
 
     setSearchParams(params, { replace: true });
-  }, [filter, setSearchParams]);
+  }, [filter, search, setSearchParams]);
 
   const filteredBookings = bookings.filter(booking => {
-    if (filter === 'all') return true;
-    return booking.status === filter;
+    const matchesFilter = filter === 'all' || booking.status === filter;
+    const matchesSearch = !search || 
+      booking.id.toString().includes(search) ||
+      booking.room?.roomNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      booking.room?.roomType?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      booking.checkInDate?.toLowerCase().includes(search.toLowerCase()) ||
+      booking.checkOutDate?.toLowerCase().includes(search.toLowerCase());
+    
+    return matchesFilter && matchesSearch;
   });
 
   const getStatusColor = (status) => {
@@ -174,6 +185,8 @@ const MyBookings = () => {
                     <input
                       type="text"
                       placeholder="Search bookings..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                     />
                   </div>
