@@ -5,6 +5,40 @@
   border-radius: 0.5rem;
   background-color: white;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 9;
+}
+
+/* Force dropdown to ALWAYS appear below input */
+.react-datepicker-popper {
+  z-index: 9;
+}
+
+/* Disable all top placements - force bottom only */
+.react-datepicker-popper[data-placement^="top"] {
+  display: none !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] {
+  display: block !important;
+  margin-top: 8px !important;
+}
+
+/* Hide triangle for cleaner look */
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+/* Force calendar to stay below viewport */
+.react-datepicker {
+  max-height: 70vh;
+  overflow-y: auto;
+  position: fixed !important;
+}
+
+/* Ensure calendar container respects bottom placement */
+.react-datepicker__month-container,
+.react-datepicker__month {
+  position: relative !important;
 }
 
 .react-datepicker__header {

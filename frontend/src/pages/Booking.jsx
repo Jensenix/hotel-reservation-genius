@@ -399,6 +399,9 @@ const Booking = () => {
                         dateFormat="MMMM d, yyyy"
                         placeholderText="Select check-in date"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        popperPlacement="bottom-start"
+                        shouldCloseOnSelect={false}
+                        withPortal={false}
                       />
                     </div>
 
@@ -413,6 +416,9 @@ const Booking = () => {
                         dateFormat="MMMM d, yyyy"
                         placeholderText="Select check-out date"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        popperPlacement="bottom-start"
+                        shouldCloseOnSelect={false}
+                        withPortal={false}
                       />
                     </div>
 
