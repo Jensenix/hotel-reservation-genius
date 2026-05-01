@@ -158,7 +158,15 @@ The frontend typically serves on http://localhost:3000 (or :3001 if 3000 is occu
 - Sanitize filenames and validate file sizes if uploads are introduced
 - Use environment variables for secrets; never commit .env files
 
-## 📚 API Endpoints
+## �️ Database Schema
+
+### 📊 Entity Relationship Diagram (ERD)
+
+<div align="center">
+  <img src="./backend/docs/ERD_GSH.jpg" alt="ERD Diagram" width="700" style="max-width: 100%; height: auto;">
+</div>
+
+## �📚 API Endpoints
 
 ### 🔐 Authentication
 - `POST /api/auth/login` - Login user
