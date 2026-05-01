@@ -139,8 +139,8 @@ BEFORE RUNNING, ENSURE POSTGRESQL IS INSTALLED AND A DATABASE NAMED `hotel_reser
 ```bash
 cd backend
 npm install 
-npx sequelize-cli db:migrate
-npx sequelize-cli db:seed:all
+npx sequelize-cli db:migrate # or npm run db:migrate 
+npx sequelize-cli db:seed:all # or npm run db:seed
 npm run dev
 ```
 
