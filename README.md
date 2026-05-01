@@ -158,6 +158,69 @@ The frontend typically serves on http://localhost:3000 (or :3001 if 3000 is occu
 - Sanitize filenames and validate file sizes if uploads are introduced
 - Use environment variables for secrets; never commit .env files
 
+## 📚 API Endpoints
+
+### 🔐 Authentication
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/register` - Register new user
+
+### 🏨 Room Management
+- `GET /api/rooms` - Get all rooms
+- `GET /api/rooms/with-room-type` - Get rooms with room type
+- `GET /api/rooms/:id` - Get room details
+- `POST /api/rooms` - Create new room
+- `PUT /api/rooms/:id` - Update room
+- `DELETE /api/rooms/:id` - Delete room
+
+### 🏷️ Room Types
+- `GET /api/room-types` - Get all room types
+- `GET /api/room-types/with-facilities` - Get room types with facilities
+- `GET /api/room-types/:id` - Get room type details
+- `POST /api/room-types` - Create new room type
+- `PUT /api/room-types/:id` - Update room type
+- `DELETE /api/room-types/:id` - Delete room type
+
+### 📋 Booking Management
+- `POST /api/bookings` - Create new booking
+- `GET /api/bookings` - Get all bookings
+- `GET /api/bookings/check-availability` - Check room availability
+- `GET /api/bookings/available-rooms` - Get available rooms
+- `GET /api/bookings/user/:userId` - Get user bookings
+- `GET /api/bookings/:id` - Get booking details
+- `PUT /api/bookings/:id` - Update booking
+- `DELETE /api/bookings/:id` - Delete booking
+
+### 👨‍💼 Admin Booking Operations
+- `GET /api/bookings/admin/all` - Get all bookings (admin)
+- `PUT /api/bookings/admin/:id/confirm` - Confirm booking
+- `PUT /api/bookings/admin/:id/check-in` - Check-in guest
+- `PUT /api/bookings/admin/:id/check-out` - Check-out guest
+- `PUT /api/bookings/admin/:id/cancel` - Cancel booking
+
+### 🏢 Facilities
+- `GET /api/facilities` - Get all facilities
+- `GET /api/facilities/:id` - Get facility details
+- `POST /api/facilities` - Create new facility
+- `PUT /api/facilities/:id` - Update facility
+- `DELETE /api/facilities/:id` - Delete facility
+
+### 👥 User Management
+- `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get user details
+- `POST /api/users` - Create new user
+- `PUT /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user
+
+### 💰 Revenue Analytics
+- `GET /api/revenue/stats` - Get revenue statistics
+
+### 💳 Payment Management
+- `GET /api/payments` - Get all payments
+- `GET /api/payments/:id` - Get payment details
+- `POST /api/payments` - Create new payment
+- `PUT /api/payments/:id` - Update payment
+- `DELETE /api/payments/:id` - Delete payment
+
 ## 🤝 Contributing
 PRs and improvements are welcome. Suggested workflow:
 
