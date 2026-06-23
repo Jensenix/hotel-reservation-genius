@@ -1,0 +1,14 @@
+import { apiClient } from '../apiClient';
+
+export const revenueAPI = {
+  getStats: (params) => apiClient.get('/revenue/stats', { params }),
+  getMonthlyRevenue: (params) => apiClient.get('/revenue/monthly', { params }),
+  getRevenueByRoomType: (params) => apiClient.get('/revenue/by-room-type', { params }),
+  getRecentTransactions: (params) => apiClient.get('/revenue/recent-transactions', { params }),
+};
+
+export const guestsAPI = {
+  getAll: (params) => apiClient.get('/guests', { params }),
+  getById: (id) => apiClient.get(`/guests/${id}`),
+  getStats: (params) => apiClient.get('/guests/stats', { params }),
+};
