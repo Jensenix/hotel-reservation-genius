@@ -1,4 +1,3 @@
-import React from 'react';
 import { Building2, Star, CheckCircle2, Edit2, Trash2 } from 'lucide-react';
 import BaseAdminManagement from '@/components/admin/BaseAdminManagement';
 import apiService from '@/services/apiService';
