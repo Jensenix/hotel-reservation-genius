@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import apiService from '../../services/apiService';
-import AdminLayout from '../../components/layout/AdminLayout';
-import Card from '../../components/ui/Card';
-import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal';
-import { ArrowLeft, Plus, Edit, Trash2, Bed, Layers, DollarSign, Users } from 'lucide-react';
+import apiService from '@/services/apiService';
+import AdminLayout from '@/components/layout/AdminLayout';
+import Card from '@/components/ui/Card';
+import Button from '@/components/common/Button';
+import Modal from '@/components/common/Modal';
+import {
+  ArrowLeft,
+  Plus,
+  Edit,
+  Trash2,
+  Bed,
+  Layers,
+  DollarSign,
+  Users,
+} from 'lucide-react';
 
 const RoomTypeDetail = () => {
   const { roomTypeId } = useParams();
@@ -13,14 +22,14 @@ const RoomTypeDetail = () => {
   const [roomType, setRoomType] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Room Modal
   const [showRoomModal, setShowRoomModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
   const [roomFormData, setRoomFormData] = useState({
     roomNumber: '',
     roomTypeId: roomTypeId,
-    floor: ''
+    floor: '',
   });
 
   // Delete Modal
@@ -46,7 +55,9 @@ const RoomTypeDetail = () => {
       setLoading(true);
       const response = await apiService.rooms.getAll();
       const allRooms = response.data.data || [];
-      const typeRooms = allRooms.filter(room => room.roomTypeId === parseInt(roomTypeId));
+      const typeRooms = allRooms.filter(
+        (room) => room.roomTypeId === parseInt(roomTypeId),
+      );
       setRooms(typeRooms);
     } catch (error) {
       console.error('Error fetching rooms:', error);
@@ -63,14 +74,14 @@ const RoomTypeDetail = () => {
       setRoomFormData({
         roomNumber: room.roomNumber,
         roomTypeId: room.roomTypeId,
-        floor: room.floor
+        floor: room.floor,
       });
     } else {
       setEditingRoom(null);
       setRoomFormData({
         roomNumber: '',
         roomTypeId: roomTypeId,
-        floor: ''
+        floor: '',
       });
     }
     setShowRoomModal(true);
@@ -82,7 +93,7 @@ const RoomTypeDetail = () => {
     setRoomFormData({
       roomNumber: '',
       roomTypeId: roomTypeId,
-      floor: ''
+      floor: '',
     });
   };
 
@@ -98,7 +109,10 @@ const RoomTypeDetail = () => {
       fetchRooms();
     } catch (error) {
       console.error('Error saving room:', error);
-      alert('Error saving room: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving room: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -110,7 +124,10 @@ const RoomTypeDetail = () => {
       fetchRooms();
     } catch (error) {
       console.error('Error deleting room:', error);
-      alert('Error deleting room: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting room: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -140,7 +157,9 @@ const RoomTypeDetail = () => {
                 <div>
                   <div className="flex items-center space-x-3 mb-3">
                     <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-                    <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">Room Type Details</span>
+                    <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
+                      Room Type Details
+                    </span>
                     <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
                   </div>
                   <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
@@ -171,7 +190,9 @@ const RoomTypeDetail = () => {
                     <Layers className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Room Type</p>
+                    <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                      Room Type
+                    </p>
                     <p className="text-2xl font-light">{roomType.name}</p>
                   </div>
                 </div>
@@ -181,7 +202,9 @@ const RoomTypeDetail = () => {
                     <Bed className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">Physical Rooms</p>
+                    <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                      Physical Rooms
+                    </p>
                     <p className="text-2xl font-light">{rooms.length}</p>
                   </div>
                 </div>
@@ -191,8 +214,12 @@ const RoomTypeDetail = () => {
                     <DollarSign className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Base Price</p>
-                    <p className="text-2xl font-light">${roomType.basePrice}/night</p>
+                    <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                      Base Price
+                    </p>
+                    <p className="text-2xl font-light">
+                      ${roomType.basePrice}/night
+                    </p>
                   </div>
                 </div>
 
@@ -201,15 +228,21 @@ const RoomTypeDetail = () => {
                     <Users className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-1">Max Capacity</p>
-                    <p className="text-2xl font-light">{roomType.maxCapacity} guests</p>
+                    <p className="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                      Max Capacity
+                    </p>
+                    <p className="text-2xl font-light">
+                      {roomType.maxCapacity} guests
+                    </p>
                   </div>
                 </div>
               </div>
 
               {roomType.description && (
                 <div className="mt-8 pt-8 border-t border-slate-700">
-                  <p className="text-slate-300 leading-relaxed">{roomType.description}</p>
+                  <p className="text-slate-300 leading-relaxed">
+                    {roomType.description}
+                  </p>
                 </div>
               )}
             </div>
@@ -220,9 +253,12 @@ const RoomTypeDetail = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-light text-slate-800 mb-2 tracking-tight">
-                  Physical <span className="font-semibold text-amber-600">Rooms</span>
+                  Physical{' '}
+                  <span className="font-semibold text-amber-600">Rooms</span>
                 </h2>
-                <p className="text-slate-500 text-sm">{rooms.length} rooms found</p>
+                <p className="text-slate-500 text-sm">
+                  {rooms.length} rooms found
+                </p>
               </div>
             </div>
           </div>
@@ -234,7 +270,10 @@ const RoomTypeDetail = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {rooms.map((room) => (
-                <div key={room.id} className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 group">
+                <div
+                  key={room.id}
+                  className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 group"
+                >
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center space-x-4">
@@ -242,8 +281,12 @@ const RoomTypeDetail = () => {
                           <Bed className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                          <p className="font-semibold text-slate-900 text-xl">{room.roomNumber}</p>
-                          <p className="text-slate-500 text-sm">Floor {room.floor}</p>
+                          <p className="font-semibold text-slate-900 text-xl">
+                            {room.roomNumber}
+                          </p>
+                          <p className="text-slate-500 text-sm">
+                            Floor {room.floor}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -275,8 +318,12 @@ const RoomTypeDetail = () => {
           {rooms.length === 0 && !loading && (
             <div className="text-center py-20 bg-white rounded-2xl shadow-xl border-2 border-dashed border-slate-300">
               <Bed className="w-24 h-24 text-slate-300 mx-auto mb-6" />
-              <p className="text-slate-500 text-lg mb-2">No physical rooms added yet</p>
-              <p className="text-slate-400 text-sm mb-8">Click "Add Physical Room" to create the first room</p>
+              <p className="text-slate-500 text-lg mb-2">
+                No physical rooms added yet
+              </p>
+              <p className="text-slate-400 text-sm mb-8">
+                Click "Add Physical Room" to create the first room
+              </p>
               <Button
                 onClick={() => handleOpenRoomModal()}
                 className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 px-8 py-3 rounded-xl font-semibold"
@@ -296,25 +343,36 @@ const RoomTypeDetail = () => {
         >
           <form onSubmit={handleSubmitRoom} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Room Number</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Room Number
+              </label>
               <input
                 type="text"
                 required
                 value={roomFormData.roomNumber}
-                onChange={(e) => setRoomFormData({ ...roomFormData, roomNumber: e.target.value })}
+                onChange={(e) =>
+                  setRoomFormData({
+                    ...roomFormData,
+                    roomNumber: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., A101"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Floor</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Floor
+              </label>
               <input
                 type="number"
                 required
                 min="1"
                 value={roomFormData.floor}
-                onChange={(e) => setRoomFormData({ ...roomFormData, floor: e.target.value })}
+                onChange={(e) =>
+                  setRoomFormData({ ...roomFormData, floor: e.target.value })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., 1"
               />
@@ -349,7 +407,9 @@ const RoomTypeDetail = () => {
         >
           <div className="space-y-6">
             <p className="text-slate-600">
-              Are you sure you want to delete room <strong>{deletingRoom?.roomNumber}</strong>? This action cannot be undone.
+              Are you sure you want to delete room{' '}
+              <strong>{deletingRoom?.roomNumber}</strong>? This action cannot be
+              undone.
             </p>
             <div className="flex gap-4">
               <Button

@@ -1,7 +1,16 @@
 import React from 'react';
-import { CreditCard, Wallet, Building, Smartphone, Edit2, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
-import BaseAdminManagement from '../../components/admin/BaseAdminManagement';
-import apiService from '../../services/apiService';
+import {
+  CreditCard,
+  Wallet,
+  Building,
+  Smartphone,
+  Edit2,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
+import BaseAdminManagement from '@/components/admin/BaseAdminManagement';
+import apiService from '@/services/apiService';
 
 /**
  * Payment Methods Management Class Component
@@ -29,7 +38,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
     return {
       methodName: '',
       accountNumber: '',
-      isActive: true
+      isActive: true,
     };
   }
 
@@ -37,22 +46,26 @@ class PaymentMethodsManagement extends BaseAdminManagement {
     return {
       methodName: item.name || item.methodName || '',
       accountNumber: item.config || item.accountNumber || '',
-      isActive: item.isActive !== false
+      isActive: item.isActive !== false,
     };
   }
 
   mapApiResponse(apiData) {
     console.log('🔍 Raw API Data (Payment Methods):', apiData);
-    
-    const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
-      id: item.id,
-      name: item.methodName || item.name || 'Unknown Payment Method',
-      description: item.description || '',
-      type: item.type || this.getPaymentTypeFromName(item.methodName || item.name),
-      isActive: item.isActive !== false,
-      config: item.accountNumber || item.config || 'N/A'
-    })) : [];
-    
+
+    const mappedData = Array.isArray(apiData)
+      ? apiData.map((item) => ({
+          id: item.id,
+          name: item.methodName || item.name || 'Unknown Payment Method',
+          description: item.description || '',
+          type:
+            item.type ||
+            this.getPaymentTypeFromName(item.methodName || item.name),
+          isActive: item.isActive !== false,
+          config: item.accountNumber || item.config || 'N/A',
+        }))
+      : [];
+
     console.log('✅ Mapped Payment Methods Data:', mappedData.length, 'items');
     return mappedData;
   }
@@ -62,17 +75,59 @@ class PaymentMethodsManagement extends BaseAdminManagement {
   }
 
   getActiveCount() {
-    return this.state.data.filter(method => method.isActive).length;
+    return this.state.data.filter((method) => method.isActive).length;
   }
 
   getMockData() {
     return [
-      { id: 1, name: 'Credit Card', type: 'card', description: 'Visa, MasterCard, American Express', isActive: true, config: 'stripe' },
-      { id: 2, name: 'PayPal', type: 'wallet', description: 'PayPal and PayPal Credit', isActive: true, config: 'paypal' },
-      { id: 3, name: 'Bank Transfer', type: 'bank', description: 'Direct bank transfer and wire', isActive: true, config: 'bank' },
-      { id: 4, name: 'Apple Pay', type: 'mobile', description: 'Apple Pay and Apple Wallet', isActive: true, config: 'apple_pay' },
-      { id: 5, name: 'Google Pay', type: 'mobile', description: 'Google Pay and Google Wallet', isActive: false, config: 'google_pay' },
-      { id: 6, name: 'Cash on Arrival', type: 'cash', description: 'Pay cash when you arrive', isActive: true, config: 'cash' },
+      {
+        id: 1,
+        name: 'Credit Card',
+        type: 'card',
+        description: 'Visa, MasterCard, American Express',
+        isActive: true,
+        config: 'stripe',
+      },
+      {
+        id: 2,
+        name: 'PayPal',
+        type: 'wallet',
+        description: 'PayPal and PayPal Credit',
+        isActive: true,
+        config: 'paypal',
+      },
+      {
+        id: 3,
+        name: 'Bank Transfer',
+        type: 'bank',
+        description: 'Direct bank transfer and wire',
+        isActive: true,
+        config: 'bank',
+      },
+      {
+        id: 4,
+        name: 'Apple Pay',
+        type: 'mobile',
+        description: 'Apple Pay and Apple Wallet',
+        isActive: true,
+        config: 'apple_pay',
+      },
+      {
+        id: 5,
+        name: 'Google Pay',
+        type: 'mobile',
+        description: 'Google Pay and Google Wallet',
+        isActive: false,
+        config: 'google_pay',
+      },
+      {
+        id: 6,
+        name: 'Cash on Arrival',
+        type: 'cash',
+        description: 'Pay cash when you arrive',
+        isActive: true,
+        config: 'cash',
+      },
     ];
   }
 
@@ -80,10 +135,18 @@ class PaymentMethodsManagement extends BaseAdminManagement {
   getPaymentTypeFromName(name) {
     if (!name) return 'card';
     const lowerName = name.toLowerCase();
-    if (lowerName.includes('credit') || lowerName.includes('debit')) return 'card';
-    if (lowerName.includes('paypal') || lowerName.includes('wallet')) return 'wallet';
-    if (lowerName.includes('bank') || lowerName.includes('transfer')) return 'bank';
-    if (lowerName.includes('apple') || lowerName.includes('google') || lowerName.includes('digital')) return 'mobile';
+    if (lowerName.includes('credit') || lowerName.includes('debit'))
+      return 'card';
+    if (lowerName.includes('paypal') || lowerName.includes('wallet'))
+      return 'wallet';
+    if (lowerName.includes('bank') || lowerName.includes('transfer'))
+      return 'bank';
+    if (
+      lowerName.includes('apple') ||
+      lowerName.includes('google') ||
+      lowerName.includes('digital')
+    )
+      return 'mobile';
     if (lowerName.includes('cash')) return 'cash';
     return 'card';
   }
@@ -95,7 +158,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
       wallet: Wallet,
       bank: Building,
       mobile: Smartphone,
-      cash: Wallet
+      cash: Wallet,
     };
     const Icon = icons[type] || CreditCard;
     return <Icon size={24} />;
@@ -123,7 +186,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
   // Form fields override
   renderFormFields() {
     const { formData } = this.state;
-    
+
     return (
       <>
         <div>
@@ -184,7 +247,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
   // Data grid override
   renderDataGrid() {
     const filteredData = this.getFilteredData();
-    
+
     return (
       <div className="grid grid-cols-1 md:col-span-2 lg:col-span-3 gap-8">
         {filteredData.map((payment) => (
@@ -201,7 +264,9 @@ class PaymentMethodsManagement extends BaseAdminManagement {
                     {this.getIconComponent(payment.type)}
                   </div>
                   <div className="text-right">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${payment.isActive ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${payment.isActive ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-red-100 text-red-800 border-red-200'}`}
+                    >
                       {payment.isActive ? (
                         <>
                           <CheckCircle2 className="w-3 h-3 mr-1" />
@@ -224,7 +289,7 @@ class PaymentMethodsManagement extends BaseAdminManagement {
                 </p>
               </div>
             </div>
-            
+
             {/* Action Buttons */}
             <div className="p-6 bg-white">
               <div className="flex space-x-1">

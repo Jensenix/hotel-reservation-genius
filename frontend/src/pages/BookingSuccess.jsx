@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Button from '../components/common/Button';
+import Button from '@/components/common/Button';
 
 const BookingSuccess = () => {
   const location = useLocation();
@@ -12,8 +12,12 @@ const BookingSuccess = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Booking Not Found</h1>
-          <p className="text-gray-600 mb-8">We couldn't find your booking details.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Booking Not Found
+          </h1>
+          <p className="text-gray-600 mb-8">
+            We couldn't find your booking details.
+          </p>
           <Button onClick={() => navigate('/our-rooms')}>
             Browse Our Rooms
           </Button>
@@ -42,17 +46,22 @@ const BookingSuccess = () => {
             Booking Confirmed!
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Your reservation has been successfully confirmed. We've sent a confirmation email with all the details.
+            Your reservation has been successfully confirmed. We've sent a
+            confirmation email with all the details.
           </p>
         </div>
 
         {/* Booking Details */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Details</h2>
-          
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Booking Details
+          </h2>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Room Information</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Room Information
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <span className="text-gray-600 w-24">Room Type:</span>
@@ -70,7 +79,9 @@ const BookingSuccess = () => {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Reservation Dates</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Reservation Dates
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <span className="text-gray-600 w-24">Check-in:</span>
@@ -100,7 +111,9 @@ const BookingSuccess = () => {
 
           {booking.specialRequests && (
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-3 text-gray-800">Special Requests</h3>
+              <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                Special Requests
+              </h3>
               <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
                 {booking.specialRequests}
               </p>
@@ -110,17 +123,14 @@ const BookingSuccess = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
+          <Button
             onClick={handleNewBooking}
             variant="outline"
             className="flex-1"
           >
             Make Another Booking
           </Button>
-          <Button 
-            onClick={handleViewBookings}
-            className="flex-1"
-          >
+          <Button onClick={handleViewBookings} className="flex-1">
             View My Bookings
           </Button>
         </div>
@@ -128,9 +138,12 @@ const BookingSuccess = () => {
         {/* Additional Info */}
         <div className="mt-12 text-center">
           <div className="bg-blue-50 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-3 text-blue-900">What's Next?</h3>
+            <h3 className="text-lg font-semibold mb-3 text-blue-900">
+              What's Next?
+            </h3>
             <p className="text-blue-700 mb-4">
-              Check your email for booking confirmation. You can also manage your reservations through your account dashboard.
+              Check your email for booking confirmation. You can also manage
+              your reservations through your account dashboard.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button variant="outline" size="sm">
@@ -139,9 +152,7 @@ const BookingSuccess = () => {
               <Button variant="outline" size="sm">
                 Add to Calendar
               </Button>
-              <Button size="sm">
-                Contact Support
-              </Button>
+              <Button size="sm">Contact Support</Button>
             </div>
           </div>
         </div>

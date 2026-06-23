@@ -1,7 +1,7 @@
 import React from 'react';
 import { Building2, Star, CheckCircle2, Edit2, Trash2 } from 'lucide-react';
-import BaseAdminManagement from '../../components/admin/BaseAdminManagement';
-import apiService from '../../services/apiService';
+import BaseAdminManagement from '@/components/admin/BaseAdminManagement';
+import apiService from '@/services/apiService';
 
 /**
  * Facilities Management Class Component
@@ -28,26 +28,28 @@ class FacilitiesManagement extends BaseAdminManagement {
   getInitialFormData() {
     return {
       facilityName: '',
-      iconUrl: ''
+      iconUrl: '',
     };
   }
 
   getFormDataFromItem(item) {
     return {
       facilityName: item.name || item.facilityName || '',
-      iconUrl: item.icon || item.iconUrl || ''
+      iconUrl: item.icon || item.iconUrl || '',
     };
   }
 
   mapApiResponse(apiData) {
     console.log('🔍 Raw API Data (Facilities):', apiData);
-    
-    const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
-      id: item.id,
-      name: item.facilityName || item.name || 'Unknown Facility',
-      icon: item.iconUrl || item.icon || 'default'
-    })) : [];
-    
+
+    const mappedData = Array.isArray(apiData)
+      ? apiData.map((item) => ({
+          id: item.id,
+          name: item.facilityName || item.name || 'Unknown Facility',
+          icon: item.iconUrl || item.icon || 'default',
+        }))
+      : [];
+
     console.log('✅ Mapped Facilities Data:', mappedData.length, 'items');
     return mappedData;
   }
@@ -63,11 +65,36 @@ class FacilitiesManagement extends BaseAdminManagement {
 
   getMockData() {
     return [
-      { id: 1, name: 'Swimming Pool', description: 'Outdoor infinity pool with city view', icon: 'pool' },
-      { id: 2, name: 'Fitness Center', description: '24/7 gym with modern equipment', icon: 'fitness' },
-      { id: 3, name: 'Spa & Wellness', description: 'Full-service spa and massage therapy', icon: 'spa' },
-      { id: 4, name: 'Restaurant', description: 'Fine dining restaurant with international cuisine', icon: 'restaurant' },
-      { id: 5, name: 'Business Center', description: 'Meeting rooms and business services', icon: 'business' },
+      {
+        id: 1,
+        name: 'Swimming Pool',
+        description: 'Outdoor infinity pool with city view',
+        icon: 'pool',
+      },
+      {
+        id: 2,
+        name: 'Fitness Center',
+        description: '24/7 gym with modern equipment',
+        icon: 'fitness',
+      },
+      {
+        id: 3,
+        name: 'Spa & Wellness',
+        description: 'Full-service spa and massage therapy',
+        icon: 'spa',
+      },
+      {
+        id: 4,
+        name: 'Restaurant',
+        description: 'Fine dining restaurant with international cuisine',
+        icon: 'restaurant',
+      },
+      {
+        id: 5,
+        name: 'Business Center',
+        description: 'Meeting rooms and business services',
+        icon: 'business',
+      },
     ];
   }
 
@@ -79,7 +106,7 @@ class FacilitiesManagement extends BaseAdminManagement {
       spa: CheckCircle2,
       restaurant: Star,
       business: Star,
-      default: Building2
+      default: Building2,
     };
     const Icon = icons[icon] || Star;
     return <Icon size={24} />;
@@ -107,7 +134,7 @@ class FacilitiesManagement extends BaseAdminManagement {
   // Form fields override
   renderFormFields() {
     const { formData } = this.state;
-    
+
     return (
       <>
         <div>
@@ -149,7 +176,7 @@ class FacilitiesManagement extends BaseAdminManagement {
   // Data grid override
   renderDataGrid() {
     const filteredData = this.getFilteredData();
-    
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:col-span-3 gap-8">
         {filteredData.map((facility) => (
@@ -174,7 +201,7 @@ class FacilitiesManagement extends BaseAdminManagement {
                 </p>
               </div>
             </div>
-            
+
             {/* Action Buttons */}
             <div className="p-6 bg-white">
               <div className="flex space-x-1">

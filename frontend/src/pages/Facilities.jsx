@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import apiService from '../services/apiService';
-import Loading from '../components/ui/Loading';
-import Button from '../components/common/Button';
-import { 
-  Shield, 
-  Star, 
+import apiService from '@/services/apiService';
+import Loading from '@/components/ui/Loading';
+import Button from '@/components/common/Button';
+import {
+  Shield,
+  Star,
   CheckCircle,
   Sparkles,
   Wifi,
@@ -20,7 +20,7 @@ import {
   ChevronRight,
   ChevronLeft,
   Play,
-  Pause
+  Pause,
 } from 'lucide-react';
 
 const Facilities = () => {
@@ -39,8 +39,8 @@ const Facilities = () => {
     if (!isAutoPlaying || facilities.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === facilities.length - 1 ? 0 : prevIndex + 1
+      setCurrentIndex((prevIndex) =>
+        prevIndex === facilities.length - 1 ? 0 : prevIndex + 1,
       );
     }, 3000); // 3 seconds
 
@@ -66,7 +66,12 @@ const Facilities = () => {
     setIsAutoPlaying(false); // Pause auto-play when user manually navigates
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex === facilities.length - 1 ? 0 : prevIndex + 1;
-      console.log('Next slide - Current index:', newIndex, 'Total facilities:', facilities.length);
+      console.log(
+        'Next slide - Current index:',
+        newIndex,
+        'Total facilities:',
+        facilities.length,
+      );
       console.log('Current facility:', facilities[newIndex]);
       return newIndex;
     });
@@ -76,7 +81,12 @@ const Facilities = () => {
     setIsAutoPlaying(false); // Pause auto-play when user manually navigates
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex === 0 ? facilities.length - 1 : prevIndex - 1;
-      console.log('Prev slide - Current index:', newIndex, 'Total facilities:', facilities.length);
+      console.log(
+        'Prev slide - Current index:',
+        newIndex,
+        'Total facilities:',
+        facilities.length,
+      );
       console.log('Current facility:', facilities[newIndex]);
       return newIndex;
     });
@@ -102,13 +112,21 @@ const Facilities = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-8">
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">
+                Premium Amenities
+              </span>
               <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
             <h1 className="text-5xl font-light text-slate-800 mb-6 tracking-tight">
-              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+              Our{' '}
+              <span className="font-semibold text-amber-600">
+                Luxury Facilities
+              </span>
             </h1>
-            <Loading text="Discovering our world-class amenities..." size="lg" />
+            <Loading
+              text="Discovering our world-class amenities..."
+              size="lg"
+            />
           </div>
         </div>
       </div>
@@ -122,13 +140,20 @@ const Facilities = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-8">
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">
+                Premium Amenities
+              </span>
               <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
             <h1 className="text-5xl font-light text-slate-800 mb-6 tracking-tight">
-              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+              Our{' '}
+              <span className="font-semibold text-amber-600">
+                Luxury Facilities
+              </span>
             </h1>
-            <p className="text-xl text-slate-600 font-light">Our exceptional facilities are being prepared for your arrival</p>
+            <p className="text-xl text-slate-600 font-light">
+              Our exceptional facilities are being prepared for your arrival
+            </p>
           </div>
         </div>
       </div>
@@ -143,14 +168,20 @@ const Facilities = () => {
           <div className="text-center mb-20">
             <div className="flex items-center justify-center space-x-3 mb-8">
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">Premium Amenities</span>
+              <span className="text-amber-600 text-sm font-semibold tracking-widest uppercase">
+                Premium Amenities
+              </span>
               <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
             </div>
             <h1 className="text-6xl font-light text-slate-800 mb-8 tracking-tight">
-              Our <span className="font-semibold text-amber-600">Luxury Facilities</span>
+              Our{' '}
+              <span className="font-semibold text-amber-600">
+                Luxury Facilities
+              </span>
             </h1>
             <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-light mb-12">
-              Experience world-class amenities meticulously designed to elevate your stay to extraordinary heights of comfort and sophistication
+              Experience world-class amenities meticulously designed to elevate
+              your stay to extraordinary heights of comfort and sophistication
             </p>
             <div className="flex items-center justify-center space-x-8">
               <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
@@ -159,7 +190,9 @@ const Facilities = () => {
               </div>
               <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
                 <Star className="w-5 h-5" />
-                <span className="font-medium tracking-wide">Premium Quality</span>
+                <span className="font-medium tracking-wide">
+                  Premium Quality
+                </span>
               </div>
               <div className="flex items-center space-x-3 text-amber-600 bg-white/80 px-6 py-3 rounded-full shadow-lg">
                 <Shield className="w-5 h-5" />
@@ -179,14 +212,14 @@ const Facilities = () => {
                   <div
                     key={facility.id}
                     className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                      index === currentIndex 
-                        ? 'opacity-100 translate-x-0' 
-                        : index < currentIndex 
-                        ? 'opacity-0 -translate-x-full' 
-                        : 'opacity-0 translate-x-full'
+                      index === currentIndex
+                        ? 'opacity-100 translate-x-0'
+                        : index < currentIndex
+                          ? 'opacity-0 -translate-x-full'
+                          : 'opacity-0 translate-x-full'
                     }`}
                   >
-                    <div 
+                    <div
                       className="h-full cursor-pointer hover:shadow-2xl transition-all duration-500 bg-white"
                       onClick={() => handleCardClick(facility)}
                     >
@@ -201,22 +234,28 @@ const Facilities = () => {
                                   {facility.facilityName?.charAt(0) || 'F'}
                                 </span>
                               </div>
-                              <p className="text-white font-semibold tracking-wide text-lg">Premium Facility</p>
+                              <p className="text-white font-semibold tracking-wide text-lg">
+                                Premium Facility
+                              </p>
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex-1 p-10">
                           <h3 className="text-3xl font-light text-slate-800 mb-4 tracking-tight">
                             {facility.facilityName || 'Luxury Facility'}
                           </h3>
                           <p className="text-slate-600 leading-relaxed font-light text-lg mb-6">
-                            {facility.iconUrl ? `Exclusive facility featuring ${facility.iconUrl}` : 'Experience unparalleled luxury and comfort in our premium facilities designed for the most discerning guests'}
+                            {facility.iconUrl
+                              ? `Exclusive facility featuring ${facility.iconUrl}`
+                              : 'Experience unparalleled luxury and comfort in our premium facilities designed for the most discerning guests'}
                           </p>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2 text-amber-600">
                               <Star className="w-5 h-5 fill-current" />
-                              <span className="font-medium tracking-wide">5-Star Service</span>
+                              <span className="font-medium tracking-wide">
+                                5-Star Service
+                              </span>
                             </div>
                             <button className="text-amber-600 font-medium tracking-wide hover:text-amber-700 transition-colors">
                               Explore More →
@@ -249,7 +288,9 @@ const Facilities = () => {
               <button
                 onClick={toggleAutoPlay}
                 className="absolute bottom-6 right-6 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-slate-200"
-                aria-label={isAutoPlaying ? "Pause auto-play" : "Start auto-play"}
+                aria-label={
+                  isAutoPlaying ? 'Pause auto-play' : 'Start auto-play'
+                }
               >
                 {isAutoPlaying ? (
                   <Pause className="w-5 h-5" />
@@ -292,7 +333,9 @@ const Facilities = () => {
                             {selectedFacility.facilityName?.charAt(0) || 'F'}
                           </span>
                         </div>
-                        <p className="text-white font-semibold tracking-wide text-xl">Premium Facility</p>
+                        <p className="text-white font-semibold tracking-wide text-xl">
+                          Premium Facility
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -303,25 +346,33 @@ const Facilities = () => {
                   </h2>
                   <div className="prose prose-lg text-slate-600 mb-8">
                     <p className="leading-relaxed font-light text-lg">
-                      {selectedFacility.iconUrl ? `Exclusive facility featuring premium ${selectedFacility.iconUrl} services` : 'Experience unparalleled luxury and sophistication in our premium facilities, meticulously designed to provide the ultimate comfort and convenience for our most discerning guests'}
+                      {selectedFacility.iconUrl
+                        ? `Exclusive facility featuring premium ${selectedFacility.iconUrl} services`
+                        : 'Experience unparalleled luxury and sophistication in our premium facilities, meticulously designed to provide the ultimate comfort and convenience for our most discerning guests'}
                     </p>
                   </div>
                   <div className="space-y-4 mb-8">
                     <div className="flex items-center space-x-3 text-amber-600">
                       <Star className="w-5 h-5 fill-current" />
-                      <span className="font-medium tracking-wide">5-Star Premium Service</span>
+                      <span className="font-medium tracking-wide">
+                        5-Star Premium Service
+                      </span>
                     </div>
                     <div className="flex items-center space-x-3 text-slate-600">
                       <Clock className="w-5 h-5" />
-                      <span className="font-medium tracking-wide">24/7 Availability</span>
+                      <span className="font-medium tracking-wide">
+                        24/7 Availability
+                      </span>
                     </div>
                     <div className="flex items-center space-x-3 text-slate-600">
                       <Shield className="w-5 h-5" />
-                      <span className="font-medium tracking-wide">Premium Quality Assurance</span>
+                      <span className="font-medium tracking-wide">
+                        Premium Quality Assurance
+                      </span>
                     </div>
                   </div>
                   <div className="mt-8">
-                    <button 
+                    <button
                       className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-0 tracking-wide"
                       onClick={() => setSelectedFacility(null)}
                     >
@@ -338,15 +389,19 @@ const Facilities = () => {
         <div className="pb-20">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-light text-slate-800 mb-4 tracking-tight">
-              All <span className="font-semibold text-amber-600">Premium Facilities</span>
+              All{' '}
+              <span className="font-semibold text-amber-600">
+                Premium Facilities
+              </span>
             </h2>
             <p className="text-xl text-slate-600 font-light max-w-3xl mx-auto">
-              Explore our complete collection of world-class amenities designed for your ultimate comfort
+              Explore our complete collection of world-class amenities designed
+              for your ultimate comfort
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {facilities.map((facility) => (
-              <div 
+              <div
                 key={facility.id}
                 className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer hover:scale-105 border border-slate-100 overflow-hidden"
                 onClick={() => handleCardClick(facility)}
@@ -360,7 +415,9 @@ const Facilities = () => {
                           {facility.facilityName?.charAt(0) || 'F'}
                         </span>
                       </div>
-                      <p className="text-white font-semibold tracking-wide text-sm">Premium</p>
+                      <p className="text-white font-semibold tracking-wide text-sm">
+                        Premium
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -369,9 +426,11 @@ const Facilities = () => {
                     {facility.facilityName || 'Luxury Facility'}
                   </h3>
                   <p className="text-slate-600 leading-relaxed font-light mb-6 line-clamp-2">
-                    {facility.iconUrl ? `Premium ${facility.iconUrl} facility` : 'Experience luxury and comfort in our premium facilities'}
+                    {facility.iconUrl
+                      ? `Premium ${facility.iconUrl} facility`
+                      : 'Experience luxury and comfort in our premium facilities'}
                   </p>
-                  <button 
+                  <button
                     className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300 border-0 tracking-wide text-sm"
                     onClick={(e) => {
                       e.stopPropagation();
