@@ -147,9 +147,12 @@ npm run dev
 ### 3. RUN FRONTEND
 ```bash
 cd frontend
-npm install
-npm start
+npm install # or npm i
+npm run dev
 ```
+
+NOTE : YOU CAN ALSO RUN BOTH SIMULTANEOUSLY USING THE ROOT `start_app.bat` FILE THAT is present IN THE ROOT DIRECTORY. THIS BATCH FILE WILL AUTOMATICALLY START BOTH THE BACKEND AND FRONTEND SERVERS.
+
 The frontend typically serves on http://localhost:3000 (or :3001 if 3000 is occupied). The backend API is available at http://localhost:3000/api.
 
 ## 🔒 Security Notes

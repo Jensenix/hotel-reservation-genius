@@ -224,7 +224,7 @@ const OurRooms = () => {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="bg-white rounded-xl p-4 border border-amber-200">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <Users className="w-4 h-4 mr-2 text-amber-600" />
                   Capacity
                 </label>
@@ -243,7 +243,7 @@ const OurRooms = () => {
               </div>
 
               <div className="bg-white rounded-xl p-4 border border-amber-200">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <DollarSign className="w-4 h-4 mr-2 text-amber-600" />
                   Price Range
                 </label>
@@ -262,7 +262,7 @@ const OurRooms = () => {
               </div>
 
               <div className="bg-white rounded-xl p-4 border border-amber-200">
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <Filter className="w-4 h-4 mr-2 text-amber-600" />
                   Sort By
                 </label>
