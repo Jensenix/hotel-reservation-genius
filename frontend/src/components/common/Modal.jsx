@@ -1,6 +1,16 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
+  // Lock body scroll when modal is open — prevents the page overflow/scrollbar bug
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sizeClasses = {
@@ -11,15 +21,15 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay */}
       <div
         className="fixed inset-0 bg-gray-500 bg-opacity-75"
         onClick={onClose}
       />
 
-      {/* Modal panel */}
-      <div className={`relative w-full ${sizeClasses[size]} p-6 mx-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg`}>
+      {/* Modal panel — overflow-y-auto so tall content scrolls inside the modal, not the page */}
+      <div className={`relative w-full ${sizeClasses[size]} p-6 mx-4 max-h-[90vh] overflow-y-auto text-left align-middle transition-all transform bg-white shadow-xl rounded-lg`}>
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-gray-900">
