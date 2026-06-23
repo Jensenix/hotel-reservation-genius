@@ -1,6 +1,6 @@
 import React from 'react';
-import AdminLayout from '../layout/AdminLayout';
-import Modal from '../common/Modal';
+import AdminLayout from '@/components/layout/AdminLayout';
+import Modal from '@/components/common/Modal';
 import { Plus, Search } from 'lucide-react';
 
 /**
