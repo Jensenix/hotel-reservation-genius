@@ -16,13 +16,14 @@ import RoomAvailability from './pages/admin/RoomAvailability';
 import Guests from './pages/admin/Guests';
 import RoomManagement from './pages/admin/RoomManagement';
 import RoomTypeDetail from './pages/admin/RoomTypeDetail';
-import FacilitiesManagement from './pages/admin/FacilitiesManagementClass';
-import ExtraServicesManagement from './pages/admin/ExtraServicesManagementClass';
-import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagementClass';
+
+import FacilitiesManagement from './pages/admin/FacilitiesManagement';
+import ExtraServicesManagement from './pages/admin/ExtraServicesManagement';
+import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagement';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-// Scroll to top component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -53,12 +54,16 @@ function AppRoutes() {
       <Route path="/booking/:roomId" element={isAuthenticated ? <MainLayout><Booking /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/booking-success" element={isAuthenticated ? <MainLayout><BookingSuccess /></MainLayout> : <Navigate to="/login" />} />
       <Route path="/my-bookings/details/:id" element={isAuthenticated ? <MainLayout><BookingDetail /></MainLayout> : <Navigate to="/login" />} />
+      
+      {/* Admin Routes */}
       <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminDashboard /> : <Navigate to="/login" />} />
       <Route path="/admin/revenue" element={isAuthenticated && isAdmin ? <RevenueDashboard /> : <Navigate to="/login" />} />
       <Route path="/admin/availability" element={isAuthenticated && isAdmin ? <RoomAvailability /> : <Navigate to="/login" />} />
       <Route path="/admin/guests" element={isAuthenticated && isAdmin ? <Guests /> : <Navigate to="/login" />} />
       <Route path="/admin/rooms" element={isAuthenticated && isAdmin ? <RoomManagement /> : <Navigate to="/login" />} />
       <Route path="/admin/rooms/:roomTypeId" element={isAuthenticated && isAdmin ? <RoomTypeDetail /> : <Navigate to="/login" />} />
+      
+      {/* 🚀 Our newly refactored routes */}
       <Route path="/admin/facilities" element={isAuthenticated && isAdmin ? <FacilitiesManagement /> : <Navigate to="/login" />} />
       <Route path="/admin/extra-services" element={isAuthenticated && isAdmin ? <ExtraServicesManagement /> : <Navigate to="/login" />} />
       <Route path="/admin/payment-methods" element={isAuthenticated && isAdmin ? <PaymentMethodsManagement /> : <Navigate to="/login" />} />
