@@ -101,7 +101,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
     state: { data, filteredData, loading, error, searchTerm, showModal, showDeleteModal, editingItem, deleteTarget, formData },
     actions: { 
       setSearchTerm, setShowModal, setShowDeleteModal, setDeleteTarget, 
-      setFormData, handleEdit, handleDelete, handleSubmit, closeModal, closeDeleteModal 
+      setFormData, handleEdit, handleDelete, handleSubmit, closeModal, closeDeleteModal, fetchData
     }
   };
 }
