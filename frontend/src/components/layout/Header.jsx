@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import Button from '../common/Button';
 import { Phone, MapPin, Star } from 'lucide-react';
 
@@ -38,7 +38,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Main Navigation */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
@@ -48,27 +48,31 @@ const Header = () => {
               <span className="text-white font-bold text-xl">GSH</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Genius Society Hotel</h1>
-              <p className="text-xs text-amber-200 font-light tracking-wider">LUXURY & COMFORT</p>
+              <h1 className="text-2xl font-bold text-white">
+                Genius Society Hotel
+              </h1>
+              <p className="text-xs text-amber-200 font-light tracking-wider">
+                LUXURY & COMFORT
+              </p>
             </div>
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
             >
               Home
             </Link>
-            <Link 
-              to="/our-rooms" 
+            <Link
+              to="/our-rooms"
               className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
             >
               Our Rooms
             </Link>
-            <Link 
-              to="/facilities" 
+            <Link
+              to="/facilities"
               className="text-white hover:text-amber-200 transition-colors duration-200 font-medium tracking-wide"
             >
               Facilities
@@ -117,9 +121,7 @@ const Header = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">
-                    Register
-                  </Button>
+                  <Button size="sm">Register</Button>
                 </Link>
               </>
             )}

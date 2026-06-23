@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import apiService from '../../services/apiService';
-import AdminLayout from '../../components/layout/AdminLayout';
-import Card from '../../components/ui/Card';
-import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal';
-import { Plus, Edit, Trash2, Search, Users as UsersIcon, Shield, Mail, Phone, User } from 'lucide-react';
+import apiService from '@/services/apiService';
+import AdminLayout from '@/components/layout/AdminLayout';
+import Card from '@/components/ui/Card';
+import Button from '@/components/common/Button';
+import Modal from '@/components/common/Modal';
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
+  Users as UsersIcon,
+  Shield,
+  Mail,
+  Phone,
+  User,
+} from 'lucide-react';
 
 const Guests = () => {
   const [users, setUsers] = useState([]);
@@ -20,7 +30,7 @@ const Guests = () => {
     email: '',
     password: '',
     phoneNumber: '',
-    role: 'guest'
+    role: 'guest',
   });
 
   // Delete Modal
@@ -52,7 +62,7 @@ const Guests = () => {
         email: user.email,
         password: '',
         phoneNumber: user.phoneNumber || '',
-        role: user.role
+        role: user.role,
       });
     } else {
       setEditingUser(null);
@@ -61,7 +71,7 @@ const Guests = () => {
         email: '',
         password: '',
         phoneNumber: '',
-        role: 'guest'
+        role: 'guest',
       });
     }
     setShowUserModal(true);
@@ -75,7 +85,7 @@ const Guests = () => {
       email: '',
       password: '',
       phoneNumber: '',
-      role: 'guest'
+      role: 'guest',
     });
   };
 
@@ -95,7 +105,10 @@ const Guests = () => {
       fetchUsers();
     } catch (error) {
       console.error('Error saving user:', error);
-      alert('Error saving user: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving user: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -107,7 +120,10 @@ const Guests = () => {
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
-      alert('Error deleting user: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting user: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -131,9 +147,10 @@ const Guests = () => {
     }
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = !roleFilter || user.role === roleFilter;
     return matchesSearch && matchesRole;
   });
@@ -148,13 +165,20 @@ const Guests = () => {
               <div>
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">User Management</span>
+                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
+                    User Management
+                  </span>
                   <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
                 </div>
                 <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
-                  Hotel <span className="font-semibold text-amber-600">Users & Staff</span>
+                  Hotel{' '}
+                  <span className="font-semibold text-amber-600">
+                    Users & Staff
+                  </span>
                 </h1>
-                <p className="text-slate-500 text-sm tracking-wide">Manage Hotel Personnel & Guest Accounts</p>
+                <p className="text-slate-500 text-sm tracking-wide">
+                  Manage Hotel Personnel & Guest Accounts
+                </p>
               </div>
               <Button
                 onClick={() => handleOpenUserModal()}
@@ -175,9 +199,13 @@ const Guests = () => {
                   <div className="p-4 bg-amber-500/20 rounded-2xl">
                     <UsersIcon className="w-8 h-8 text-amber-400" />
                   </div>
-                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Total</span>
+                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                    Total
+                  </span>
                 </div>
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">Total Users</p>
+                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">
+                  Total Users
+                </p>
                 <p className="text-4xl font-light">{users.length}</p>
               </div>
             </div>
@@ -189,10 +217,16 @@ const Guests = () => {
                   <div className="p-4 bg-purple-500/20 rounded-2xl">
                     <Shield className="w-8 h-8 text-purple-400" />
                   </div>
-                  <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Admins</span>
+                  <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">
+                    Admins
+                  </span>
                 </div>
-                <p className="text-purple-300 text-xs uppercase tracking-wider mb-2">Administrators</p>
-                <p className="text-4xl font-light">{users.filter(u => u.role === 'admin').length}</p>
+                <p className="text-purple-300 text-xs uppercase tracking-wider mb-2">
+                  Administrators
+                </p>
+                <p className="text-4xl font-light">
+                  {users.filter((u) => u.role === 'admin').length}
+                </p>
               </div>
             </div>
 
@@ -203,10 +237,16 @@ const Guests = () => {
                   <div className="p-4 bg-blue-500/20 rounded-2xl">
                     <User className="w-8 h-8 text-blue-400" />
                   </div>
-                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Guests</span>
+                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
+                    Guests
+                  </span>
                 </div>
-                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">Registered Guests</p>
-                <p className="text-4xl font-light">{users.filter(u => u.role === 'guest').length}</p>
+                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">
+                  Registered Guests
+                </p>
+                <p className="text-4xl font-light">
+                  {users.filter((u) => u.role === 'guest').length}
+                </p>
               </div>
             </div>
           </div>
@@ -215,7 +255,9 @@ const Guests = () => {
           <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Search Users</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                  Search Users
+                </label>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
@@ -229,7 +271,9 @@ const Guests = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Filter by Role</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                  Filter by Role
+                </label>
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
@@ -254,23 +298,38 @@ const Guests = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
-                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">User</th>
-                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">Email</th>
-                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">Phone</th>
-                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">Role</th>
-                      <th className="px-8 py-5 text-center text-sm font-semibold uppercase tracking-wider">Actions</th>
+                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">
+                        User
+                      </th>
+                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">
+                        Phone
+                      </th>
+                      <th className="px-8 py-5 text-left text-sm font-semibold uppercase tracking-wider">
+                        Role
+                      </th>
+                      <th className="px-8 py-5 text-center text-sm font-semibold uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {filteredUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-amber-50/50 transition-colors duration-200">
+                      <tr
+                        key={user.id}
+                        className="hover:bg-amber-50/50 transition-colors duration-200"
+                      >
                         <td className="px-8 py-5">
                           <div className="flex items-center">
                             <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
                               <User className="w-6 h-6 text-white" />
                             </div>
                             <div className="ml-4">
-                              <p className="font-semibold text-slate-900">{user.fullName}</p>
+                              <p className="font-semibold text-slate-900">
+                                {user.fullName}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -291,7 +350,9 @@ const Guests = () => {
                           )}
                         </td>
                         <td className="px-8 py-5">
-                          <div className={`inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${getRoleColor(user.role)}`}>
+                          <div
+                            className={`inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider border ${getRoleColor(user.role)}`}
+                          >
                             {getRoleIcon(user.role)}
                             <span className="ml-2">{user.role}</span>
                           </div>
@@ -311,7 +372,11 @@ const Guests = () => {
                                 setShowDeleteModal(true);
                               }}
                               className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 px-4 py-2 text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
-                              disabled={user.role === 'admin' && users.filter(u => u.role === 'admin').length === 1}
+                              disabled={
+                                user.role === 'admin' &&
+                                users.filter((u) => u.role === 'admin')
+                                  .length === 1
+                              }
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               Delete
@@ -349,24 +414,32 @@ const Guests = () => {
         >
           <form onSubmit={handleSubmitUser} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Full Name
+              </label>
               <input
                 type="text"
                 required
                 value={userFormData.fullName}
-                onChange={(e) => setUserFormData({ ...userFormData, fullName: e.target.value })}
+                onChange={(e) =>
+                  setUserFormData({ ...userFormData, fullName: e.target.value })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., John Doe"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Email
+              </label>
               <input
                 type="email"
                 required
                 value={userFormData.email}
-                onChange={(e) => setUserFormData({ ...userFormData, email: e.target.value })}
+                onChange={(e) =>
+                  setUserFormData({ ...userFormData, email: e.target.value })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., john@example.com"
               />
@@ -380,29 +453,46 @@ const Guests = () => {
                 type="password"
                 required={!editingUser}
                 value={userFormData.password}
-                onChange={(e) => setUserFormData({ ...userFormData, password: e.target.value })}
+                onChange={(e) =>
+                  setUserFormData({ ...userFormData, password: e.target.value })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
-                placeholder={editingUser ? 'Leave empty to keep current password' : 'Enter password'}
+                placeholder={
+                  editingUser
+                    ? 'Leave empty to keep current password'
+                    : 'Enter password'
+                }
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 value={userFormData.phoneNumber}
-                onChange={(e) => setUserFormData({ ...userFormData, phoneNumber: e.target.value })}
+                onChange={(e) =>
+                  setUserFormData({
+                    ...userFormData,
+                    phoneNumber: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., +1234567890"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Role</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Role
+              </label>
               <select
                 required
                 value={userFormData.role}
-                onChange={(e) => setUserFormData({ ...userFormData, role: e.target.value })}
+                onChange={(e) =>
+                  setUserFormData({ ...userFormData, role: e.target.value })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               >
                 <option value="guest">Guest</option>
@@ -439,7 +529,9 @@ const Guests = () => {
         >
           <div className="space-y-6">
             <p className="text-slate-600">
-              Are you sure you want to delete user <strong>{deletingUser?.fullName}</strong> ({deletingUser?.email})? This action cannot be undone.
+              Are you sure you want to delete user{' '}
+              <strong>{deletingUser?.fullName}</strong> ({deletingUser?.email})?
+              This action cannot be undone.
             </p>
             <div className="flex gap-4">
               <Button

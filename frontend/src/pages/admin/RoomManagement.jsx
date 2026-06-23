@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import apiService from '../../services/apiService';
-import AdminLayout from '../../components/layout/AdminLayout';
-import Card from '../../components/ui/Card';
-import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal';
-import { Plus, Edit, Trash2, Search, Building2, DollarSign, Layers, ChevronRight } from 'lucide-react';
+import apiService from '@/services/apiService';
+import AdminLayout from '@/components/layout/AdminLayout';
+import Card from '@/components/ui/Card';
+import Button from '@/components/common/Button';
+import Modal from '@/components/common/Modal';
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
+  Building2,
+  DollarSign,
+  Layers,
+  ChevronRight,
+} from 'lucide-react';
 
 const RoomManagement = () => {
   const [roomTypes, setRoomTypes] = useState([]);
@@ -19,7 +28,7 @@ const RoomManagement = () => {
     name: '',
     description: '',
     basePrice: '',
-    maxCapacity: ''
+    maxCapacity: '',
   });
 
   // Delete Modal
@@ -50,7 +59,7 @@ const RoomManagement = () => {
         name: roomType.name,
         description: roomType.description || '',
         basePrice: roomType.basePrice,
-        maxCapacity: roomType.maxCapacity
+        maxCapacity: roomType.maxCapacity,
       });
     } else {
       setEditingRoomType(null);
@@ -58,7 +67,7 @@ const RoomManagement = () => {
         name: '',
         description: '',
         basePrice: '',
-        maxCapacity: ''
+        maxCapacity: '',
       });
     }
     setShowRoomTypeModal(true);
@@ -71,7 +80,7 @@ const RoomManagement = () => {
       name: '',
       description: '',
       basePrice: '',
-      maxCapacity: ''
+      maxCapacity: '',
     });
   };
 
@@ -87,7 +96,10 @@ const RoomManagement = () => {
       fetchRoomTypes();
     } catch (error) {
       console.error('Error saving room type:', error);
-      alert('Error saving room type: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving room type: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -100,7 +112,10 @@ const RoomManagement = () => {
       fetchRoomTypes();
     } catch (error) {
       console.error('Error deleting room type:', error);
-      alert('Error deleting room type: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting room type: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -108,8 +123,8 @@ const RoomManagement = () => {
     return roomType.rooms ? roomType.rooms.length : 0;
   };
 
-  const filteredRoomTypes = roomTypes.filter(roomType =>
-    roomType.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRoomTypes = roomTypes.filter((roomType) =>
+    roomType.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -122,13 +137,20 @@ const RoomManagement = () => {
               <div>
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">Room Management</span>
+                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
+                    Room Management
+                  </span>
                   <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
                 </div>
                 <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
-                  Hotel <span className="font-semibold text-amber-600">Room Types</span>
+                  Hotel{' '}
+                  <span className="font-semibold text-amber-600">
+                    Room Types
+                  </span>
                 </h1>
-                <p className="text-slate-500 text-sm tracking-wide">Manage Accommodation Categories & Pricing</p>
+                <p className="text-slate-500 text-sm tracking-wide">
+                  Manage Accommodation Categories & Pricing
+                </p>
               </div>
               <Button
                 onClick={() => handleOpenRoomTypeModal()}
@@ -149,9 +171,13 @@ const RoomManagement = () => {
                   <div className="p-4 bg-amber-500/20 rounded-2xl">
                     <Layers className="w-8 h-8 text-amber-400" />
                   </div>
-                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Types</span>
+                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                    Types
+                  </span>
                 </div>
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">Room Types</p>
+                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">
+                  Room Types
+                </p>
                 <p className="text-4xl font-light">{roomTypes.length}</p>
               </div>
             </div>
@@ -163,10 +189,19 @@ const RoomManagement = () => {
                   <div className="p-4 bg-emerald-500/20 rounded-2xl">
                     <Building2 className="w-8 h-8 text-emerald-400" />
                   </div>
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Rooms</span>
+                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+                    Rooms
+                  </span>
                 </div>
-                <p className="text-emerald-300 text-xs uppercase tracking-wider mb-2">Physical Rooms</p>
-                <p className="text-4xl font-light">{roomTypes.reduce((sum, rt) => sum + (rt.rooms?.length || 0), 0)}</p>
+                <p className="text-emerald-300 text-xs uppercase tracking-wider mb-2">
+                  Physical Rooms
+                </p>
+                <p className="text-4xl font-light">
+                  {roomTypes.reduce(
+                    (sum, rt) => sum + (rt.rooms?.length || 0),
+                    0,
+                  )}
+                </p>
               </div>
             </div>
 
@@ -177,12 +212,22 @@ const RoomManagement = () => {
                   <div className="p-4 bg-blue-500/20 rounded-2xl">
                     <DollarSign className="w-8 h-8 text-blue-400" />
                   </div>
-                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Price</span>
+                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
+                    Price
+                  </span>
                 </div>
-                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">Avg. Base Price</p>
+                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">
+                  Avg. Base Price
+                </p>
                 <p className="text-4xl font-light">
-                  ${roomTypes.length > 0
-                    ? Math.round(roomTypes.reduce((sum, rt) => sum + parseFloat(rt.basePrice || 0), 0) / roomTypes.length)
+                  $
+                  {roomTypes.length > 0
+                    ? Math.round(
+                        roomTypes.reduce(
+                          (sum, rt) => sum + parseFloat(rt.basePrice || 0),
+                          0,
+                        ) / roomTypes.length,
+                      )
                     : 0}
                 </p>
               </div>
@@ -211,7 +256,10 @@ const RoomManagement = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredRoomTypes.map((roomType) => (
-                <div key={roomType.id} className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 overflow-hidden group">
+                <div
+                  key={roomType.id}
+                  className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 overflow-hidden group"
+                >
                   <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500 opacity-5 rounded-full -mr-16 -mt-16 group-hover:opacity-10 transition-opacity duration-500"></div>
                     <div className="relative">
@@ -220,20 +268,36 @@ const RoomManagement = () => {
                           <Layers className="w-8 h-8 text-white" />
                         </div>
                         <div className="text-right">
-                          <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">Rooms</p>
-                          <p className="text-white text-3xl font-light">{getRoomCount(roomType)}</p>
+                          <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                            Rooms
+                          </p>
+                          <p className="text-white text-3xl font-light">
+                            {getRoomCount(roomType)}
+                          </p>
                         </div>
                       </div>
-                      <h3 className="text-2xl font-light text-white mb-3 tracking-tight">{roomType.name}</h3>
-                      <p className="text-slate-400 text-sm mb-6 leading-relaxed">{roomType.description || 'No description'}</p>
+                      <h3 className="text-2xl font-light text-white mb-3 tracking-tight">
+                        {roomType.name}
+                      </h3>
+                      <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                        {roomType.description || 'No description'}
+                      </p>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">Price</p>
-                          <p className="text-white font-semibold text-lg">${roomType.basePrice}/night</p>
+                          <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                            Price
+                          </p>
+                          <p className="text-white font-semibold text-lg">
+                            ${roomType.basePrice}/night
+                          </p>
                         </div>
                         <div>
-                          <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">Capacity</p>
-                          <p className="text-white font-semibold text-lg">{roomType.maxCapacity} guests</p>
+                          <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                            Capacity
+                          </p>
+                          <p className="text-white font-semibold text-lg">
+                            {roomType.maxCapacity} guests
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -255,7 +319,10 @@ const RoomManagement = () => {
                       </Button>
                       <Button
                         onClick={() => {
-                          setDeleteTarget({ id: roomType.id, name: roomType.name });
+                          setDeleteTarget({
+                            id: roomType.id,
+                            name: roomType.name,
+                          });
                           setShowDeleteModal(true);
                         }}
                         className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 rounded-xl px-4 py-3 shadow-md hover:shadow-lg transition-all duration-300"
@@ -270,7 +337,9 @@ const RoomManagement = () => {
               {filteredRoomTypes.length === 0 && !loading && (
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
                   <Layers className="w-20 h-20 text-slate-300 mx-auto mb-6" />
-                  <p className="text-slate-500 text-lg mb-4">No room types found</p>
+                  <p className="text-slate-500 text-lg mb-4">
+                    No room types found
+                  </p>
                   <Button
                     onClick={() => handleOpenRoomTypeModal()}
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 px-8 py-3 rounded-xl font-semibold"
@@ -292,22 +361,36 @@ const RoomManagement = () => {
         >
           <form onSubmit={handleSubmitRoomType} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Room Type Name</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Room Type Name
+              </label>
               <input
                 type="text"
                 required
                 value={roomTypeFormData.name}
-                onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, name: e.target.value })}
+                onChange={(e) =>
+                  setRoomTypeFormData({
+                    ...roomTypeFormData,
+                    name: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., Standard Room"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Description
+              </label>
               <textarea
                 value={roomTypeFormData.description}
-                onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, description: e.target.value })}
+                onChange={(e) =>
+                  setRoomTypeFormData({
+                    ...roomTypeFormData,
+                    description: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="Describe the room type..."
                 rows={3}
@@ -315,27 +398,41 @@ const RoomManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Base Price ($)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Base Price ($)
+              </label>
               <input
                 type="number"
                 required
                 min="0"
                 step="0.01"
                 value={roomTypeFormData.basePrice}
-                onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, basePrice: e.target.value })}
+                onChange={(e) =>
+                  setRoomTypeFormData({
+                    ...roomTypeFormData,
+                    basePrice: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., 100"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Max Capacity (Guests)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Max Capacity (Guests)
+              </label>
               <input
                 type="number"
                 required
                 min="1"
                 value={roomTypeFormData.maxCapacity}
-                onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, maxCapacity: e.target.value })}
+                onChange={(e) =>
+                  setRoomTypeFormData({
+                    ...roomTypeFormData,
+                    maxCapacity: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 placeholder="e.g., 2"
               />
@@ -370,7 +467,10 @@ const RoomManagement = () => {
         >
           <div className="space-y-6">
             <p className="text-slate-600">
-              Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This will also delete all physical rooms associated with this type. This action cannot be undone.
+              Are you sure you want to delete{' '}
+              <strong>{deleteTarget?.name}</strong>? This will also delete all
+              physical rooms associated with this type. This action cannot be
+              undone.
             </p>
             <div className="flex gap-4">
               <Button

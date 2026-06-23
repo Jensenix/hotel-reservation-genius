@@ -1,7 +1,7 @@
 import React from 'react';
 import { Coffee, Car, Utensils, Bell, Gift, Edit2, Trash2 } from 'lucide-react';
-import BaseAdminManagement from '../../components/admin/BaseAdminManagement';
-import apiService from '../../services/apiService';
+import BaseAdminManagement from '@/components/admin/BaseAdminManagement';
+import apiService from '@/services/apiService';
 
 /**
  * Extra Services Management Class Component
@@ -30,7 +30,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
       serviceName: '',
       description: '',
       price: '',
-      iconUrl: ''
+      iconUrl: '',
     };
   }
 
@@ -39,21 +39,23 @@ class ExtraServicesManagement extends BaseAdminManagement {
       serviceName: item.name || item.serviceName || '',
       description: item.description || '',
       price: item.price || '',
-      iconUrl: item.icon || item.iconUrl || ''
+      iconUrl: item.icon || item.iconUrl || '',
     };
   }
 
   mapApiResponse(apiData) {
     console.log('🔍 Raw API Data (Extra Services):', apiData);
-    
-    const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
-      id: item.id,
-      name: item.serviceName || item.name || 'Unknown Service',
-      description: item.description || '',
-      price: parseFloat(item.price) || 0,
-      icon: item.iconUrl || item.icon || 'default'
-    })) : [];
-    
+
+    const mappedData = Array.isArray(apiData)
+      ? apiData.map((item) => ({
+          id: item.id,
+          name: item.serviceName || item.name || 'Unknown Service',
+          description: item.description || '',
+          price: parseFloat(item.price) || 0,
+          icon: item.iconUrl || item.icon || 'default',
+        }))
+      : [];
+
     console.log('✅ Mapped Services Data:', mappedData.length, 'items');
     return mappedData;
   }
@@ -69,12 +71,48 @@ class ExtraServicesManagement extends BaseAdminManagement {
 
   getMockData() {
     return [
-      { id: 1, name: 'Room Service', description: '24/7 in-room dining service', price: 5.00, icon: 'room_service' },
-      { id: 2, name: 'Airport Transfer', description: 'Private airport pickup and drop-off', price: 25.00, icon: 'transfer' },
-      { id: 3, name: 'Spa Package', description: 'Full body massage and wellness treatment', price: 120.00, icon: 'spa' },
-      { id: 4, name: 'Laundry Service', description: 'Professional laundry and dry cleaning', price: 15.00, icon: 'laundry' },
-      { id: 5, name: 'Breakfast Buffet', description: 'International breakfast buffet', price: 18.00, icon: 'breakfast' },
-      { id: 6, name: 'City Tour', description: 'Guided city tour with transportation', price: 45.00, icon: 'tour' },
+      {
+        id: 1,
+        name: 'Room Service',
+        description: '24/7 in-room dining service',
+        price: 5.0,
+        icon: 'room_service',
+      },
+      {
+        id: 2,
+        name: 'Airport Transfer',
+        description: 'Private airport pickup and drop-off',
+        price: 25.0,
+        icon: 'transfer',
+      },
+      {
+        id: 3,
+        name: 'Spa Package',
+        description: 'Full body massage and wellness treatment',
+        price: 120.0,
+        icon: 'spa',
+      },
+      {
+        id: 4,
+        name: 'Laundry Service',
+        description: 'Professional laundry and dry cleaning',
+        price: 15.0,
+        icon: 'laundry',
+      },
+      {
+        id: 5,
+        name: 'Breakfast Buffet',
+        description: 'International breakfast buffet',
+        price: 18.0,
+        icon: 'breakfast',
+      },
+      {
+        id: 6,
+        name: 'City Tour',
+        description: 'Guided city tour with transportation',
+        price: 45.0,
+        icon: 'tour',
+      },
     ];
   }
 
@@ -82,7 +120,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
   formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(amount);
   }
 
@@ -95,7 +133,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
       laundry: Bell,
       breakfast: Coffee,
       tour: Gift,
-      default: Coffee
+      default: Coffee,
     };
     const Icon = icons[icon] || Coffee;
     return <Icon size={24} />;
@@ -123,7 +161,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
   // Form fields override
   renderFormFields() {
     const { formData } = this.state;
-    
+
     return (
       <>
         <div>
@@ -197,7 +235,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
   // Data grid override
   renderDataGrid() {
     const filteredData = this.getFilteredData();
-    
+
     return (
       <div className="grid grid-cols-1 md:col-span-2 lg:col-span-3 gap-8">
         {filteredData.map((service) => (
@@ -214,8 +252,12 @@ class ExtraServicesManagement extends BaseAdminManagement {
                     {this.getIconComponent(service.icon)}
                   </div>
                   <div className="text-right">
-                    <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">Price</p>
-                    <p className="text-white text-2xl font-light">{this.formatCurrency(service.price)}</p>
+                    <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                      Price
+                    </p>
+                    <p className="text-white text-2xl font-light">
+                      {this.formatCurrency(service.price)}
+                    </p>
                   </div>
                 </div>
                 <h3 className="text-2xl font-light text-white mb-3 tracking-tight">
@@ -226,7 +268,7 @@ class ExtraServicesManagement extends BaseAdminManagement {
                 </p>
               </div>
             </div>
-            
+
             {/* Action Buttons */}
             <div className="p-6 bg-white">
               <div className="flex space-x-1">

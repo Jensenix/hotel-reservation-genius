@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import apiService from '../services/apiService';
-import Card from '../components/ui/Card';
-import Button from '../components/common/Button';
-import Loading from '../components/ui/Loading';
+import apiService from '@/services/apiService';
+import Card from '@/components/ui/Card';
+import Button from '@/components/common/Button';
+import Loading from '@/components/ui/Loading';
 import {
   Calendar,
   Clock,
@@ -15,7 +15,7 @@ import {
   Search,
   Shield,
   Users,
-  Star
+  Star,
 } from 'lucide-react';
 
 const MyBookings = () => {
@@ -34,7 +34,9 @@ const MyBookings = () => {
         const allBookings = response.data.data;
 
         // Filter bookings for current user only
-        const userBookings = allBookings.filter(booking => booking.userId === user.id);
+        const userBookings = allBookings.filter(
+          (booking) => booking.userId === user.id,
+        );
 
         setBookings(userBookings);
       } catch (error) {
@@ -66,15 +68,18 @@ const MyBookings = () => {
     setSearchParams(params, { replace: true });
   }, [filter, search, setSearchParams]);
 
-  const filteredBookings = bookings.filter(booking => {
+  const filteredBookings = bookings.filter((booking) => {
     const matchesFilter = filter === 'all' || booking.status === filter;
-    const matchesSearch = !search || 
+    const matchesSearch =
+      !search ||
       booking.id.toString().includes(search) ||
       booking.room?.roomNumber?.toLowerCase().includes(search.toLowerCase()) ||
-      booking.room?.roomType?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      booking.room?.roomType?.name
+        ?.toLowerCase()
+        .includes(search.toLowerCase()) ||
       booking.checkInDate?.toLowerCase().includes(search.toLowerCase()) ||
       booking.checkOutDate?.toLowerCase().includes(search.toLowerCase());
-    
+
     return matchesFilter && matchesSearch;
   });
 
@@ -116,7 +121,7 @@ const MyBookings = () => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -127,10 +132,14 @@ const MyBookings = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-6">
               <Calendar className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">MY RESERVATIONS</span>
+              <span className="text-lg font-light tracking-wider text-amber-600">
+                MY RESERVATIONS
+              </span>
               <Calendar className="w-6 h-6 text-amber-500" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">My Bookings</h1>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              My Bookings
+            </h1>
             <Loading text="Loading your bookings..." size="lg" />
           </div>
         </div>
@@ -146,10 +155,14 @@ const MyBookings = () => {
           <div className="text-center mb-16">
             <div className="flex items-center justify-center space-x-2 mb-6">
               <Calendar className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">MY RESERVATIONS</span>
+              <span className="text-lg font-light tracking-wider text-amber-600">
+                MY RESERVATIONS
+              </span>
               <Calendar className="w-6 h-6 text-amber-500" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">My Bookings</h1>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              My Bookings
+            </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               View and manage your hotel reservations with ease
             </p>
@@ -176,8 +189,12 @@ const MyBookings = () => {
             <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-2xl p-6 shadow-lg">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Filter Bookings</h2>
-                  <p className="text-gray-600">Quickly find your reservations by status</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Filter Bookings
+                  </h2>
+                  <p className="text-gray-600">
+                    Quickly find your reservations by status
+                  </p>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -195,7 +212,14 @@ const MyBookings = () => {
 
               {/* Filter Tabs */}
               <div className="flex flex-wrap gap-2">
-                {['all', 'pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'].map((status) => (
+                {[
+                  'all',
+                  'pending',
+                  'confirmed',
+                  'checked_in',
+                  'checked_out',
+                  'cancelled',
+                ].map((status) => (
                   <button
                     key={status}
                     onClick={() => setFilter(status)}
@@ -207,12 +231,26 @@ const MyBookings = () => {
                   >
                     <div className="flex items-center space-x-2">
                       {status === 'all' && <Filter className="w-4 h-4" />}
-                      {status === 'pending' && <AlertCircle className="w-4 h-4" />}
-                      {status === 'confirmed' && <CheckCircle className="w-4 h-4" />}
-                      {status === 'checked_in' && <CheckCircle className="w-4 h-4" />}
-                      {status === 'checked_out' && <CheckCircle className="w-4 h-4" />}
-                      {status === 'cancelled' && <XCircle className="w-4 h-4" />}
-                      <span>{status === 'all' ? 'All Bookings' : getStatusText(status)}</span>
+                      {status === 'pending' && (
+                        <AlertCircle className="w-4 h-4" />
+                      )}
+                      {status === 'confirmed' && (
+                        <CheckCircle className="w-4 h-4" />
+                      )}
+                      {status === 'checked_in' && (
+                        <CheckCircle className="w-4 h-4" />
+                      )}
+                      {status === 'checked_out' && (
+                        <CheckCircle className="w-4 h-4" />
+                      )}
+                      {status === 'cancelled' && (
+                        <XCircle className="w-4 h-4" />
+                      )}
+                      <span>
+                        {status === 'all'
+                          ? 'All Bookings'
+                          : getStatusText(status)}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -225,20 +263,19 @@ const MyBookings = () => {
         {filteredBookings.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-gray-500 text-lg mb-4">
-              {filter === 'all' 
-                ? "You haven't made any bookings yet" 
-                : `No ${getStatusText(filter)} bookings found`
-              }
+              {filter === 'all'
+                ? "You haven't made any bookings yet"
+                : `No ${getStatusText(filter)} bookings found`}
             </div>
-            <Button onClick={() => window.location.href = '/our-rooms'}>
+            <Button onClick={() => (window.location.href = '/our-rooms')}>
               Browse Our Rooms
             </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBookings.map((booking) => (
-              <Card 
-                key={booking.id} 
+              <Card
+                key={booking.id}
                 className="hover:shadow-lg transition-shadow duration-300 min-h-[320px] flex flex-col cursor-pointer"
                 onClick={() => navigate(`/my-bookings/details/${booking.id}`)}
               >
@@ -251,17 +288,21 @@ const MyBookings = () => {
                         {booking.room?.roomType?.name?.charAt(0) || 'R'}
                       </div>
                       <div className="text-white/90 text-xs">
-                        {booking.room?.roomType?.maxCapacity ? `${booking.room.roomType.maxCapacity} Guests` : 'N/A'}
+                        {booking.room?.roomType?.maxCapacity
+                          ? `${booking.room.roomType.maxCapacity} Guests`
+                          : 'N/A'}
                       </div>
                     </div>
                   </div>
                   <div className="absolute top-3 right-3">
-                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                    <span
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}
+                    >
                       {getStatusText(booking.status)}
                     </span>
                   </div>
                 </div>
-                
+
                 {/* Card Content */}
                 <div className="flex-1 p-6 flex flex-col">
                   <div className="flex-1">
@@ -269,31 +310,43 @@ const MyBookings = () => {
                       <h3 className="text-xl font-bold text-gray-900">
                         {booking.room?.roomType?.name || 'Room'}
                       </h3>
-                      <span className="text-sm font-medium text-gray-500">#{booking.id}</span>
+                      <span className="text-sm font-medium text-gray-500">
+                        #{booking.id}
+                      </span>
                     </div>
-                    
+
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center space-x-2 text-gray-600">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          {formatDate(booking.checkInDate)} - {formatDate(booking.checkOutDate)}
+                          {formatDate(booking.checkInDate)} -{' '}
+                          {formatDate(booking.checkOutDate)}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2 text-gray-600">
                         <Users className="w-4 h-4" />
-                        <span>Max {booking.room?.roomType?.maxCapacity ? `${booking.room.roomType.maxCapacity} guests` : 'N/A'}</span>
+                        <span>
+                          Max{' '}
+                          {booking.room?.roomType?.maxCapacity
+                            ? `${booking.room.roomType.maxCapacity} guests`
+                            : 'N/A'}
+                        </span>
                       </div>
-                      
+
                       {booking.specialRequests && (
                         <div className="pt-2 border-t border-gray-100">
-                          <span className="font-medium text-gray-700">Special Requests:</span>
-                          <p className="text-gray-600 mt-1 text-xs">{booking.specialRequests}</p>
+                          <span className="font-medium text-gray-700">
+                            Special Requests:
+                          </span>
+                          <p className="text-gray-600 mt-1 text-xs">
+                            {booking.specialRequests}
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Price and Actions */}
                   <div className="mt-4 pt-4 border-t border-gray-100">
                     <div className="flex items-center justify-between mb-3">
@@ -304,21 +357,26 @@ const MyBookings = () => {
                         <div className="text-xs text-gray-500">Total Price</div>
                       </div>
                     </div>
-                    
-                    <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
+
+                    <div
+                      className="flex space-x-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {booking.status === 'pending' && (
-                        <Button 
+                        <Button
                           size="sm"
                           className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                          onClick={() => navigate(`/booking/${booking.room?.roomTypeId}`, { 
-                            state: { bookingId: booking.id } 
-                          })}
+                          onClick={() =>
+                            navigate(`/booking/${booking.room?.roomTypeId}`, {
+                              state: { bookingId: booking.id },
+                            })
+                          }
                         >
                           Continue Payment
                         </Button>
                       )}
                       {booking.status === 'confirmed' && (
-                        <Button 
+                        <Button
                           size="sm"
                           className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                         >
@@ -337,7 +395,11 @@ const MyBookings = () => {
                         <Button
                           size="sm"
                           className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                          onClick={() => navigate('/reviews', { state: { bookingId: booking.id } })}
+                          onClick={() =>
+                            navigate('/reviews', {
+                              state: { bookingId: booking.id },
+                            })
+                          }
                         >
                           <Star className="w-4 h-4 mr-1" />
                           Write Review

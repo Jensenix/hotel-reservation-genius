@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CreditCard, Wallet, Building, Smartphone, Edit2, Trash2, Search, CheckCircle2, AlertCircle } from 'lucide-react';
-import apiService from '../../services/apiService';
-import AdminLayout from '../../components/layout/AdminLayout';
-import Modal from '../../components/common/Modal';
+import {
+  Plus,
+  CreditCard,
+  Wallet,
+  Building,
+  Smartphone,
+  Edit2,
+  Trash2,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
+import apiService from '@/services/apiService';
+import AdminLayout from '@/components/layout/AdminLayout';
+import Modal from '@/components/common/Modal';
 
 const PaymentMethodsManagement = () => {
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -17,7 +28,7 @@ const PaymentMethodsManagement = () => {
     type: '',
     description: '',
     isActive: true,
-    config: ''
+    config: '',
   });
 
   // Delete Modal
@@ -35,29 +46,74 @@ const PaymentMethodsManagement = () => {
       console.log('API Response:', response);
       const apiData = response.data?.data || response.data || [];
       console.log('Raw API Data:', apiData);
-      
+
       // Map API response to frontend format
-      const mappedData = Array.isArray(apiData) ? apiData.map(item => ({
-        id: item.id,
-        name: item.methodName || item.name || 'Unknown Payment Method',
-        description: item.description || '',
-        type: item.type || getPaymentTypeFromName(item.methodName || item.name),
-        isActive: item.isActive !== false,
-        config: item.accountNumber || item.config || 'N/A'
-      })) : [];
-      
+      const mappedData = Array.isArray(apiData)
+        ? apiData.map((item) => ({
+            id: item.id,
+            name: item.methodName || item.name || 'Unknown Payment Method',
+            description: item.description || '',
+            type:
+              item.type || getPaymentTypeFromName(item.methodName || item.name),
+            isActive: item.isActive !== false,
+            config: item.accountNumber || item.config || 'N/A',
+          }))
+        : [];
+
       console.log('Mapped Payment Methods Data:', mappedData);
       setPaymentMethods(mappedData);
     } catch (error) {
       console.error('Error fetching payment methods:', error);
       // Mock data for development - always load this for now
       const mockPaymentMethods = [
-        { id: 1, name: 'Credit Card', type: 'card', description: 'Visa, MasterCard, American Express', isActive: true, config: 'stripe' },
-        { id: 2, name: 'PayPal', type: 'wallet', description: 'PayPal and PayPal Credit', isActive: true, config: 'paypal' },
-        { id: 3, name: 'Bank Transfer', type: 'bank', description: 'Direct bank transfer and wire', isActive: true, config: 'bank' },
-        { id: 4, name: 'Apple Pay', type: 'mobile', description: 'Apple Pay and Apple Wallet', isActive: true, config: 'apple_pay' },
-        { id: 5, name: 'Google Pay', type: 'mobile', description: 'Google Pay and Google Wallet', isActive: false, config: 'google_pay' },
-        { id: 6, name: 'Cash on Arrival', type: 'cash', description: 'Pay cash when you arrive', isActive: true, config: 'cash' },
+        {
+          id: 1,
+          name: 'Credit Card',
+          type: 'card',
+          description: 'Visa, MasterCard, American Express',
+          isActive: true,
+          config: 'stripe',
+        },
+        {
+          id: 2,
+          name: 'PayPal',
+          type: 'wallet',
+          description: 'PayPal and PayPal Credit',
+          isActive: true,
+          config: 'paypal',
+        },
+        {
+          id: 3,
+          name: 'Bank Transfer',
+          type: 'bank',
+          description: 'Direct bank transfer and wire',
+          isActive: true,
+          config: 'bank',
+        },
+        {
+          id: 4,
+          name: 'Apple Pay',
+          type: 'mobile',
+          description: 'Apple Pay and Apple Wallet',
+          isActive: true,
+          config: 'apple_pay',
+        },
+        {
+          id: 5,
+          name: 'Google Pay',
+          type: 'mobile',
+          description: 'Google Pay and Google Wallet',
+          isActive: false,
+          config: 'google_pay',
+        },
+        {
+          id: 6,
+          name: 'Cash on Arrival',
+          type: 'cash',
+          description: 'Pay cash when you arrive',
+          isActive: true,
+          config: 'cash',
+        },
       ];
       console.log('Using mock payment methods:', mockPaymentMethods);
       setPaymentMethods(mockPaymentMethods);
@@ -70,10 +126,18 @@ const PaymentMethodsManagement = () => {
   const getPaymentTypeFromName = (name) => {
     if (!name) return 'card';
     const lowerName = name.toLowerCase();
-    if (lowerName.includes('credit') || lowerName.includes('debit')) return 'card';
-    if (lowerName.includes('paypal') || lowerName.includes('wallet')) return 'wallet';
-    if (lowerName.includes('bank') || lowerName.includes('transfer')) return 'bank';
-    if (lowerName.includes('apple') || lowerName.includes('google') || lowerName.includes('digital')) return 'mobile';
+    if (lowerName.includes('credit') || lowerName.includes('debit'))
+      return 'card';
+    if (lowerName.includes('paypal') || lowerName.includes('wallet'))
+      return 'wallet';
+    if (lowerName.includes('bank') || lowerName.includes('transfer'))
+      return 'bank';
+    if (
+      lowerName.includes('apple') ||
+      lowerName.includes('google') ||
+      lowerName.includes('digital')
+    )
+      return 'mobile';
     if (lowerName.includes('cash')) return 'cash';
     return 'card';
   };
@@ -86,7 +150,7 @@ const PaymentMethodsManagement = () => {
         type: payment.type || '',
         description: payment.description || '',
         isActive: payment.isActive !== false,
-        config: payment.config || ''
+        config: payment.config || '',
       });
     } else {
       setEditingPayment(null);
@@ -95,7 +159,7 @@ const PaymentMethodsManagement = () => {
         type: '',
         description: '',
         isActive: true,
-        config: ''
+        config: '',
       });
     }
     setShowPaymentModal(true);
@@ -109,7 +173,7 @@ const PaymentMethodsManagement = () => {
       type: '',
       description: '',
       isActive: true,
-      config: ''
+      config: '',
     });
   };
 
@@ -121,7 +185,10 @@ const PaymentMethodsManagement = () => {
     e.preventDefault();
     try {
       if (editingPayment) {
-        await apiService.paymentMethods.update(editingPayment.id, paymentFormData);
+        await apiService.paymentMethods.update(
+          editingPayment.id,
+          paymentFormData,
+        );
       } else {
         await apiService.paymentMethods.create(paymentFormData);
       }
@@ -129,7 +196,10 @@ const PaymentMethodsManagement = () => {
       fetchPaymentMethods();
     } catch (error) {
       console.error('Error saving payment method:', error);
-      alert('Error saving payment method: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving payment method: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -141,22 +211,33 @@ const PaymentMethodsManagement = () => {
       fetchPaymentMethods();
     } catch (error) {
       console.error('Error deleting payment method:', error);
-      alert('Error deleting payment method: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting payment method: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
   const handleToggleStatus = async (payment) => {
     try {
-      await apiService.paymentMethods.update(payment.id, { ...payment, isActive: !payment.isActive });
+      await apiService.paymentMethods.update(payment.id, {
+        ...payment,
+        isActive: !payment.isActive,
+      });
       fetchPaymentMethods();
     } catch (error) {
       console.error('Error toggling payment method status:', error);
     }
   };
 
-  const filteredPaymentMethods = Array.isArray(paymentMethods) ? paymentMethods.filter(method =>
-    method && method.name && method.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) : [];
+  const filteredPaymentMethods = Array.isArray(paymentMethods)
+    ? paymentMethods.filter(
+        (method) =>
+          method &&
+          method.name &&
+          method.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    : [];
 
   const getIconComponent = (type) => {
     const icons = {
@@ -191,13 +272,18 @@ const PaymentMethodsManagement = () => {
               <div>
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
-                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">Payment Methods</span>
+                  <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
+                    Payment Methods
+                  </span>
                   <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
                 </div>
                 <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
-                  Payment <span className="font-semibold text-amber-600">Methods</span>
+                  Payment{' '}
+                  <span className="font-semibold text-amber-600">Methods</span>
                 </h1>
-                <p className="text-slate-500 text-sm tracking-wide">Manage Payment Options & Gateways</p>
+                <p className="text-slate-500 text-sm tracking-wide">
+                  Manage Payment Options & Gateways
+                </p>
               </div>
               <button
                 onClick={() => handleOpenPaymentModal()}
@@ -218,9 +304,13 @@ const PaymentMethodsManagement = () => {
                   <div className="p-4 bg-amber-500/20 rounded-2xl">
                     <CreditCard className="w-8 h-8 text-amber-400" />
                   </div>
-                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Total</span>
+                  <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                    Total
+                  </span>
                 </div>
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">Total Methods</p>
+                <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">
+                  Total Methods
+                </p>
                 <p className="text-4xl font-light">{paymentMethods.length}</p>
               </div>
             </div>
@@ -232,10 +322,16 @@ const PaymentMethodsManagement = () => {
                   <div className="p-4 bg-emerald-500/20 rounded-2xl">
                     <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                   </div>
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Active</span>
+                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+                    Active
+                  </span>
                 </div>
-                <p className="text-emerald-300 text-xs uppercase tracking-wider mb-2">Active Methods</p>
-                <p className="text-4xl font-light">{paymentMethods.filter(pm => pm.isActive).length}</p>
+                <p className="text-emerald-300 text-xs uppercase tracking-wider mb-2">
+                  Active Methods
+                </p>
+                <p className="text-4xl font-light">
+                  {paymentMethods.filter((pm) => pm.isActive).length}
+                </p>
               </div>
             </div>
 
@@ -246,10 +342,20 @@ const PaymentMethodsManagement = () => {
                   <div className="p-4 bg-blue-500/20 rounded-2xl">
                     <Smartphone className="w-8 h-8 text-blue-400" />
                   </div>
-                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Digital</span>
+                  <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
+                    Digital
+                  </span>
                 </div>
-                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">Digital Payments</p>
-                <p className="text-4xl font-light">{paymentMethods.filter(pm => ['card', 'wallet', 'mobile'].includes(pm.type)).length}</p>
+                <p className="text-blue-300 text-xs uppercase tracking-wider mb-2">
+                  Digital Payments
+                </p>
+                <p className="text-4xl font-light">
+                  {
+                    paymentMethods.filter((pm) =>
+                      ['card', 'wallet', 'mobile'].includes(pm.type),
+                    ).length
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -276,7 +382,10 @@ const PaymentMethodsManagement = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPaymentMethods.map((payment) => (
-                <div key={payment.id} className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 overflow-hidden group">
+                <div
+                  key={payment.id}
+                  className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-all duration-500 overflow-hidden group"
+                >
                   <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500 opacity-5 rounded-full -mr-16 -mt-16 group-hover:opacity-10 transition-opacity duration-500"></div>
                     <div className="relative">
@@ -288,23 +397,33 @@ const PaymentMethodsManagement = () => {
                           {payment.isActive ? (
                             <div className="flex items-center space-x-1">
                               <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                              <span className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">Active</span>
+                              <span className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                                Active
+                              </span>
                             </div>
                           ) : (
                             <div className="flex items-center space-x-1">
                               <AlertCircle className="w-5 h-5 text-red-400" />
-                              <span className="text-red-400 text-xs font-semibold uppercase tracking-wider">Inactive</span>
+                              <span className="text-red-400 text-xs font-semibold uppercase tracking-wider">
+                                Inactive
+                              </span>
                             </div>
                           )}
                         </div>
                       </div>
-                      <h3 className="text-2xl font-light text-white mb-2 tracking-tight">{payment.name}</h3>
+                      <h3 className="text-2xl font-light text-white mb-2 tracking-tight">
+                        {payment.name}
+                      </h3>
                       <div className="flex items-center space-x-2 mb-3">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${getTypeColor(payment.type)}`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${getTypeColor(payment.type)}`}
+                        >
                           {payment.type}
                         </span>
                       </div>
-                      <p className="text-slate-400 text-sm leading-relaxed">{payment.description || 'No description'}</p>
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        {payment.description || 'No description'}
+                      </p>
                     </div>
                   </div>
                   <div className="p-6 bg-white">
@@ -331,7 +450,9 @@ const PaymentMethodsManagement = () => {
               {filteredPaymentMethods.length === 0 && !loading && (
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
                   <CreditCard className="w-20 h-20 text-slate-300 mx-auto mb-6" />
-                  <p className="text-slate-500 text-lg mb-4">No payment methods found</p>
+                  <p className="text-slate-500 text-lg mb-4">
+                    No payment methods found
+                  </p>
                   <button
                     onClick={() => handleOpenPaymentModal()}
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 px-8 py-3 rounded-xl font-semibold"
@@ -349,27 +470,43 @@ const PaymentMethodsManagement = () => {
         <Modal
           isOpen={showPaymentModal}
           onClose={handleClosePaymentModal}
-          title={editingPayment ? 'Edit Payment Method' : 'Add New Payment Method'}
+          title={
+            editingPayment ? 'Edit Payment Method' : 'Add New Payment Method'
+          }
         >
           <form onSubmit={handleSubmitPayment} className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Payment Method Name</label>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                Payment Method Name
+              </label>
               <input
                 type="text"
                 required
                 value={paymentFormData.name}
-                onChange={(e) => setPaymentFormData({ ...paymentFormData, name: e.target.value })}
+                onChange={(e) =>
+                  setPaymentFormData({
+                    ...paymentFormData,
+                    name: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
                 placeholder="e.g., Credit Card"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Type</label>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                Type
+              </label>
               <select
                 required
                 value={paymentFormData.type}
-                onChange={(e) => setPaymentFormData({ ...paymentFormData, type: e.target.value })}
+                onChange={(e) =>
+                  setPaymentFormData({
+                    ...paymentFormData,
+                    type: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
               >
                 <option value="">Select type</option>
@@ -382,10 +519,17 @@ const PaymentMethodsManagement = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Description</label>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                Description
+              </label>
               <textarea
                 value={paymentFormData.description}
-                onChange={(e) => setPaymentFormData({ ...paymentFormData, description: e.target.value })}
+                onChange={(e) =>
+                  setPaymentFormData({
+                    ...paymentFormData,
+                    description: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
                 placeholder="Describe the payment method..."
                 rows={3}
@@ -393,11 +537,18 @@ const PaymentMethodsManagement = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Configuration</label>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                Configuration
+              </label>
               <input
                 type="text"
                 value={paymentFormData.config}
-                onChange={(e) => setPaymentFormData({ ...paymentFormData, config: e.target.value })}
+                onChange={(e) =>
+                  setPaymentFormData({
+                    ...paymentFormData,
+                    config: e.target.value,
+                  })
+                }
                 className="w-full px-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-slate-50 focus:bg-white"
                 placeholder="e.g., stripe, paypal, bank"
               />
@@ -408,10 +559,18 @@ const PaymentMethodsManagement = () => {
                 type="checkbox"
                 id="isActive"
                 checked={paymentFormData.isActive}
-                onChange={(e) => setPaymentFormData({ ...paymentFormData, isActive: e.target.checked })}
+                onChange={(e) =>
+                  setPaymentFormData({
+                    ...paymentFormData,
+                    isActive: e.target.checked,
+                  })
+                }
                 className="w-4 h-4 text-amber-600 border-2 border-slate-300 rounded focus:ring-2 focus:ring-amber-500"
               />
-              <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
+              <label
+                htmlFor="isActive"
+                className="text-sm font-medium text-slate-700"
+              >
                 Active (enabled for use)
               </label>
             </div>
@@ -428,7 +587,9 @@ const PaymentMethodsManagement = () => {
                 type="submit"
                 className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300"
               >
-                {editingPayment ? 'Update Payment Method' : 'Add Payment Method'}
+                {editingPayment
+                  ? 'Update Payment Method'
+                  : 'Add Payment Method'}
               </button>
             </div>
           </form>
@@ -445,7 +606,9 @@ const PaymentMethodsManagement = () => {
         >
           <div className="space-y-6">
             <p className="text-slate-600">
-              Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+              Are you sure you want to delete{' '}
+              <strong>{deleteTarget?.name}</strong>? This action cannot be
+              undone.
             </p>
             <div className="flex gap-4">
               <button

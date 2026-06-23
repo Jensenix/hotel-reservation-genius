@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, DollarSign, Home, Users, LogOut, Menu, X, Building2, ChevronDown, Coffee, CreditCard, Settings } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import {
+  LayoutDashboard,
+  DollarSign,
+  Home,
+  Users,
+  LogOut,
+  Menu,
+  X,
+  Building2,
+  ChevronDown,
+  Coffee,
+  CreditCard,
+  Settings,
+} from 'lucide-react';
 
-// FIXED: Admin header with proper auth context
 const AdminHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Force console log on every render
-  console.log('AdminHeader rendered - User:', user?.fullName, 'Role:', user?.role, 'Location:', location.pathname);
+
+  console.log(
+    'AdminHeader rendered - User:',
+    user?.fullName,
+    'Role:',
+    user?.role,
+    'Location:',
+    location.pathname,
+  );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [managementDropdownOpen, setManagementDropdownOpen] = useState(false);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (managementDropdownOpen && !event.target.closest('.management-dropdown')) {
+      if (
+        managementDropdownOpen &&
+        !event.target.closest('.management-dropdown')
+      ) {
         setManagementDropdownOpen(false);
       }
     };
@@ -26,7 +46,6 @@ const AdminHeader = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [managementDropdownOpen]);
 
-  
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -45,7 +64,11 @@ const AdminHeader = () => {
   const managementItems = [
     { path: '/admin/facilities', label: 'Facilities', icon: Coffee },
     { path: '/admin/extra-services', label: 'Extra Services', icon: Settings },
-    { path: '/admin/payment-methods', label: 'Payment Methods', icon: CreditCard },
+    {
+      path: '/admin/payment-methods',
+      label: 'Payment Methods',
+      icon: CreditCard,
+    },
   ];
 
   console.log('Admin Nav Items:', adminNavItems);
@@ -83,22 +106,27 @@ const AdminHeader = () => {
                 <span>{item.label}</span>
               </Link>
             ))}
-            
+
             {/* Management Dropdown */}
             <div className="relative management-dropdown">
               <button
-                onClick={() => setManagementDropdownOpen(!managementDropdownOpen)}
+                onClick={() =>
+                  setManagementDropdownOpen(!managementDropdownOpen)
+                }
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  managementItems.some(item => isActive(item.path))
+                  managementItems.some((item) => isActive(item.path))
                     ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                 }`}
               >
                 <Settings size={16} />
                 <span>Management</span>
-                <ChevronDown size={14} className={`transition-transform duration-200 ${managementDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-200 ${managementDropdownOpen ? 'rotate-180' : ''}`}
+                />
               </button>
-              
+
               {managementDropdownOpen && (
                 <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50">
                   {managementItems.map((item) => (
@@ -125,7 +153,9 @@ const AdminHeader = () => {
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-3">
               <div className="text-right">
-                <p className="text-white text-sm font-medium">{user?.fullName}</p>
+                <p className="text-white text-sm font-medium">
+                  {user?.fullName}
+                </p>
                 <p className="text-slate-400 text-xs">Administrator</p>
               </div>
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
@@ -173,10 +203,12 @@ const AdminHeader = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
-              
+
               {/* Mobile Management Items */}
               <div className="pt-2 pb-2 border-t border-slate-700">
-                <div className="px-3 py-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">Management</div>
+                <div className="px-3 py-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                  Management
+                </div>
                 {managementItems.map((item) => (
                   <Link
                     key={item.path}
@@ -193,7 +225,7 @@ const AdminHeader = () => {
                   </Link>
                 ))}
               </div>
-              
+
               {/* Mobile User Info */}
               <div className="pt-4 pb-3 border-t border-slate-700 mt-3">
                 <div className="px-3">
@@ -204,7 +236,9 @@ const AdminHeader = () => {
                       </span>
                     </div>
                     <div>
-                      <p className="text-white text-sm font-medium">{user?.fullName}</p>
+                      <p className="text-white text-sm font-medium">
+                        {user?.fullName}
+                      </p>
                       <p className="text-slate-400 text-xs">Administrator</p>
                     </div>
                   </div>
