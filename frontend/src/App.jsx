@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,37 +7,11 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-// --- Context & Layouts ---
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import MainLayout from '@/layouts/MainLayout';
+import Loading from '@/components/ui/Loading';
 
-// --- Public Pages ---
-import Home from '@/pages/public/Home';
-import OurRooms from '@/pages/public/OurRooms';
-import Facilities from '@/pages/public/Facilities';
-import Reviews from '@/pages/public/Reviews';
-
-// --- Auth Pages ---
-import Login from '@/pages/auth/Login';
-import Register from '@/pages/auth/Register';
-
-// --- Booking Pages ---
-import Booking from '@/pages/booking/Booking';
-import BookingSuccess from '@/pages/booking/BookingSuccess';
-import BookingDetail from '@/pages/booking/BookingDetail';
-import MyBookings from '@/pages/booking/MyBookings';
-
-// --- Admin Pages ---
-import AdminDashboard from '@/pages/admin/AdminDashboard';
-import RevenueDashboard from '@/pages/admin/RevenueDashboard';
-import RoomAvailability from '@/pages/admin/RoomAvailability';
-import Guests from '@/pages/admin/Guests';
-import RoomManagement from '@/pages/admin/RoomManagement';
-import RoomTypeDetail from '@/pages/admin/RoomTypeDetail';
-import FacilitiesManagement from '@/pages/admin/FacilitiesManagement';
-import ExtraServicesManagement from '@/pages/admin/ExtraServicesManagement';
-import PaymentMethodsManagement from '@/pages/admin/PaymentMethodsManagement';
-
+import { routesConfig } from '@/routes';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -53,197 +27,35 @@ function AppRoutes() {
   const { isAuthenticated, isAdmin } = useAuth();
 
   return (
-    <Routes>
-      {/* Auth Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <Suspense fallback={<Loading fullScreen title="Loading page..." />}>
+      <Routes>
+        {routesConfig.map((route) => {
+          const Component = route.component;
 
-      {/* Public Routes */}
-      <Route
-        path="/"
-        element={
-          <MainLayout>
-            <Home />
-          </MainLayout>
-        }
-      />
+          let renderedElement = <Component />;
 
-      {/* Protected Routes */}
-      <Route
-        path="/our-rooms"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <OurRooms />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/facilities"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <Facilities />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/my-bookings"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <MyBookings />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/reviews"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <Reviews />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/booking/:roomId"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <Booking />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/booking-success"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <BookingSuccess />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/my-bookings/details/:id"
-        element={
-          isAuthenticated ? (
-            <MainLayout>
-              <BookingDetail />
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
+          if (route.layout) {
+            renderedElement = <MainLayout>{renderedElement}</MainLayout>;
+          }
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin"
-        element={
-          isAuthenticated && isAdmin ? (
-            <AdminDashboard />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/revenue"
-        element={
-          isAuthenticated && isAdmin ? (
-            <RevenueDashboard />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/availability"
-        element={
-          isAuthenticated && isAdmin ? (
-            <RoomAvailability />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/guests"
-        element={
-          isAuthenticated && isAdmin ? <Guests /> : <Navigate to="/login" />
-        }
-      />
-      <Route
-        path="/admin/rooms"
-        element={
-          isAuthenticated && isAdmin ? (
-            <RoomManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/rooms/:roomTypeId"
-        element={
-          isAuthenticated && isAdmin ? (
-            <RoomTypeDetail />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
+          const missingProtectedAuth = route.type === 'protected' && !isAuthenticated;
+          const missingAdminAuth = route.type === 'admin' && (!isAuthenticated || !isAdmin);
 
-      {/* 🚀 Our newly refactored routes */}
-      <Route
-        path="/admin/facilities"
-        element={
-          isAuthenticated && isAdmin ? (
-            <FacilitiesManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/extra-services"
-        element={
-          isAuthenticated && isAdmin ? (
-            <ExtraServicesManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/payment-methods"
-        element={
-          isAuthenticated && isAdmin ? (
-            <PaymentMethodsManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-    </Routes>
+          if (missingProtectedAuth || missingAdminAuth) {
+            renderedElement = <Navigate to="/login" replace />;
+          }
+
+          return (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={renderedElement}
+            />
+          );
+        })}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
 
