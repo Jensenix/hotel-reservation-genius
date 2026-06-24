@@ -97,21 +97,8 @@ const Booking = () => {
               ) : (
                 <PaymentSelection
                   paymentMethods={state.paymentMethods}
-                  selectedMethod={state.bookingData.paymentMethodId}
-                  onSelectMethod={(id) =>
-                    actions.setBookingData({
-                      ...state.bookingData,
-                      paymentMethodId: id,
-                    })
-                  }
-                  extraServices={state.extraServices}
-                  selectedExtraServices={state.selectedExtraServices}
-                  onExtraServiceChange={(serviceId, quantity) =>
-                    actions.setSelectedExtraServices((prev) => ({
-                      ...prev,
-                      [serviceId]: quantity,
-                    }))
-                  }
+                  bookingData={state.bookingData}
+                  setBookingData={actions.setBookingData}
                 />
               )}
 
