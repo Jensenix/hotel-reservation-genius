@@ -16,10 +16,11 @@ class RoomAvailabilityService {
 
     const availabilityData = await Promise.all(roomTypes.map(async (roomType) => {
       const totalPhysicalRooms = roomType.rooms.length;
+      
       const bookings = await Booking.findAll({
         include: [{ model: Room, as: 'room', where: { roomTypeId: roomType.id }, attributes: ['id', 'roomNumber', 'status'] }],
         where: {
-          status: { [Op.ne]: 'cancelled' },
+          status: { [Op.in]: ['confirmed', 'checked_in'] },
           checkInDate: { [Op.lte]: targetDate },
           checkOutDate: { [Op.gt]: targetDate }
         }
@@ -43,13 +44,16 @@ class RoomAvailabilityService {
         cleaningRooms,
         availabilityPercentage: totalPhysicalRooms > 0 ? Math.round((availableRooms / totalPhysicalRooms) * 100) : 0,
         bookedRoomsCount: bookedRoomIds.length,
-        rooms: roomType.rooms.map(room => ({
-          id: room.id,
-          roomNumber: room.roomNumber,
-          status: bookedRoomIds.includes(room.id) ? 'occupied' : (room.status === 'maintenance' || room.status === 'cleaning' ? room.status : 'available'),
-          floor: room.floor,
-          isBooked: bookedRoomIds.includes(room.id)
-        }))
+        rooms: roomType.rooms.map(room => {
+          const isBooked = bookedRoomIds.includes(room.id);
+          return {
+            id: room.id,
+            roomNumber: room.roomNumber,
+            status: isBooked ? 'occupied' : room.status,
+            floor: room.floor,
+            isBooked: isBooked
+          };
+        })
       };
     }));
 
@@ -95,14 +99,16 @@ class RoomAvailabilityService {
       roomTypeId: roomType.id,
       roomTypeName: roomType.name,
       basePrice: parseFloat(roomType.basePrice),
-      rooms: roomType.rooms.map(room => ({
-        id: room.id,
-        roomNumber: room.roomNumber,
-        status: room.status,
-        currentBooking: room.bookings?.length > 0 ? {
-          id: room.bookings[0].id, checkInDate: room.bookings[0].checkInDate, checkOutDate: room.bookings[0].checkOutDate, status: room.bookings[0].status
-        } : null
-      }))
+      rooms: roomType.rooms.map(room => {
+        const isBooked = room.bookings && room.bookings.length > 0;
+        return {
+          id: room.id,
+          roomNumber: room.roomNumber,
+          status: isBooked ? 'occupied' : room.status,
+          floor: room.floor,
+          isBooked: isBooked
+        };
+      })
     };
   }
 }
