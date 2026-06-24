@@ -12,14 +12,13 @@ import Modal from '@/components/ui/Modal';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 
 export default function FacilitiesManagement() {
-  const initialFormState = { name: '', description: '', icon: '' };
+  const initialFormState = { facilityName: '', iconUrl: '' };
 
   const mapApiResponse = (apiData) => {
     return Array.isArray(apiData)
       ? apiData.map((item) => ({
           id: item.id,
-          name: item.facilityName || item.name || '',
-          description: item.description || '',
+          name: item.facilityName || item.name || 'Unknown Facility',
           icon: item.iconUrl || item.icon || 'default',
         }))
       : [];
@@ -40,72 +39,100 @@ export default function FacilitiesManagement() {
       business: Star,
     };
     const Icon = icons[iconName] || Building2;
-    return <Icon className="w-8 h-8 text-white" />;
+    return <Icon size={24} />;
   };
 
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-light text-slate-800 mb-2">
-              Facilities{' '}
-              <span className="font-semibold text-amber-600">Management</span>
-            </h1>
-            <p className="text-slate-500 text-sm">
-              Manage Hotel Amenities & Services
-            </p>
+        {/* Header & Search */}
+        <div className="bg-gradient-to-br from-slate-50 to-white rounded-3xl shadow-xl border border-slate-200 p-8 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
+            <div>
+              <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
+                Facilities{' '}
+                <span className="font-semibold text-amber-600">Management</span>
+              </h1>
+              <p className="text-slate-500 text-sm">
+                Manage Hotel Amenities & Services
+              </p>
+            </div>
+            <button
+              onClick={() => actions.setShowModal(true)}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xl px-8 py-3 rounded-xl font-semibold transition-all"
+            >
+              <Plus className="w-5 h-5 mr-2 inline" /> Add Facility
+            </button>
           </div>
-          <button
-            onClick={() => actions.setShowModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold flex items-center transition-all"
-          >
-            <Plus className="w-5 h-5 mr-2" /> Add Facility
-          </button>
+
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search facilities..."
+              value={state.searchTerm}
+              onChange={(e) => actions.setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 bg-slate-50 focus:bg-white"
+            />
+          </div>
         </div>
 
-        {/* Search */}
-        <div className="relative mb-8">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search facilities..."
-            value={state.searchTerm}
-            onChange={(e) => actions.setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
-          />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl shadow-xl p-8">
+            <div className="text-amber-400 mb-4">
+              <Building2 size={32} />
+            </div>
+            <p className="text-4xl font-light mb-2">{state.data.length}</p>
+            <p className="text-slate-400 text-sm">Total Facilities</p>
+          </div>
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white rounded-2xl shadow-xl p-8">
+            <div className="text-emerald-300 mb-4">
+              <CheckCircle2 size={32} />
+            </div>
+            <p className="text-4xl font-light mb-2">{state.data.length}</p>
+            <p className="text-emerald-100 text-sm">Currently Active</p>
+          </div>
+          <div className="bg-gradient-to-br from-amber-600 to-orange-600 text-white rounded-2xl shadow-xl p-8">
+            <div className="text-amber-300 mb-4">
+              <Star size={32} />
+            </div>
+            <p className="text-4xl font-light mb-2">
+              {state.filteredData.length}
+            </p>
+            <p className="text-amber-100 text-sm">Search Results</p>
+          </div>
         </div>
 
-        {/* Grid */}
+        {/* Data Grid */}
         {state.loading ? (
           <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {state.filteredData.map((facility) => (
               <div
                 key={facility.id}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
               >
-                <div className="bg-slate-900 p-6 flex items-start gap-4">
-                  <div className="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center shrink-0">
+                <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-6 relative">
+                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-xl border-2 border-amber-400 mb-6 text-white">
                     {getIconComponent(facility.icon)}
                   </div>
-                  <div>
-                    <h3 className="text-xl font-medium text-white mb-1">
-                      {facility.name}
-                    </h3>
-                    <p className="text-slate-400 text-sm line-clamp-2">
-                      {facility.description}
-                    </p>
-                  </div>
+                  <h3 className="text-2xl font-light text-white mb-2">
+                    {facility.name}
+                  </h3>
                 </div>
-                <div className="p-4 bg-white flex justify-end gap-2 border-t border-slate-100">
+                <div className="p-6 bg-white flex space-x-2">
                   <button
-                    onClick={() => actions.handleEdit(facility, facility)}
-                    className="p-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"
+                    onClick={() =>
+                      actions.handleEdit(facility, {
+                        facilityName: facility.name,
+                        iconUrl: facility.icon,
+                      })
+                    }
+                    className="p-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600"
                   >
                     <Edit2 size={16} />
                   </button>
@@ -114,7 +141,7 @@ export default function FacilitiesManagement() {
                       actions.setDeleteTarget(facility);
                       actions.setShowDeleteModal(true);
                     }}
-                    className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                    className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -131,49 +158,53 @@ export default function FacilitiesManagement() {
         onClose={actions.closeModal}
         title={state.editingItem ? 'Edit Facility' : 'Add Facility'}
       >
-        <form onSubmit={actions.handleSubmit} className="space-y-4">
-          <input
-            required
-            type="text"
-            placeholder="Facility Name"
-            value={state.formData.name}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, name: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <textarea
-            placeholder="Description"
-            value={state.formData.description}
-            onChange={(e) =>
-              actions.setFormData({
-                ...state.formData,
-                description: e.target.value,
-              })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-            rows={3}
-          />
-          <input
-            type="text"
-            placeholder="Icon Name (e.g. pool, fitness)"
-            value={state.formData.icon}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, icon: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <div className="flex gap-3 pt-4">
+        <form onSubmit={actions.handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="fm-facilityName" className="block text-sm font-medium text-slate-700 mb-2">
+              Facility Name
+            </label>
+            <input
+              id="fm-facilityName"
+              type="text"
+              required
+              value={state.formData.facilityName}
+              onChange={(e) =>
+                actions.setFormData({
+                  ...state.formData,
+                  facilityName: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="fm-iconUrl" className="block text-sm font-medium text-slate-700 mb-2">
+              Icon URL
+            </label>
+            <input
+              id="fm-iconUrl"
+              type="text"
+              value={state.formData.iconUrl}
+              onChange={(e) =>
+                actions.setFormData({
+                  ...state.formData,
+                  iconUrl: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div className="flex gap-4 pt-4">
             <button
               type="button"
               onClick={actions.closeModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200"
+              className="flex-1 bg-slate-500 text-white py-3 rounded-xl font-semibold"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600"
+              className="flex-1 bg-amber-500 text-white py-3 rounded-xl font-semibold"
             >
               {state.editingItem ? 'Update' : 'Add'}
             </button>
@@ -181,6 +212,7 @@ export default function FacilitiesManagement() {
         </form>
       </Modal>
 
+      {/* Delete Modal */}
       <Modal
         isOpen={state.showDeleteModal}
         onClose={actions.closeDeleteModal}
@@ -191,16 +223,16 @@ export default function FacilitiesManagement() {
             Are you sure you want to delete{' '}
             <strong>{state.deleteTarget?.name}</strong>?
           </p>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <button
               onClick={actions.closeDeleteModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium"
+              className="flex-1 bg-slate-500 text-white py-3 rounded-xl"
             >
               Cancel
             </button>
             <button
               onClick={actions.handleDelete}
-              className="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium"
+              className="flex-1 bg-red-500 text-white py-3 rounded-xl"
             >
               Delete
             </button>
