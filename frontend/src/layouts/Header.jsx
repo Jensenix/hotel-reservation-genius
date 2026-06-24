@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import Button from '../common/Button';
+import Button from '@/components/ui/Button';
 import { Phone, MapPin, Star } from 'lucide-react';
 
 const Header = () => {

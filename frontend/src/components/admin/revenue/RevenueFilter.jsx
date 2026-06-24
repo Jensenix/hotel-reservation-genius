@@ -1,4 +1,4 @@
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
 const RevenueFilter = ({ dateRange, setDateRange, onApplyFilter }) => {
@@ -6,7 +6,10 @@ const RevenueFilter = ({ dateRange, setDateRange, onApplyFilter }) => {
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
       <div className="flex flex-wrap gap-6 items-end">
         <div className="flex-1 min-w-[200px]">
-          <label htmlFor="paymentStartDate" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="paymentStartDate"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+          >
             Payment Start Date
           </label>
           <input
@@ -23,7 +26,10 @@ const RevenueFilter = ({ dateRange, setDateRange, onApplyFilter }) => {
           />
         </div>
         <div className="flex-1 min-w-[200px]">
-          <label htmlFor="paymentEndDate" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="paymentEndDate"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+          >
             Payment End Date
           </label>
           <input

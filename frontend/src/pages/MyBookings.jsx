@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useMyBookings } from '@/hooks/useMyBookings';
+import { useMyBookings } from '@/hooks/booking/useMyBookings';
 import Loading from '@/components/ui/Loading';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import BookingCard from '@/components/booking/myBookings/BookingCard';
 import MyBookingsFilter from '@/components/booking/myBookings/MyBookingsFilter';
 import { Calendar, CheckCircle, Clock, Shield } from 'lucide-react';
@@ -9,7 +9,8 @@ import { getStatusText } from '@/utils/bookingStatusUtils';
 
 const MyBookings = () => {
   const navigate = useNavigate();
-  const { loading, filter, setFilter, search, setSearch, filteredBookings } = useMyBookings();
+  const { loading, filter, setFilter, search, setSearch, filteredBookings } =
+    useMyBookings();
 
   if (loading) {
     return (
@@ -23,7 +24,9 @@ const MyBookings = () => {
               </span>
               <Calendar className="w-6 h-6 text-amber-500" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">My Bookings</h1>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              My Bookings
+            </h1>
             <Loading text="Loading your bookings..." size="lg" />
           </div>
         </div>
@@ -43,7 +46,9 @@ const MyBookings = () => {
               </span>
               <Calendar className="w-6 h-6 text-amber-500" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">My Bookings</h1>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              My Bookings
+            </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               View and manage your hotel reservations with ease
             </p>
@@ -64,7 +69,12 @@ const MyBookings = () => {
           </div>
         </section>
 
-        <MyBookingsFilter search={search} setSearch={setSearch} filter={filter} setFilter={setFilter} />
+        <MyBookingsFilter
+          search={search}
+          setSearch={setSearch}
+          filter={filter}
+          setFilter={setFilter}
+        />
 
         {filteredBookings.length === 0 ? (
           <div className="text-center py-16">
@@ -73,7 +83,9 @@ const MyBookings = () => {
                 ? "You haven't made any bookings yet"
                 : `No ${getStatusText(filter)} bookings found`}
             </div>
-            <Button onClick={() => navigate('/our-rooms')}>Browse Our Rooms</Button>
+            <Button onClick={() => navigate('/our-rooms')}>
+              Browse Our Rooms
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-12">
@@ -85,7 +97,9 @@ const MyBookings = () => {
                 onContinuePayment={(roomTypeId, bookingId) =>
                   navigate(`/booking/${roomTypeId}`, { state: { bookingId } })
                 }
-                onWriteReview={(bookingId) => navigate('/reviews', { state: { bookingId } })}
+                onWriteReview={(bookingId) =>
+                  navigate('/reviews', { state: { bookingId } })
+                }
               />
             ))}
           </div>

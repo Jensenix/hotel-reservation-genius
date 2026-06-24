@@ -1,5 +1,5 @@
-import AdminLayout from '@/components/layout/AdminLayout';
-import { useRoomTypeDetail } from '@/hooks/useRoomTypeDetail';
+import AdminLayout from '@/layouts/AdminLayout';
+import { useRoomTypeDetail } from '@/hooks/admin/useRoomTypeDetail';
 import RoomTypeHeader from '@/components/admin/rooms/roomTypeDetail/RoomTypeHeader';
 import PhysicalRoomsGrid from '@/components/admin/rooms/roomTypeDetail/PhysicalRoomsGrid';
 import RoomModals from '@/components/admin/rooms/roomTypeDetail/RoomModals';
@@ -37,12 +37,12 @@ const RoomTypeDetail = () => {
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
         <div className="container mx-auto px-6 py-8">
-          <RoomTypeHeader 
-            roomType={roomType} 
-            roomsCount={rooms.length} 
-            onAddRoom={handleOpenRoomModal} 
+          <RoomTypeHeader
+            roomType={roomType}
+            roomsCount={rooms.length}
+            onAddRoom={handleOpenRoomModal}
           />
-          <PhysicalRoomsGrid 
+          <PhysicalRoomsGrid
             rooms={rooms}
             loading={loading}
             onEdit={handleOpenRoomModal}
@@ -54,7 +54,7 @@ const RoomTypeDetail = () => {
           />
         </div>
 
-        <RoomModals 
+        <RoomModals
           showRoomModal={showRoomModal}
           handleCloseRoomModal={handleCloseRoomModal}
           editingRoom={editingRoom}

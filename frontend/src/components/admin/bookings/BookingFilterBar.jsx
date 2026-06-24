@@ -1,6 +1,11 @@
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 
-export default function BookingFilterBar({ filters, handleFilterChange, fetchBookings, searchInputRef }) {
+export default function BookingFilterBar({
+  filters,
+  handleFilterChange,
+  fetchBookings,
+  searchInputRef,
+}) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
       <div className="flex flex-wrap gap-6 items-center">

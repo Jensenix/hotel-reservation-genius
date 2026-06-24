@@ -1,12 +1,13 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/styles/datepicker.css';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import ExtraServicesSelect from './ExtraServicesSelect';
+import PropTypes from 'prop-types';
 
 /**
  * Component for Step 1 of the booking process, where users input their booking details.
- * 
+ *
  *  @param {Object} props
  * @param {Object} props.bookingData - Current booking state containing check-in/out dates, guest count, etc.
  *  @param {Function} props.setBookingData - State setter to update booking details.
@@ -27,7 +28,7 @@ export default function BookingDetailsForm({
   setSelectedExtraServices,
   bookingId,
   onContinue,
-  isProcessingPayment
+  isProcessingPayment,
 }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,9 +39,12 @@ export default function BookingDetailsForm({
   if (bookingId) {
     return (
       <div className="text-center py-12 space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Continue Payment</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          Continue Payment
+        </h2>
         <p className="text-gray-600 mb-6">
-          You have a pending booking. Click "Continue to Payment" to proceed with payment.
+          You have a pending booking. Click "Continue to Payment" to proceed
+          with payment.
         </p>
         <Button onClick={onContinue} disabled={isProcessingPayment}>
           {isProcessingPayment ? 'Processing...' : 'Continue to Payment'}
@@ -55,10 +59,14 @@ export default function BookingDetailsForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Date</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Check-in Date
+          </label>
           <DatePicker
             selected={bookingData.checkInDate}
-            onChange={(date) => setBookingData((prev) => ({ ...prev, checkInDate: date }))}
+            onChange={(date) =>
+              setBookingData((prev) => ({ ...prev, checkInDate: date }))
+            }
             minDate={new Date()}
             dateFormat="MMMM d, yyyy"
             placeholderText="Select check-in date"
@@ -67,10 +75,14 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Date</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Check-out Date
+          </label>
           <DatePicker
             selected={bookingData.checkOutDate}
-            onChange={(date) => setBookingData((prev) => ({ ...prev, checkOutDate: date }))}
+            onChange={(date) =>
+              setBookingData((prev) => ({ ...prev, checkOutDate: date }))
+            }
             minDate={bookingData.checkInDate || new Date()}
             dateFormat="MMMM d, yyyy"
             placeholderText="Select check-out date"
@@ -79,12 +91,19 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Number of Guests</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Number of Guests
+          </label>
           <div className="flex items-center space-x-4">
             <div className="flex items-center border border-gray-300 rounded-lg">
               <button
                 type="button"
-                onClick={() => setBookingData((prev) => ({ ...prev, guestCount: Math.max(1, prev.guestCount - 1) }))}
+                onClick={() =>
+                  setBookingData((prev) => ({
+                    ...prev,
+                    guestCount: Math.max(1, prev.guestCount - 1),
+                  }))
+                }
                 className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-l-lg"
                 disabled={bookingData.guestCount <= 1}
               >
@@ -95,21 +114,29 @@ export default function BookingDetailsForm({
               </div>
               <button
                 type="button"
-                onClick={() => setBookingData((prev) => ({ ...prev, guestCount: Math.min(room.maxCapacity, prev.guestCount + 1) }))}
+                onClick={() =>
+                  setBookingData((prev) => ({
+                    ...prev,
+                    guestCount: Math.min(room.maxCapacity, prev.guestCount + 1),
+                  }))
+                }
                 className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-r-lg"
                 disabled={bookingData.guestCount >= room.maxCapacity}
               >
                 +
               </button>
             </div>
-            <span className="text-sm text-gray-600">Max {room.maxCapacity} guests</span>
+            <span className="text-sm text-gray-600">
+              Max {room.maxCapacity} guests
+            </span>
           </div>
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Special Requests <span className="text-gray-400 font-normal ml-1">(Optional)</span>
+          Special Requests{' '}
+          <span className="text-gray-400 font-normal ml-1">(Optional)</span>
         </label>
         <textarea
           name="specialRequests"
@@ -124,9 +151,10 @@ export default function BookingDetailsForm({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Extra Services <span className="text-gray-400 font-normal ml-1">(Optional)</span>
+          Extra Services{' '}
+          <span className="text-gray-400 font-normal ml-1">(Optional)</span>
         </label>
-        <ExtraServicesSelect 
+        <ExtraServicesSelect
           extraServices={extraServices}
           selectedExtraServices={selectedExtraServices}
           setSelectedExtraServices={setSelectedExtraServices}
@@ -135,3 +163,4 @@ export default function BookingDetailsForm({
     </div>
   );
 }
+

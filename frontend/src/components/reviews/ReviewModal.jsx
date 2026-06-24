@@ -1,4 +1,4 @@
-import Modal from '@/components/common/Modal';
+import Modal from '@/components/ui/Modal';
 import { Star } from 'lucide-react';
 import PropTypes from 'prop-types';
 
@@ -19,12 +19,15 @@ const ReviewModal = ({
       <form onSubmit={handleSubmitReview} className="space-y-6">
         <div>
           {/* ACCESSIBILITY FIX: Replaced <label> with semantic <span> and radiogroup */}
-          <span id="rating-group-label" className="block text-sm font-medium text-slate-700 mb-2">
+          <span
+            id="rating-group-label"
+            className="block text-sm font-medium text-slate-700 mb-2"
+          >
             Rating
           </span>
-          <div 
-            role="radiogroup" 
-            aria-labelledby="rating-group-label" 
+          <div
+            role="radiogroup"
+            aria-labelledby="rating-group-label"
             className="flex items-center gap-2"
           >
             {[1, 2, 3, 4, 5].map((star) => (
@@ -33,7 +36,9 @@ const ReviewModal = ({
                 type="button"
                 role="radio"
                 aria-checked={reviewFormData.rating === star}
-                onClick={() => setReviewFormData({ ...reviewFormData, rating: star })}
+                onClick={() =>
+                  setReviewFormData({ ...reviewFormData, rating: star })
+                }
                 className="transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-full"
               >
                 <Star
@@ -48,14 +53,19 @@ const ReviewModal = ({
         </div>
 
         <div>
-          <label htmlFor="reviewComment" className="block text-sm font-medium text-slate-700 mb-2">
+          <label
+            htmlFor="reviewComment"
+            className="block text-sm font-medium text-slate-700 mb-2"
+          >
             Comment
           </label>
           <textarea
             id="reviewComment"
             required
             value={reviewFormData.comment}
-            onChange={(e) => setReviewFormData({ ...reviewFormData, comment: e.target.value })}
+            onChange={(e) =>
+              setReviewFormData({ ...reviewFormData, comment: e.target.value })
+            }
             rows={4}
             className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all resize-none"
             placeholder="Share your experience..."

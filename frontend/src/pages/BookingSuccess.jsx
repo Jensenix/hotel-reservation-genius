@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 
 const BookingSuccess = () => {
   const location = useLocation();

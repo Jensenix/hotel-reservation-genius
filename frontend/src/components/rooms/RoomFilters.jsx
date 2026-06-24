@@ -1,5 +1,5 @@
 import { Search, Filter, Users, DollarSign } from 'lucide-react';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
 const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
@@ -18,7 +18,9 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <label htmlFor="searchRooms" className="sr-only">Search rooms</label>
+                <label htmlFor="searchRooms" className="sr-only">
+                  Search rooms
+                </label>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   id="searchRooms"
@@ -34,7 +36,10 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white rounded-xl p-4 border border-amber-200">
-              <label htmlFor="filterCapacity" className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label
+                htmlFor="filterCapacity"
+                className="text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
                 <Users className="w-4 h-4 mr-2 text-amber-600" />
                 Capacity
               </label>
@@ -52,7 +57,10 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
             </div>
 
             <div className="bg-white rounded-xl p-4 border border-amber-200">
-              <label htmlFor="filterPrice" className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label
+                htmlFor="filterPrice"
+                className="text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
                 <DollarSign className="w-4 h-4 mr-2 text-amber-600" />
                 Price Range
               </label>
@@ -70,7 +78,10 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
             </div>
 
             <div className="bg-white rounded-xl p-4 border border-amber-200">
-              <label htmlFor="filterSort" className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label
+                htmlFor="filterSort"
+                className="text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
                 <Filter className="w-4 h-4 mr-2 text-amber-600" />
                 Sort By
               </label>
@@ -108,10 +119,10 @@ RoomFilters.propTypes = {
     capacity: PropTypes.string,
     priceRange: PropTypes.string,
     sortBy: PropTypes.string,
-    search: PropTypes.string
+    search: PropTypes.string,
   }).isRequired,
   updateFilters: PropTypes.func.isRequired,
-  clearFilters: PropTypes.func.isRequired
+  clearFilters: PropTypes.func.isRequired,
 };
 
 export default RoomFilters;

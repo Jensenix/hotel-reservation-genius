@@ -1,8 +1,14 @@
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { Bed, Edit, Trash2, Plus } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const PhysicalRoomsGrid = ({ rooms, loading, onEdit, onDelete, onAddFirstRoom }) => {
+const PhysicalRoomsGrid = ({
+  rooms,
+  loading,
+  onEdit,
+  onDelete,
+  onAddFirstRoom,
+}) => {
   return (
     <>
       <div className="mb-8">
@@ -12,9 +18,7 @@ const PhysicalRoomsGrid = ({ rooms, loading, onEdit, onDelete, onAddFirstRoom })
               Physical{' '}
               <span className="font-semibold text-amber-600">Rooms</span>
             </h2>
-            <p className="text-slate-500 text-sm">
-              {rooms.length} rooms found
-            </p>
+            <p className="text-slate-500 text-sm">{rooms.length} rooms found</p>
           </div>
         </div>
       </div>
@@ -93,9 +97,9 @@ const PhysicalRoomsGrid = ({ rooms, loading, onEdit, onDelete, onAddFirstRoom })
 PhysicalRoomsGrid.propTypes = {
   rooms: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onAddFirstRoom: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onAddFirstRoom: PropTypes.func.isRequired,
 };
 
 export default PhysicalRoomsGrid;

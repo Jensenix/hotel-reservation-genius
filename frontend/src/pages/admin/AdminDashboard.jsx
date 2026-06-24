@@ -1,11 +1,11 @@
-import AdminLayout from '@/components/layout/AdminLayout';
-import { useAdminBooking } from '@/hooks/useAdminBooking';
+import AdminLayout from '@/layouts/AdminLayout';
+import { useAdminBooking } from '@/hooks/admin/useAdminBooking';
 
-import BookingFilterBar from '@/components/admin/BookingFilterBar';
-import BookingTable from '@/components/admin/BookingTable';
-import BookingsPagination from '@/components/admin/BookingPagination';
-import BookingActionModal from '@/components/admin/BookingActionModal';
-import BookingDetailModal from '@/components/admin/BookingDetailModal';
+import BookingFilterBar from '@/components/admin/bookings/BookingFilterBar';
+import BookingTable from '@/components/admin/bookings/BookingTable';
+import BookingsPagination from '@/components/admin/bookings/BookingPagination';
+import BookingActionModal from '@/components/admin/bookings/BookingActionModal';
+import BookingDetailModal from '@/components/admin/bookings/BookingDetailModal';
 
 const AdminDashboard = () => {
   const { state, refs, actions } = useAdminBooking();
@@ -19,7 +19,9 @@ const AdminDashboard = () => {
       cancelled: 'bg-red-100 text-red-800',
     };
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}>
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100 text-gray-800'}`}
+      >
         {status.replace('_', ' ').toUpperCase()}
       </span>
     );
@@ -42,34 +44,42 @@ const AdminDashboard = () => {
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          
           {/* Header */}
           <div className="mb-10">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-4xl font-light text-slate-800 mb-2 tracking-tight">
-                  Admin <span className="font-semibold text-amber-600">Dashboard</span>
+                  Admin{' '}
+                  <span className="font-semibold text-amber-600">
+                    Dashboard
+                  </span>
                 </h1>
-                <p className="text-slate-500 text-sm tracking-wide uppercase">Booking Management & Operations</p>
+                <p className="text-slate-500 text-sm tracking-wide uppercase">
+                  Booking Management & Operations
+                </p>
               </div>
             </div>
           </div>
 
-          <BookingFilterBar 
-            filters={state.filters} 
-            handleFilterChange={actions.handleFilterChange} 
-            fetchBookings={actions.fetchBookings} 
-            searchInputRef={refs.searchInputRef} 
+          <BookingFilterBar
+            filters={state.filters}
+            handleFilterChange={actions.handleFilterChange}
+            fetchBookings={actions.fetchBookings}
+            searchInputRef={refs.searchInputRef}
           />
 
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-1">Bookings Management</h3>
-              <p className="text-sm text-slate-500">Manage and monitor all hotel bookings</p>
+              <h3 className="text-lg font-semibold text-slate-800 mb-1">
+                Bookings Management
+              </h3>
+              <p className="text-sm text-slate-500">
+                Manage and monitor all hotel bookings
+              </p>
             </div>
-            
-            <BookingTable 
-              bookings={state.bookings} 
+
+            <BookingTable
+              bookings={state.bookings}
               getStatusBadge={getStatusBadge}
               onViewDetails={actions.fetchBookingDetails}
               onAction={(booking, type) => {
@@ -79,14 +89,14 @@ const AdminDashboard = () => {
               }}
             />
 
-            <BookingsPagination 
-              pagination={state.pagination} 
-              filters={state.filters} 
-              handleFilterChange={actions.handleFilterChange} 
+            <BookingsPagination
+              pagination={state.pagination}
+              filters={state.filters}
+              handleFilterChange={actions.handleFilterChange}
             />
           </div>
 
-          <BookingActionModal 
+          <BookingActionModal
             isOpen={state.showActionModal}
             onClose={() => actions.setShowActionModal(false)}
             actionType={state.actionType}
@@ -96,7 +106,7 @@ const AdminDashboard = () => {
             executeAction={actions.executeAction}
           />
 
-          <BookingDetailModal 
+          <BookingDetailModal
             isOpen={state.showDetailModal}
             onClose={() => {
               actions.setShowDetailModal(false);
@@ -107,7 +117,6 @@ const AdminDashboard = () => {
             loadingDetails={state.loadingDetails}
             getStatusBadge={getStatusBadge}
           />
-
         </div>
       </div>
     </AdminLayout>

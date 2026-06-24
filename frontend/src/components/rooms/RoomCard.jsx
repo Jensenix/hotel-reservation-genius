@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Card from '@/components/ui/Card';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { Users, Wifi, MapPin, ChevronRight, Heart } from 'lucide-react';
 import PropTypes from 'prop-types';
 
@@ -22,9 +22,7 @@ const RoomCard = ({ room }) => {
           </div>
         </div>
         <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full shadow-lg">
-          <span className="text-xs font-medium">
-            ${room.basePrice}/night
-          </span>
+          <span className="text-xs font-medium">${room.basePrice}/night</span>
         </div>
       </div>
 
@@ -67,15 +65,11 @@ const RoomCard = ({ room }) => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1 text-gray-500">
               <Users className="w-4 h-4" />
-              <span className="text-sm">
-                Max {room.maxCapacity} guests
-              </span>
+              <span className="text-sm">Max {room.maxCapacity} guests</span>
             </div>
             <div className="flex items-center space-x-1 text-gray-500">
               <MapPin className="w-4 h-4" />
-              <span className="text-sm">
-                Floor {room.floor || '1'}
-              </span>
+              <span className="text-sm">Floor {room.floor || '1'}</span>
             </div>
           </div>
           <div className="text-right">
@@ -108,8 +102,8 @@ RoomCard.propTypes = {
     facilities: PropTypes.arrayOf(PropTypes.object),
     maxCapacity: PropTypes.number,
     floor: PropTypes.string,
-    basePrice: PropTypes.number
-  }).isRequired
+    basePrice: PropTypes.number,
+  }).isRequired,
 };
 
 export default RoomCard;
