@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@/components/common/Button';
 import Loading from '@/components/ui/Loading';
 import AdminLayout from '@/components/layout/AdminLayout';
@@ -14,7 +14,7 @@ const RevenueDashboard = () => {
 
   useEffect(() => {
     fetchRevenueData();
-  }, [dateRange]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dateRange]);
 
   const fetchRevenueData = async () => {
     try {
