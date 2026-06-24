@@ -6,29 +6,38 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import MainLayout from './layouts/MainLayout';
-import Home from './pages/Home';
-import OurRooms from './pages/OurRooms';
-import Booking from './pages/Booking';
-import BookingSuccess from './pages/BookingSuccess';
-import BookingDetail from './pages/BookingDetail';
-import Facilities from './pages/Facilities';
-import MyBookings from './pages/MyBookings';
-import Reviews from './pages/Reviews';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import RevenueDashboard from './pages/admin/RevenueDashboard';
-import RoomAvailability from './pages/admin/RoomAvailability';
-import Guests from './pages/admin/Guests';
-import RoomManagement from './pages/admin/RoomManagement';
-import RoomTypeDetail from './pages/admin/RoomTypeDetail';
 
-import FacilitiesManagement from './pages/admin/FacilitiesManagement';
-import ExtraServicesManagement from './pages/admin/ExtraServicesManagement';
-import PaymentMethodsManagement from './pages/admin/PaymentMethodsManagement';
+// --- Context & Layouts ---
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import MainLayout from '@/layouts/MainLayout';
 
+// --- Public Pages ---
+import Home from '@/pages/public/Home';
+import OurRooms from '@/pages/public/OurRooms';
+import Facilities from '@/pages/public/Facilities';
+import Reviews from '@/pages/public/Reviews';
+
+// --- Auth Pages ---
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
+
+// --- Booking Pages ---
+import Booking from '@/pages/booking/Booking';
+import BookingSuccess from '@/pages/booking/BookingSuccess';
+import BookingDetail from '@/pages/booking/BookingDetail';
+import MyBookings from '@/pages/booking/MyBookings';
+
+// --- Admin Pages ---
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import RevenueDashboard from '@/pages/admin/RevenueDashboard';
+import RoomAvailability from '@/pages/admin/RoomAvailability';
+import Guests from '@/pages/admin/Guests';
+import RoomManagement from '@/pages/admin/RoomManagement';
+import RoomTypeDetail from '@/pages/admin/RoomTypeDetail';
+import FacilitiesManagement from '@/pages/admin/FacilitiesManagement';
+import ExtraServicesManagement from '@/pages/admin/ExtraServicesManagement';
+import PaymentMethodsManagement from '@/pages/admin/PaymentMethodsManagement';
+
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
