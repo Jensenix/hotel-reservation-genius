@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Coffee,
   Car,
@@ -15,16 +14,17 @@ import Modal from '@/components/ui/Modal';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 
 export default function ExtraServicesManagement() {
-  const initialFormState = { name: '', description: '', price: '', icon: '' };
+  // Aligned with backend model columns directly
+  const initialFormState = { serviceName: '', description: '', price: '', iconUrl: '' };
 
   const mapApiResponse = (apiData) => {
     return Array.isArray(apiData)
       ? apiData.map((item) => ({
           id: item.id,
-          name: item.serviceName || item.name || '',
+          serviceName: item.serviceName || item.name || '',
           description: item.description || '',
           price: parseFloat(item.price) || 0,
-          icon: item.iconUrl || item.icon || 'default',
+          iconUrl: item.iconUrl || item.icon || 'default',
         }))
       : [];
   };
@@ -97,14 +97,14 @@ export default function ExtraServicesManagement() {
                 <div className="bg-slate-900 p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-14 h-14 bg-emerald-500 rounded-xl flex items-center justify-center shrink-0">
-                      {getIconComponent(service.icon)}
+                      {getIconComponent(service.iconUrl)}
                     </div>
                     <span className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-lg font-semibold border border-emerald-500/30">
                       ${service.price}
                     </span>
                   </div>
                   <h3 className="text-xl font-medium text-white mb-1">
-                    {service.name}
+                    {service.serviceName}
                   </h3>
                   <p className="text-slate-400 text-sm line-clamp-2">
                     {service.description}
@@ -139,49 +139,65 @@ export default function ExtraServicesManagement() {
         title={state.editingItem ? 'Edit Service' : 'Add Service'}
       >
         <form onSubmit={actions.handleSubmit} className="space-y-4">
-          <input
-            required
-            type="text"
-            placeholder="Service Name"
-            value={state.formData.name}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, name: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <textarea
-            placeholder="Description"
-            value={state.formData.description}
-            onChange={(e) =>
-              actions.setFormData({
-                ...state.formData,
-                description: e.target.value,
-              })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-            rows={3}
-          />
-          <input
-            required
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Price ($)"
-            value={state.formData.price}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, price: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <input
-            type="text"
-            placeholder="Icon Name (e.g. room_service, spa)"
-            value={state.formData.icon}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, icon: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
+          <div>
+            <label htmlFor="es-serviceName" className="block text-sm font-medium text-slate-700 mb-1">Service Name</label>
+            <input
+              id="es-serviceName"
+              required
+              type="text"
+              placeholder="e.g., Airport Pickup, Buffet Breakfast"
+              value={state.formData.serviceName || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, serviceName: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="es-description" className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+            <textarea
+              id="es-description"
+              placeholder="Service details visible to customers"
+              value={state.formData.description || ''}
+              onChange={(e) =>
+                actions.setFormData({
+                  ...state.formData,
+                  description: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label htmlFor="es-price" className="block text-sm font-medium text-slate-700 mb-1">Price ($)</label>
+            <input
+              id="es-price"
+              required
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={state.formData.price || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, price: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="es-iconUrl" className="block text-sm font-medium text-slate-700 mb-1">Icon Identifier (e.g., room_service, transfer, spa)</label>
+            <input
+              id="es-iconUrl"
+              type="text"
+              placeholder="e.g., room_service, transfer"
+              value={state.formData.iconUrl || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, iconUrl: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
           <div className="flex gap-3 pt-4">
             <button
               type="button"
@@ -208,7 +224,7 @@ export default function ExtraServicesManagement() {
         <div className="space-y-6">
           <p>
             Are you sure you want to delete{' '}
-            <strong>{state.deleteTarget?.name}</strong>?
+            <strong>{state.deleteTarget?.serviceName}</strong>?
           </p>
           <div className="flex gap-3">
             <button

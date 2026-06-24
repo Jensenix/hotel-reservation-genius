@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   CreditCard,
   Wallet,
@@ -17,22 +16,24 @@ import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 
 export default function PaymentMethodsManagement() {
   const initialFormState = {
-    name: '',
+    methodName: '',
     type: 'card',
     description: '',
     isActive: true,
-    config: '',
+    accountNumber: '',
+    address: '',
   };
 
   const mapApiResponse = (apiData) => {
     return Array.isArray(apiData)
       ? apiData.map((item) => ({
           id: item.id,
-          name: item.methodName || item.name || '',
+          methodName: item.methodName || '',
           description: item.description || '',
           type: item.type || 'card',
           isActive: item.isActive !== false,
-          config: item.accountNumber || item.config || '',
+          accountNumber: item.accountNumber || '',
+          address: item.address || '',
         }))
       : [];
   };
@@ -116,11 +117,17 @@ export default function PaymentMethodsManagement() {
                     </span>
                   </div>
                   <h3 className="text-xl font-medium text-white mb-1">
-                    {payment.name}
+                    {payment.methodName}
                   </h3>
-                  <p className="text-slate-400 text-sm line-clamp-2">
+                  <p className="text-slate-400 text-sm line-clamp-2 mb-3">
                     {payment.description}
                   </p>
+
+                  {/* Informational Subtext Badges */}
+                  <div className="mt-2 text-xs text-slate-400 space-y-1 border-t border-slate-800 pt-2">
+                    {payment.accountNumber && <div><span className="font-medium text-slate-500">Acc No:</span> {payment.accountNumber}</div>}
+                    {payment.address && <div><span className="font-medium text-slate-500">Address:</span> {payment.address}</div>}
+                  </div>
                 </div>
                 <div className="p-4 bg-white flex justify-end gap-2 border-t border-slate-100">
                   <button
@@ -151,52 +158,81 @@ export default function PaymentMethodsManagement() {
         title={state.editingItem ? 'Edit Payment Method' : 'Add Payment Method'}
       >
         <form onSubmit={actions.handleSubmit} className="space-y-4">
-          <input
-            required
-            type="text"
-            placeholder="Method Name"
-            value={state.formData.name}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, name: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <select
-            required
-            value={state.formData.type}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, type: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white"
-          >
-            <option value="card">Credit Card</option>
-            <option value="wallet">Digital Wallet</option>
-            <option value="bank">Bank Transfer</option>
-            <option value="mobile">Mobile</option>
-            <option value="cash">Cash</option>
-          </select>
-          <textarea
-            placeholder="Description"
-            value={state.formData.description}
-            onChange={(e) =>
-              actions.setFormData({
-                ...state.formData,
-                description: e.target.value,
-              })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-            rows={3}
-          />
-          <input
-            type="text"
-            placeholder="Config / Account #"
-            value={state.formData.config}
-            onChange={(e) =>
-              actions.setFormData({ ...state.formData, config: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-          />
-          <label className="flex items-center space-x-2 cursor-pointer">
+          <div>
+            <label htmlFor="pm-methodName" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Method Name</label>
+            <input
+              id="pm-methodName"
+              required
+              type="text"
+              placeholder="e.g., Bank Transfer, Stripe Gateway"
+              value={state.formData.methodName || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, methodName: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="pm-type" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Type</label>
+            <select
+              id="pm-type"
+              required
+              value={state.formData.type}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, type: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white"
+            >
+              <option value="card">Credit Card</option>
+              <option value="wallet">Digital Wallet</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="mobile">Mobile</option>
+              <option value="cash">Cash</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="pm-description" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Description</label>
+            <textarea
+              id="pm-description"
+              placeholder="Payment instructions displayed to users"
+              value={state.formData.description || ''}
+              onChange={(e) =>
+                actions.setFormData({
+                  ...state.formData,
+                  description: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label htmlFor="pm-accountNumber" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Account Number</label>
+            <input
+              id="pm-accountNumber"
+              type="text"
+              placeholder="e.g., 123-456-7890"
+              value={state.formData.accountNumber || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, accountNumber: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="pm-address" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Billing Address / Instructions</label>
+            <textarea
+              id="pm-address"
+              placeholder="Enter merchant physical address or explicit transfer wiring details"
+              value={state.formData.address || ''}
+              onChange={(e) =>
+                actions.setFormData({ ...state.formData, address: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
+              rows={2}
+            />
+          </div>
+          <label className="flex items-center space-x-2 cursor-pointer pt-2">
             <input
               type="checkbox"
               checked={state.formData.isActive}
@@ -238,7 +274,7 @@ export default function PaymentMethodsManagement() {
         <div className="space-y-6">
           <p>
             Are you sure you want to delete{' '}
-            <strong>{state.deleteTarget?.name}</strong>?
+            <strong>{state.deleteTarget?.methodName}</strong>?
           </p>
           <div className="flex gap-3">
             <button
