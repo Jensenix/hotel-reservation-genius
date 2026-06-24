@@ -143,8 +143,8 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
                   onWriteReview(booking.id);
                 }}
               >
-                <Star className="w-4 h-4 mr-1" />
-                Write Review
+                <Star className="w-4 h-4" /> 
+                <p className="relative -top-2">Write Review</p>
               </Button>
             )}
           </div>
