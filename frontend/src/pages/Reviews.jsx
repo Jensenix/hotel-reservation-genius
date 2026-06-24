@@ -1,4 +1,4 @@
-import { useReviews } from '@/hooks/useReviews';
+import { useReviews } from '@/hooks/public/useReviews';
 import ReviewFilters from '@/components/reviews/ReviewFilters';
 import ReviewList from '@/components/reviews/ReviewList';
 import ReviewModal from '@/components/reviews/ReviewModal';
@@ -27,9 +27,10 @@ const Reviews = () => {
   return (
     <div className="bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 min-h-screen">
       <div className="container mx-auto px-6 py-8">
-        
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Guest Reviews</h1>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+            Guest Reviews
+          </h1>
           <p className="text-slate-600">Read and share experiences</p>
         </div>
 
@@ -65,7 +66,6 @@ const Reviews = () => {
           handleOpenReviewModal={handleOpenReviewModal}
           handleDeleteReview={handleDeleteReview}
         />
-
       </div>
 
       <ReviewModal

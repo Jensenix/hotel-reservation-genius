@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import AuthHeader from '@/components/auth/AuthHeader';
-import { useRegister } from '@/hooks/useRegister';
+import { useRegister } from '@/hooks/auth/useRegister';
 
 const Register = () => {
-  const { formData, loading, error, success, handleChange, handleSubmit } = useRegister();
+  const { formData, loading, error, success, handleChange, handleSubmit } =
+    useRegister();
 
   if (success) {
     return (
@@ -13,15 +14,29 @@ const Register = () => {
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500 opacity-10 rounded-full -mr-16 -mt-16"></div>
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-10 h-10 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
             <h2 className="text-3xl font-light text-slate-800 mb-2 tracking-tight">
-              Registration <span className="font-semibold text-emerald-600">Successful!</span>
+              Registration{' '}
+              <span className="font-semibold text-emerald-600">
+                Successful!
+              </span>
             </h2>
             <p className="text-slate-600 mb-6">
-              Your account has been created successfully. You&apos;ll be redirected to the homepage shortly.
+              Your account has been created successfully. You&apos;ll be
+              redirected to the homepage shortly.
             </p>
             <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto"></div>
           </div>
@@ -36,13 +51,27 @@ const Register = () => {
         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500 opacity-10 rounded-full -mr-16 -mt-16"></div>
 
-          <AuthHeader title="Create" highlight="Account" subtitle="Join Genius Society Hotel" />
+          <AuthHeader
+            title="Create"
+            highlight="Account"
+            subtitle="Join Genius Society Hotel"
+          />
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center">
-                <svg className="w-5 h-5 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-red-600 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <p className="text-red-600 text-sm">{error}</p>
               </div>
@@ -51,7 +80,10 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="fullName"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -67,7 +99,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -83,7 +118,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="phoneNumber" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Phone Number
               </label>
               <input
@@ -99,7 +137,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -115,7 +156,10 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Confirm Password
               </label>
               <input
@@ -137,9 +181,15 @@ const Register = () => {
                 className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer"
                 required
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-slate-600 cursor-pointer">
+              <label
+                htmlFor="terms"
+                className="ml-2 text-sm text-slate-600 cursor-pointer"
+              >
                 I agree to the{' '}
-                <a href="#terms-and-conditions" className="text-emerald-600 hover:text-emerald-500 transition-colors">
+                <a
+                  href="#terms-and-conditions"
+                  className="text-emerald-600 hover:text-emerald-500 transition-colors"
+                >
                   Terms and Conditions
                 </a>
               </label>
@@ -164,12 +214,17 @@ const Register = () => {
           <div className="mt-8 text-center relative">
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-emerald-500"></div>
-              <span className="text-emerald-600 text-xs font-semibold tracking-widest mx-4">OR</span>
+              <span className="text-emerald-600 text-xs font-semibold tracking-widest mx-4">
+                OR
+              </span>
               <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-emerald-500"></div>
             </div>
             <p className="text-slate-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-emerald-600 hover:text-emerald-500 font-medium transition-colors">
+              <Link
+                to="/login"
+                className="text-emerald-600 hover:text-emerald-500 font-medium transition-colors"
+              >
                 Sign In
               </Link>
             </p>

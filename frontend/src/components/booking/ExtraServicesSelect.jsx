@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function ExtraServicesSelect({ extraServices, selectedExtraServices, setSelectedExtraServices }) {
+export default function ExtraServicesSelect({ 
+  extraServices = [], 
+  selectedExtraServices = {}, 
+  setSelectedExtraServices 
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 

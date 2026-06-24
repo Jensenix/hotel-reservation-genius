@@ -1,6 +1,6 @@
 import Loading from '@/components/ui/Loading';
-import AdminLayout from '@/components/layout/AdminLayout';
-import { useRoomAvailability } from '@/hooks/useRoomAvailability';
+import AdminLayout from '@/layouts/AdminLayout';
+import { useRoomAvailability } from '@/hooks/admin/useRoomAvailability';
 import AvailabilityHeader from '@/components/admin/rooms/roomAvailability/AvailabilityHeader';
 import AvailabilityStats from '@/components/admin/rooms/roomAvailability/AvailabilityStats';
 import RoomTypeAccordion from '@/components/admin/rooms/roomAvailability/RoomTypeAccordion';
@@ -30,7 +30,6 @@ const RoomAvailability = () => {
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          
           <AvailabilityHeader
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -44,7 +43,6 @@ const RoomAvailability = () => {
             expandedRoomType={expandedRoomType}
             onToggle={toggleRoomTypeDetails}
           />
-          
         </div>
       </div>
     </AdminLayout>

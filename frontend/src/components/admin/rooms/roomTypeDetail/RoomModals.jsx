@@ -1,5 +1,5 @@
-import Button from '@/components/common/Button';
-import Modal from '@/components/common/Modal';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
 import PropTypes from 'prop-types';
 
 const RoomModals = ({
@@ -24,7 +24,10 @@ const RoomModals = ({
       >
         <form onSubmit={handleSubmitRoom} className="space-y-6">
           <div>
-            <label htmlFor="roomNumber" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="roomNumber"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Room Number
             </label>
             <input
@@ -44,7 +47,10 @@ const RoomModals = ({
           </div>
 
           <div>
-            <label htmlFor="floor" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="floor"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Floor
             </label>
             <input
@@ -119,16 +125,15 @@ const RoomModals = ({
 RoomModals.propTypes = {
   showRoomModal: PropTypes.bool.isRequired,
   handleCloseRoomModal: PropTypes.func.isRequired,
-    editingRoom: PropTypes.object,
-    handleSubmitRoom: PropTypes.func.isRequired,
-    roomFormData: PropTypes.object.isRequired,
-    setRoomFormData: PropTypes.func.isRequired,
-    showDeleteModal: PropTypes.bool.isRequired,
-    setShowDeleteModal: PropTypes.func.isRequired,
-    deletingRoom: PropTypes.object,
-    setDeletingRoom: PropTypes.func.isRequired,
-    handleDelete: PropTypes.func.isRequired,
+  editingRoom: PropTypes.object,
+  handleSubmitRoom: PropTypes.func.isRequired,
+  roomFormData: PropTypes.object.isRequired,
+  setRoomFormData: PropTypes.func.isRequired,
+  showDeleteModal: PropTypes.bool.isRequired,
+  setShowDeleteModal: PropTypes.func.isRequired,
+  deletingRoom: PropTypes.object,
+  setDeletingRoom: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
-
 
 export default RoomModals;

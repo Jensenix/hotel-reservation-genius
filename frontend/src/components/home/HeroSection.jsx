@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { Sparkles, MapPin, Star, Shield } from 'lucide-react';
 import { ImageAssets } from '@/config';
 
@@ -7,8 +7,7 @@ const HeroSection = () => (
   <section
     className="relative h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat -mt-32"
     style={{
-      backgroundImage:
-        `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url(${ImageAssets.HomeWallpaper})`,
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url(${ImageAssets.HomeWallpaper})`,
     }}
   >
     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70"></div>
@@ -16,10 +15,14 @@ const HeroSection = () => (
       <div className="mb-8">
         <div className="flex items-center justify-center space-x-2 mb-4">
           <Sparkles className="w-6 h-6 text-yellow-400" />
-          <span className="text-lg font-light tracking-wider text-yellow-400">LUXURY & COMFORT</span>
+          <span className="text-lg font-light tracking-wider text-yellow-400">
+            LUXURY & COMFORT
+          </span>
           <Sparkles className="w-6 h-6 text-yellow-400" />
         </div>
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">Genius Society Hotel</h1>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          Genius Society Hotel
+        </h1>
         <p className="text-xl md:text-2xl mb-8 font-light leading-relaxed">
           Where elegance meets exceptional service in the heart of the city
         </p>

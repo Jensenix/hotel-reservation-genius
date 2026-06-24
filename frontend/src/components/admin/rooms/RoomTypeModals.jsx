@@ -1,5 +1,5 @@
-import Modal from '@/components/common/Modal';
-import Button from '@/components/common/Button';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
 const RoomTypeModals = ({
@@ -24,7 +24,10 @@ const RoomTypeModals = ({
       >
         <form onSubmit={handleSubmitRoomType} className="space-y-6">
           <div>
-            <label htmlFor="roomTypeName" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="roomTypeName"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Room Type Name
             </label>
             <input
@@ -32,20 +35,33 @@ const RoomTypeModals = ({
               type="text"
               required
               value={roomTypeFormData.name}
-              onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, name: e.target.value })}
+              onChange={(e) =>
+                setRoomTypeFormData({
+                  ...roomTypeFormData,
+                  name: e.target.value,
+                })
+              }
               className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., Standard Room"
             />
           </div>
 
           <div>
-            <label htmlFor="roomTypeDescription" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="roomTypeDescription"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Description
             </label>
             <textarea
               id="roomTypeDescription"
               value={roomTypeFormData.description}
-              onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, description: e.target.value })}
+              onChange={(e) =>
+                setRoomTypeFormData({
+                  ...roomTypeFormData,
+                  description: e.target.value,
+                })
+              }
               className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="Describe the room type..."
               rows={3}
@@ -53,7 +69,10 @@ const RoomTypeModals = ({
           </div>
 
           <div>
-            <label htmlFor="roomTypeBasePrice" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="roomTypeBasePrice"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Base Price ($)
             </label>
             <input
@@ -63,14 +82,22 @@ const RoomTypeModals = ({
               min="0"
               step="0.01"
               value={roomTypeFormData.basePrice}
-              onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, basePrice: e.target.value })}
+              onChange={(e) =>
+                setRoomTypeFormData({
+                  ...roomTypeFormData,
+                  basePrice: e.target.value,
+                })
+              }
               className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., 100"
             />
           </div>
 
           <div>
-            <label htmlFor="roomTypeMaxCapacity" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="roomTypeMaxCapacity"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Max Capacity (Guests)
             </label>
             <input
@@ -79,7 +106,12 @@ const RoomTypeModals = ({
               required
               min="1"
               value={roomTypeFormData.maxCapacity}
-              onChange={(e) => setRoomTypeFormData({ ...roomTypeFormData, maxCapacity: e.target.value })}
+              onChange={(e) =>
+                setRoomTypeFormData({
+                  ...roomTypeFormData,
+                  maxCapacity: e.target.value,
+                })
+              }
               className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., 2"
             />
@@ -113,7 +145,10 @@ const RoomTypeModals = ({
       >
         <div className="space-y-6">
           <p className="text-slate-600">
-            Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This will also delete all physical rooms associated with this type. This action cannot be undone.
+            Are you sure you want to delete{' '}
+            <strong>{deleteTarget?.name}</strong>? This will also delete all
+            physical rooms associated with this type. This action cannot be
+            undone.
           </p>
           <div className="flex gap-4">
             <Button
@@ -146,8 +181,10 @@ RoomTypeModals.propTypes = {
   roomTypeFormData: PropTypes.shape({
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
-    basePrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    maxCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    basePrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    maxCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
   }).isRequired,
   setRoomTypeFormData: PropTypes.func.isRequired,
   showDeleteModal: PropTypes.bool.isRequired,

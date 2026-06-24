@@ -1,4 +1,4 @@
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import RoomCard from './RoomCard';
 import PropTypes from 'prop-types';
 
@@ -33,9 +33,7 @@ const RoomList = ({ rooms, clearFilters }) => {
             <p className="text-gray-600 mb-6">
               Try adjusting your filters to see more options
             </p>
-            <Button onClick={clearFilters}>
-              Clear Filters
-            </Button>
+            <Button onClick={clearFilters}>Clear Filters</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -51,7 +49,7 @@ const RoomList = ({ rooms, clearFilters }) => {
 
 RoomList.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  clearFilters: PropTypes.func.isRequired
+  clearFilters: PropTypes.func.isRequired,
 };
 
 export default RoomList;

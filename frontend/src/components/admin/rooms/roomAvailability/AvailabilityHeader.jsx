@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import DatePicker from 'react-datepicker';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/styles/datepicker.css';
 
@@ -10,7 +10,8 @@ const AvailabilityHeader = ({ selectedDate, setSelectedDate, setToday }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-light text-slate-800 mb-2 tracking-tight">
-            Room <span className="font-semibold text-amber-600">Availability</span>
+            Room{' '}
+            <span className="font-semibold text-amber-600">Availability</span>
           </h1>
           <p className="text-slate-500 text-sm tracking-wide uppercase">
             Real-time Room Status & Management

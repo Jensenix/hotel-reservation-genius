@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { ArrowLeft, Plus, Layers, Bed, DollarSign, Users } from 'lucide-react';
 import PropTypes from 'prop-types';
 
@@ -111,14 +111,14 @@ const RoomTypeHeader = ({ roomType, roomsCount, onAddRoom }) => {
 };
 
 RoomTypeHeader.propTypes = {
-    roomType: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        basePrice: PropTypes.number.isRequired,
-        maxCapacity: PropTypes.number.isRequired,
-        description: PropTypes.string,
-    }).isRequired,
-    roomsCount: PropTypes.number.isRequired,
-    onAddRoom: PropTypes.func.isRequired,
+  roomType: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    basePrice: PropTypes.number.isRequired,
+    maxCapacity: PropTypes.number.isRequired,
+    description: PropTypes.string,
+  }).isRequired,
+  roomsCount: PropTypes.number.isRequired,
+  onAddRoom: PropTypes.func.isRequired,
 };
 
 export default RoomTypeHeader;

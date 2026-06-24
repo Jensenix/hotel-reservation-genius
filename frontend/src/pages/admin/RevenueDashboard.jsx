@@ -1,6 +1,6 @@
-import AdminLayout from '@/components/layout/AdminLayout';
+import AdminLayout from '@/layouts/AdminLayout';
 import Loading from '@/components/ui/Loading';
-import { useRevenueData } from '@/hooks/useRevenueData';
+import { useRevenueData } from '@/hooks/admin/useRevenueData';
 import RevenueHeader from '@/components/admin/revenue/RevenueHeader';
 import RevenueFilter from '@/components/admin/revenue/RevenueFilter';
 import RevenueMetrics from '@/components/admin/revenue/RevenueMetrics';
@@ -8,13 +8,8 @@ import RevenueCharts from '@/components/admin/revenue/RevenueCharts';
 import RevenueTransactionsTable from '@/components/admin/revenue/RevenueTransactionsTable';
 
 const RevenueDashboard = () => {
-  const { 
-    revenueData, 
-    loading, 
-    dateRange, 
-    setDateRange, 
-    handleApplyFilter 
-  } = useRevenueData();
+  const { revenueData, loading, dateRange, setDateRange, handleApplyFilter } =
+    useRevenueData();
 
   if (loading || !revenueData) {
     return (
@@ -30,21 +25,21 @@ const RevenueDashboard = () => {
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          
           <RevenueHeader />
 
-          <RevenueFilter 
-            dateRange={dateRange} 
-            setDateRange={setDateRange} 
-            onApplyFilter={handleApplyFilter} 
+          <RevenueFilter
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            onApplyFilter={handleApplyFilter}
           />
 
           <RevenueMetrics revenueData={revenueData} />
 
           <RevenueCharts revenueData={revenueData} />
 
-          <RevenueTransactionsTable transactions={revenueData.recentTransactions} />
-          
+          <RevenueTransactionsTable
+            transactions={revenueData.recentTransactions}
+          />
         </div>
       </div>
     </AdminLayout>

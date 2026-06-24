@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types';
 import Card from '@/components/ui/Card';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/Button';
 import { Calendar, Users, Star } from 'lucide-react';
 import { getStatusColor, getStatusText } from '@/utils/bookingStatusUtils';
 import { formatLongDate } from '@/utils/dateUtils';
 
-const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview }) => {
+const BookingCard = ({
+  booking,
+  onViewDetails,
+  onContinuePayment,
+  onWriteReview,
+}) => {
   const roomInitial = booking.room?.roomType?.name?.charAt(0) || 'R';
   const maxCapacity = booking.room?.roomType?.maxCapacity;
 
@@ -32,7 +37,7 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
         <div className="absolute top-3 right-3">
           <span
             className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-              booking.status
+              booking.status,
             )}`}
           >
             {getStatusText(booking.status)}
@@ -65,9 +70,7 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
             <div className="flex items-center space-x-2 text-gray-600">
               <Users className="w-4 h-4" />
 
-              <span>
-                Max {maxCapacity ? `${maxCapacity} guests` : 'N/A'}
-              </span>
+              <span>Max {maxCapacity ? `${maxCapacity} guests` : 'N/A'}</span>
             </div>
 
             {booking.specialRequests && (
@@ -91,9 +94,7 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
                 ${booking.totalPrice}
               </div>
 
-              <div className="text-xs text-gray-500">
-                Total Price
-              </div>
+              <div className="text-xs text-gray-500">Total Price</div>
             </div>
           </div>
 
@@ -104,10 +105,7 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
                 className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onContinuePayment(
-                    booking.room?.roomTypeId,
-                    booking.id
-                  );
+                  onContinuePayment(booking.room?.roomTypeId, booking.id);
                 }}
               >
                 Continue Payment
@@ -143,7 +141,7 @@ const BookingCard = ({ booking, onViewDetails, onContinuePayment, onWriteReview 
                   onWriteReview(booking.id);
                 }}
               >
-                <Star className="w-4 h-4" /> 
+                <Star className="w-4 h-4" />
                 <p className="relative -top-2">Write Review</p>
               </Button>
             )}
@@ -161,15 +159,9 @@ BookingCard.propTypes = {
     checkInDate: PropTypes.string,
     checkOutDate: PropTypes.string,
     specialRequests: PropTypes.string,
-    totalPrice: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    totalPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     room: PropTypes.shape({
-      roomTypeId: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
+      roomTypeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       roomType: PropTypes.shape({
         name: PropTypes.string,
         maxCapacity: PropTypes.number,
