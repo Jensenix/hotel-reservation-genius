@@ -41,6 +41,12 @@ const Booking = () => {
   const isStep2Valid = !!state.bookingData.paymentMethodId;
   const canProceed = state.step === 1 ? isStep1Valid : isStep2Valid;
 
+  const getButtonText = () => {
+    if (state.isProcessingPayment) return 'Processing...';
+    if (state.step === 1) return 'Continue to Payment';
+    return 'Pay';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -78,7 +84,7 @@ const Booking = () => {
                   disabled={!canProceed || state.isProcessingPayment}
                   className="ml-auto"
                 >
-                  {state.isProcessingPayment ? 'Processing...' : state.step === 1 ? 'Continue to Payment' : 'Pay'}
+                  {getButtonText()}
                 </Button>
               </div>
             </Card>
