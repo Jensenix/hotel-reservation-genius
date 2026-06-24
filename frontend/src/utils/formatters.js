@@ -4,8 +4,3 @@ export const formatCurrency = (amount) => {
     currency: 'USD',
   }).format(amount);
 };
-
-export const formatDate = (date) => {
-  if (!date) return '';
-  return new Intl.DateTimeFormat('id-ID').format(new Date(date));
-};

@@ -1,12 +1,17 @@
-import { formatCurrency, formatDate } from '@/utils/formatters';
+import { formatCurrency } from '@/utils/formatters';
+import { formatDateIndonesian } from '@/utils/dateUtils';
 import PropTypes from 'prop-types';
 
 const RevenueTransactionsTable = ({ transactions }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-1">Recent Transactions</h3>
-        <p className="text-sm text-slate-500">Latest payments (by payment date)</p>
+        <h3 className="text-lg font-semibold text-slate-800 mb-1">
+          Recent Transactions
+        </h3>
+        <p className="text-sm text-slate-500">
+          Latest payments (by payment date)
+        </p>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-100">
@@ -31,7 +36,10 @@ const RevenueTransactionsTable = ({ transactions }) => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {transactions.map((transaction) => (
-              <tr key={transaction.id} className="hover:bg-slate-50 transition-colors duration-150">
+              <tr
+                key={transaction.id}
+                className="hover:bg-slate-50 transition-colors duration-150"
+              >
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">
                   #{transaction.bookingId}
                 </td>
@@ -53,7 +61,7 @@ const RevenueTransactionsTable = ({ transactions }) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                  {formatDate(transaction.date)}
+                  {formatDateIndonesian(transaction.date)}
                 </td>
               </tr>
             ))}
@@ -67,15 +75,14 @@ const RevenueTransactionsTable = ({ transactions }) => {
 RevenueTransactionsTable.propTypes = {
   transactions: PropTypes.arrayOf(
     PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        bookingId: PropTypes.string.isRequired,
-        guest: PropTypes.string.isRequired,
-        amount: PropTypes.number.isRequired,
-        status: PropTypes.oneOf(['paid', 'pending']).isRequired,
-        date: PropTypes.string.isRequired,
-    })
+      id: PropTypes.string.isRequired,
+      bookingId: PropTypes.string.isRequired,
+      guest: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+      status: PropTypes.oneOf(['paid', 'pending']).isRequired,
+      date: PropTypes.string.isRequired,
+    }),
   ).isRequired,
 };
-
 
 export default RevenueTransactionsTable;
