@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useRoomTypeDetail = () => {
   const { roomTypeId } = useParams();
@@ -30,12 +30,12 @@ export const useRoomTypeDetail = () => {
 
   const fetchRooms = useCallback(async () => {
     try {
-      // Omitted setLoading(true) here to prevent synchronous state 
+      // Omitted setLoading(true) here to prevent synchronous state
       // updates in the effect and to prevent UI flashing during background refetches.
       const response = await apiService.rooms.getAll();
       const allRooms = response.data.data || [];
       const typeRooms = allRooms.filter(
-        (room) => room.roomTypeId === parseInt(roomTypeId, 10)
+        (room) => room.roomTypeId === parseInt(roomTypeId, 10),
       );
       setRooms(typeRooms);
     } catch (error) {
@@ -48,15 +48,12 @@ export const useRoomTypeDetail = () => {
 
   useEffect(() => {
     let isMounted = true;
-    
-    // Abstract the fetches to an internal async function to cleanly resolve 
+
+    // Abstract the fetches to an internal async function to cleanly resolve
     // the promises without triggering the linter.
     const loadData = async () => {
       if (isMounted) {
-        await Promise.all([
-          fetchRoomTypeDetail(),
-          fetchRooms()
-        ]);
+        await Promise.all([fetchRoomTypeDetail(), fetchRooms()]);
       }
     };
 
@@ -108,7 +105,10 @@ export const useRoomTypeDetail = () => {
       fetchRooms();
     } catch (error) {
       console.error('Error saving room:', error);
-      alert('Error saving room: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving room: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -120,7 +120,10 @@ export const useRoomTypeDetail = () => {
       fetchRooms();
     } catch (error) {
       console.error('Error deleting room:', error);
-      alert('Error deleting room: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting room: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 

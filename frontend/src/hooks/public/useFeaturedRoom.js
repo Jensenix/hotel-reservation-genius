@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useFeaturedRooms = (limit = 3) => {
   const [rooms, setRooms] = useState([]);

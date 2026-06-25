@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useMyBookings = () => {
   const { user } = useAuth();
@@ -20,7 +20,7 @@ export const useMyBookings = () => {
         const response = await apiService.bookings.getUserBookings();
         if (isMounted) {
           const userBookings = response.data.data.filter(
-            (booking) => booking.userId === userId
+            (booking) => booking.userId === userId,
           );
           setBookings(userBookings);
         }

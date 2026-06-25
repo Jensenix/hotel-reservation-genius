@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useRevenueData = () => {
   const [revenueData, setRevenueData] = useState(null);
@@ -15,7 +15,8 @@ export const useRevenueData = () => {
       const params = {};
 
       if (currentDateRange.startDate) {
-        params.startDate = currentDateRange.startDate.toLocaleDateString('en-CA');
+        params.startDate =
+          currentDateRange.startDate.toLocaleDateString('en-CA');
       }
 
       if (currentDateRange.endDate) {

@@ -3,9 +3,16 @@ import Button from '@/components/ui/Button';
 import AuthHeader from '@/components/auth/AuthHeader';
 import { useRegister } from '@/hooks/auth/useRegister';
 
+const REGISTER_FIELDS = [
+  { id: 'fullName', label: 'Full Name', type: 'text', placeholder: 'Enter your full name' },
+  { id: 'email', label: 'Email Address', type: 'email', placeholder: 'Enter your email' },
+  { id: 'phoneNumber', label: 'Phone Number', type: 'tel', placeholder: 'Enter your phone number' },
+  { id: 'password', label: 'Password', type: 'password', placeholder: 'Create a password (min. 6 characters)' },
+  { id: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: 'Confirm your password' },
+];
+
 const Register = () => {
-  const { formData, loading, error, success, handleChange, handleSubmit } =
-    useRegister();
+  const { formData, loading, error, success, handleChange, handleSubmit } = useRegister();
 
   if (success) {
     return (
@@ -79,100 +86,26 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-slate-700 mb-2"
-              >
-                Full Name
-              </label>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-slate-700 mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-sm font-medium text-slate-700 mb-2"
-              >
-                Phone Number
-              </label>
-              <input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
-                placeholder="Enter your phone number"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-slate-700 mb-2"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
-                placeholder="Create a password (min. 6 characters)"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-slate-700 mb-2"
-              >
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
-                placeholder="Confirm your password"
-              />
-            </div>
+            {REGISTER_FIELDS.map(({ id, label, type, placeholder }) => (
+              <div key={id}>
+                <label
+                  htmlFor={id}
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
+                  {label}
+                </label>
+                <input
+                  id={id}
+                  name={id}
+                  type={type}
+                  value={formData[id]}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
+                  placeholder={placeholder}
+                />
+              </div>
+            ))}
 
             <div className="flex items-center">
               <input

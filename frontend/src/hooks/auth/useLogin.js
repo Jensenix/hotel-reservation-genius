@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -45,11 +45,20 @@ export const useLogin = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(
+        err.response?.data?.message || 'Login failed. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  return { formData, loading, error, handleChange, handleSubmit, fillDemoCredentials };
+  return {
+    formData,
+    loading,
+    error,
+    handleChange,
+    handleSubmit,
+    fillDemoCredentials,
+  };
 };

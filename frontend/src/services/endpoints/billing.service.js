@@ -1,4 +1,4 @@
-import { apiClient } from '@/services/apiClient';
+import { apiClient } from '@/services/api/apiClient';
 
 /**
  * Payment configurations and methods (e.g., Credit Card, PayPal).

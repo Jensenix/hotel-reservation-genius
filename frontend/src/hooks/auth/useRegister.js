@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -25,7 +25,12 @@ export const useRegister = () => {
   };
 
   const validateForm = () => {
-    if (!formData.fullName || !formData.email || !formData.password || !formData.phoneNumber) {
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.phoneNumber
+    ) {
       setError('All fields are required');
       return false;
     }
@@ -40,8 +45,8 @@ export const useRegister = () => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(formData.email)) {
-    setError('Please enter a valid email address');
-    return false;
+      setError('Please enter a valid email address');
+      return false;
     }
     return true;
   };
@@ -65,7 +70,9 @@ export const useRegister = () => {
       setSuccess(true);
     } catch (err) {
       console.error('Registration error:', err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(
+        err.response?.data?.message || 'Registration failed. Please try again.',
+      );
     } finally {
       setLoading(false);
     }

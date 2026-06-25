@@ -1,4 +1,4 @@
-import { apiClient } from '@/services/apiClient';
+import { apiClient } from '@/services/api/apiClient';
 
 /**
  * Core reservation lifecycle endpoints.
@@ -14,12 +14,18 @@ export const bookingAPI = {
     const userId = user?.id;
     return apiClient.get(`/bookings/user/${userId}`);
   },
-  getAdminBookings: (params) => apiClient.get('/bookings/admin/all', { params }),
-  checkAvailability: (params) => apiClient.get('/bookings/check-availability', { params }),
-  confirmBooking: (bookingId) => apiClient.put(`/bookings/admin/${bookingId}/confirm`),
-  checkInGuest: (bookingId) => apiClient.put(`/bookings/admin/${bookingId}/check-in`),
-  checkOutGuest: (bookingId) => apiClient.put(`/bookings/admin/${bookingId}/check-out`),
-  cancelBooking: (bookingId, data) => apiClient.put(`/bookings/admin/${bookingId}/cancel`, data),
+  getAdminBookings: (params) =>
+    apiClient.get('/bookings/admin/all', { params }),
+  checkAvailability: (params) =>
+    apiClient.get('/bookings/check-availability', { params }),
+  confirmBooking: (bookingId) =>
+    apiClient.put(`/bookings/admin/${bookingId}/confirm`),
+  checkInGuest: (bookingId) =>
+    apiClient.put(`/bookings/admin/${bookingId}/check-in`),
+  checkOutGuest: (bookingId) =>
+    apiClient.put(`/bookings/admin/${bookingId}/check-out`),
+  cancelBooking: (bookingId, data) =>
+    apiClient.put(`/bookings/admin/${bookingId}/cancel`, data),
 };
 
 /**
@@ -27,7 +33,8 @@ export const bookingAPI = {
  */
 export const bookingExtraServiceAPI = {
   create: (data) => apiClient.post('/booking-extra-services', data),
-  getByBookingId: (bookingId) => apiClient.get(`/booking-extra-services/booking/${bookingId}`),
+  getByBookingId: (bookingId) =>
+    apiClient.get(`/booking-extra-services/booking/${bookingId}`),
   delete: (id) => apiClient.delete(`/booking-extra-services/${id}`),
 };
 
@@ -40,5 +47,6 @@ export const reviewAPI = {
   create: (data) => apiClient.post('/reviews', data),
   update: (id, data) => apiClient.put(`/reviews/${id}`, data),
   delete: (id) => apiClient.delete(`/reviews/${id}`),
-  getUserReviews: (userId) => apiClient.get('/reviews/user', { params: { userId } }),
+  getUserReviews: (userId) =>
+    apiClient.get('/reviews/user', { params: { userId } }),
 };

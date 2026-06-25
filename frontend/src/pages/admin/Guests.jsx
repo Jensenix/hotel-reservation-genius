@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 import AdminLayout from '@/layouts/AdminLayout';
 import Button from '@/components/ui/Button';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
