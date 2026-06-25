@@ -11,8 +11,9 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import AdminLayout from '@/layouts/AdminLayout';
-import Modal from '@/components/ui/Modal';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
+import PaymentMethodFormModal from '@/components/admin/paymentMethods/PaymentMethodFormModal';
+import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
 
 export default function PaymentMethodsManagement() {
   const initialFormState = {
@@ -54,6 +55,10 @@ export default function PaymentMethodsManagement() {
     };
     const Icon = icons[type] || CreditCard;
     return <Icon className="w-8 h-8 text-white" />;
+  };
+
+  const handleFormChange = (field, value) => {
+    actions.setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -152,146 +157,21 @@ export default function PaymentMethodsManagement() {
         )}
       </div>
 
-      <Modal
+      <PaymentMethodFormModal
         isOpen={state.showModal}
         onClose={actions.closeModal}
-        title={state.editingItem ? 'Edit Payment Method' : 'Add Payment Method'}
-      >
-        <form onSubmit={actions.handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="pm-methodName" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Method Name</label>
-            <input
-              id="pm-methodName"
-              required
-              type="text"
-              placeholder="e.g., Bank Transfer, Stripe Gateway"
-              value={state.formData.methodName || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, methodName: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="pm-type" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Type</label>
-            <select
-              id="pm-type"
-              required
-              value={state.formData.type}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, type: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white"
-            >
-              <option value="card">Credit Card</option>
-              <option value="wallet">Digital Wallet</option>
-              <option value="bank">Bank Transfer</option>
-              <option value="mobile">Mobile</option>
-              <option value="cash">Cash</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="pm-description" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Description</label>
-            <textarea
-              id="pm-description"
-              placeholder="Payment instructions displayed to users"
-              value={state.formData.description || ''}
-              onChange={(e) =>
-                actions.setFormData({
-                  ...state.formData,
-                  description: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-              rows={3}
-            />
-          </div>
-          <div>
-            <label htmlFor="pm-accountNumber" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Account Number</label>
-            <input
-              id="pm-accountNumber"
-              type="text"
-              placeholder="e.g., 123-456-7890"
-              value={state.formData.accountNumber || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, accountNumber: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="pm-address" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Billing Address / Instructions</label>
-            <textarea
-              id="pm-address"
-              placeholder="Enter merchant physical address or explicit transfer wiring details"
-              value={state.formData.address || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, address: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-              rows={2}
-            />
-          </div>
-          <label className="flex items-center space-x-2 cursor-pointer pt-2">
-            <input
-              type="checkbox"
-              checked={state.formData.isActive}
-              onChange={(e) =>
-                actions.setFormData({
-                  ...state.formData,
-                  isActive: e.target.checked,
-                })
-              }
-              className="w-5 h-5 text-amber-500 rounded"
-            />
-            <span className="text-sm font-medium text-slate-700">
-              Enable this method
-            </span>
-          </label>
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={actions.closeModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600"
-            >
-              {state.editingItem ? 'Update' : 'Add'}
-            </button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={actions.handleSubmit}
+        formData={state.formData}
+        onChange={handleFormChange}
+        isEditing={!!state.editingItem}
+      />
 
-      <Modal
+      <DeleteConfirmModal
         isOpen={state.showDeleteModal}
         onClose={actions.closeDeleteModal}
-        title="Confirm Delete"
-      >
-        <div className="space-y-6">
-          <p>
-            Are you sure you want to delete{' '}
-            <strong>{state.deleteTarget?.methodName}</strong>?
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={actions.closeDeleteModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={actions.handleDelete}
-              className="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </Modal>
+        onConfirm={actions.handleDelete}
+        itemName={state.deleteTarget?.methodName}
+      />
     </AdminLayout>
   );
 }

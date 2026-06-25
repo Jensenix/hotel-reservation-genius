@@ -10,42 +10,46 @@ import {
   Search,
 } from 'lucide-react';
 import AdminLayout from '@/layouts/AdminLayout';
-import Modal from '@/components/ui/Modal';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
+import ExtraServiceFormModal from '@/components/admin/extraServices/ExtraServiceFormModal';
+import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
+
+const initialFormState = { serviceName: '', description: '', price: '', iconUrl: '' };
+
+const mapApiResponse = (apiData) => {
+  return Array.isArray(apiData)
+    ? apiData.map((item) => ({
+        id: item.id,
+        serviceName: item.serviceName || item.name || '',
+        description: item.description || '',
+        price: parseFloat(item.price) || 0,
+        iconUrl: item.iconUrl || item.icon || 'default',
+      }))
+    : [];
+};
+
+const getIconComponent = (iconName) => {
+  const icons = {
+    room_service: Coffee,
+    transfer: Car,
+    spa: Utensils,
+    laundry: Bell,
+    breakfast: Coffee,
+    tour: Gift,
+  };
+  const Icon = icons[iconName] || Coffee;
+  return <Icon className="w-8 h-8 text-white" />;
+};
 
 export default function ExtraServicesManagement() {
-  // Aligned with backend model columns directly
-  const initialFormState = { serviceName: '', description: '', price: '', iconUrl: '' };
-
-  const mapApiResponse = (apiData) => {
-    return Array.isArray(apiData)
-      ? apiData.map((item) => ({
-          id: item.id,
-          serviceName: item.serviceName || item.name || '',
-          description: item.description || '',
-          price: parseFloat(item.price) || 0,
-          iconUrl: item.iconUrl || item.icon || 'default',
-        }))
-      : [];
-  };
-
   const { state, actions } = useAdminCRUD({
     endpoint: 'extraServices',
     initialFormState,
     mapApiResponse,
   });
 
-  const getIconComponent = (iconName) => {
-    const icons = {
-      room_service: Coffee,
-      transfer: Car,
-      spa: Utensils,
-      laundry: Bell,
-      breakfast: Coffee,
-      tour: Gift,
-    };
-    const Icon = icons[iconName] || Coffee;
-    return <Icon className="w-8 h-8 text-white" />;
+  const handleFormChange = (field, value) => {
+    actions.setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -133,115 +137,21 @@ export default function ExtraServicesManagement() {
         )}
       </div>
 
-      <Modal
+      <ExtraServiceFormModal
         isOpen={state.showModal}
         onClose={actions.closeModal}
-        title={state.editingItem ? 'Edit Service' : 'Add Service'}
-      >
-        <form onSubmit={actions.handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="es-serviceName" className="block text-sm font-medium text-slate-700 mb-1">Service Name</label>
-            <input
-              id="es-serviceName"
-              required
-              type="text"
-              placeholder="e.g., Airport Pickup, Buffet Breakfast"
-              value={state.formData.serviceName || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, serviceName: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="es-description" className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-            <textarea
-              id="es-description"
-              placeholder="Service details visible to customers"
-              value={state.formData.description || ''}
-              onChange={(e) =>
-                actions.setFormData({
-                  ...state.formData,
-                  description: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
-              rows={3}
-            />
-          </div>
-          <div>
-            <label htmlFor="es-price" className="block text-sm font-medium text-slate-700 mb-1">Price ($)</label>
-            <input
-              id="es-price"
-              required
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={state.formData.price || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, price: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="es-iconUrl" className="block text-sm font-medium text-slate-700 mb-1">Icon Identifier (e.g., room_service, transfer, spa)</label>
-            <input
-              id="es-iconUrl"
-              type="text"
-              placeholder="e.g., room_service, transfer"
-              value={state.formData.iconUrl || ''}
-              onChange={(e) =>
-                actions.setFormData({ ...state.formData, iconUrl: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={actions.closeModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600"
-            >
-              {state.editingItem ? 'Update' : 'Add'}
-            </button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={actions.handleSubmit}
+        formData={state.formData}
+        onChange={handleFormChange}
+        isEditing={!!state.editingItem}
+      />
 
-      <Modal
+      <DeleteConfirmModal
         isOpen={state.showDeleteModal}
         onClose={actions.closeDeleteModal}
-        title="Confirm Delete"
-      >
-        <div className="space-y-6">
-          <p>
-            Are you sure you want to delete{' '}
-            <strong>{state.deleteTarget?.serviceName}</strong>?
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={actions.closeDeleteModal}
-              className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={actions.handleDelete}
-              className="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </Modal>
+        onConfirm={actions.handleDelete}
+        itemName={state.deleteTarget?.serviceName}
+      />
     </AdminLayout>
   );
 }
