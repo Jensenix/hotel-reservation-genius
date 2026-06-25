@@ -8,7 +8,7 @@ export const calculateRoomTotal = (checkInDate, checkOutDate, roomBasePrice) => 
     (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)
   );
   
-  return nights > 0 ? nights * roomBasePrice : 0;
+  return nights > 0 ? nights * Number(roomBasePrice) : 0;
 };
 
 /**
@@ -18,7 +18,10 @@ export const calculateExtraServicesTotal = (selectedServices, availableServices)
   if (!selectedServices || !availableServices?.length) return 0;
 
   return Object.entries(selectedServices).reduce((total, [id, qty]) => {
-    const service = availableServices.find((s) => s.id === parseInt(id, 10));
-    return total + (service ? service.price * qty : 0);
+    // FIX: Convert both IDs to strings so they safely match
+    const service = availableServices.find((s) => String(s.id) === String(id));
+    
+    // FIX: Ensure the price is treated as a Number before multiplying
+    return total + (service ? Number(service.price) * qty : 0);
   }, 0);
 };

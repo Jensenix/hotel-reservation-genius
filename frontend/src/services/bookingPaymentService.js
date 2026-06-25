@@ -21,20 +21,24 @@ export const bookingPaymentService = {
     const servicePromises = Object.entries(selectedExtraServices)
       .filter(([_, quantity]) => quantity > 0)
       .map(([serviceId, quantity]) => {
-        const service = extraServices.find((s) => s.id === parseInt(serviceId, 10));
+        const service = extraServices.find((s) => String(s.id) === String(serviceId));
         
         if (service) {
           return apiService.bookingExtraServices.create({
             bookingId,
             extraServiceId: parseInt(serviceId, 10),
             quantity,
-            subtotal: service.price * quantity,
+            subtotal: Number(service.price) * quantity, 
           });
         }
         return Promise.resolve();
       });
 
     await Promise.all(servicePromises);
+
+    await apiService.bookings.update(bookingId, { 
+      totalPrice: grandTotal 
+    });
 
     const paymentRes = await apiService.payments.create({
       bookingId,
@@ -48,6 +52,14 @@ export const bookingPaymentService = {
       throw new Error('Payment processing failed');
     }
 
-    return paymentRes.data.data;
+    const finalBookingReceipt = {
+      ...paymentRes.data.data.booking,
+      totalPrice: grandTotal
+    };
+
+    return { 
+      ...paymentRes.data.data, 
+      booking: finalBookingReceipt 
+    };
   }
 };
