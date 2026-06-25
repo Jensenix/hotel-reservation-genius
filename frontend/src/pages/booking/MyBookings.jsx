@@ -27,13 +27,13 @@ const MyBookings = () => {
         <div className="container mx-auto px-4 py-16 pb-16">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-6">
-              <Calendar className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
+              <span className="text-sm sm:text-lg font-light tracking-wider text-amber-600">
                 MY RESERVATIONS
               </span>
-              <Calendar className="w-6 h-6 text-amber-500" />
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 break-words">
               My Bookings
             </h1>
             <Loading text="Loading your bookings..." size="lg" />
@@ -46,33 +46,33 @@ const MyBookings = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
       <div className="container mx-auto px-4 pb-16">
-        <section className="py-20">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Calendar className="w-6 h-6 text-amber-500" />
-              <span className="text-lg font-light tracking-wider text-amber-600">
+        <section className="py-12 sm:py-20">
+          <div className="text-center mb-10 sm:mb-16">
+            <div className="flex items-center justify-center space-x-2 mb-4 sm:mb-6">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
+              <span className="text-sm sm:text-lg font-light tracking-wider text-amber-600">
                 MY RESERVATIONS
               </span>
-              <Calendar className="w-6 h-6 text-amber-500" />
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 break-words">
               My Bookings
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
               View and manage your hotel reservations with ease
             </p>
-            <div className="flex items-center justify-center space-x-6 mt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-8">
               <div className="flex items-center space-x-2 text-amber-600">
-                <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">Easy Management</span>
+                <CheckCircle className="w-5 h-5 shrink-0" />
+                <span className="font-medium text-sm sm:text-base">Easy Management</span>
               </div>
               <div className="flex items-center space-x-2 text-amber-600">
-                <Clock className="w-5 h-5" />
-                <span className="font-medium">Real-time Updates</span>
+                <Clock className="w-5 h-5 shrink-0" />
+                <span className="font-medium text-sm sm:text-base">Real-time Updates</span>
               </div>
               <div className="flex items-center space-x-2 text-amber-600">
-                <Shield className="w-5 h-5" />
-                <span className="font-medium">Secure Booking</span>
+                <Shield className="w-5 h-5 shrink-0" />
+                <span className="font-medium text-sm sm:text-base">Secure Booking</span>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ const MyBookings = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8 sm:pt-12">
             {filteredBookings.map((booking) => (
               <BookingCard
                 key={booking.id}
