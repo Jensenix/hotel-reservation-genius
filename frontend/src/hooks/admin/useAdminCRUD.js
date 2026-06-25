@@ -21,22 +21,16 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [formData, setFormData] = useState(initialFormState);
 
-  // Incrementing this key is what triggers a re-fetch from the effect below.
   const [refreshKey, setRefreshKey] = useState(0);
 
   const api = apiService[endpoint];
 
-  // Public refresh trigger — called by event handlers and consumers, never from within an effect.
-  // Calling setState here is safe: it is not inside an effect body.
   const fetchData = useCallback(() => {
     setLoading(true);
     setError(null);
     setRefreshKey((k) => k + 1);
   }, []);
 
-  // The effect only starts the async operation. Every setState call lands inside a
-  // .then / .catch / .finally callback, so nothing runs synchronously in the effect body.
-  // The `cancelled` flag prevents stale state updates after unmount or dep changes.
   useEffect(() => {
     let cancelled = false;
 
@@ -110,7 +104,6 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
     setDeleteTarget(null);
   };
 
-  // Safe universal filter logic supporting all specific database field names
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
     const searchStr = searchTerm.toLowerCase();
@@ -120,6 +113,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
         item.methodName?.toLowerCase().includes(searchStr) ||
         item.facilityName?.toLowerCase().includes(searchStr) ||
         item.extraServiceName?.toLowerCase().includes(searchStr) ||
+        item.serviceName?.toLowerCase().includes(searchStr) || 
         item.description?.toLowerCase().includes(searchStr),
     );
   }, [data, searchTerm]);
