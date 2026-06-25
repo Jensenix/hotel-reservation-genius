@@ -13,7 +13,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
     }
   };
 
-  // --- NEW: Calculate if check-out is allowed (Today >= CheckOutDate) ---
+  // Prevent checking out before the check-out date
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const checkOutDate = new Date(booking.checkOutDate);
@@ -161,4 +161,4 @@ BookingSidebar.propTypes = {
   onCheckOut: PropTypes.func.isRequired,
 };
 
-export default BookingSidebar;  
+export default BookingSidebar;

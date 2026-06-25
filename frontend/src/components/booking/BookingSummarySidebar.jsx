@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card';
  * Sidebar component that provides a real-time summary of the user's booking details and pricing.
  * It updates dynamically as the user fills out the booking form and selects extra services.
  * @param {Object} props
- * @param {Object} props.state - The entire state object from the booking process, containing room details, booking data, pricing, and selected extra services.
+ * @param {Object} props.state - The entire state object from the booking process.
  */
 export default function BookingSummarySidebar({ state }) {
   const { room, bookingData, totalPrice, extraServicesTotal, grandTotal, selectedExtraServices, extraServices } = state;
@@ -15,12 +15,12 @@ export default function BookingSummarySidebar({ state }) {
 
       <div className="space-y-4">
         <div className="h-32 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-          <span className="text-white text-4xl font-bold">{room.name.charAt(0)}</span>
+          <span className="text-white text-4xl font-bold">{room?.name?.charAt(0) || 'R'}</span>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900">{room.name}</h4>
-          <p className="text-sm text-gray-600">{room.description}</p>
+          <h4 className="font-semibold text-gray-900">{room?.name}</h4>
+          <p className="text-sm text-gray-600">{room?.description}</p>
         </div>
 
         {bookingData.checkInDate && bookingData.checkOutDate && (
@@ -52,12 +52,12 @@ export default function BookingSummarySidebar({ state }) {
                 <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Extra Services</div>
                 {Object.entries(selectedExtraServices).map(([serviceId, quantity]) => {
                   if (quantity > 0) {
-                    const service = extraServices.find((s) => s.id === parseInt(serviceId));
+                    const service = extraServices.find((s) => String(s.id) === String(serviceId));
                     if (service) {
                       return (
                         <div key={serviceId} className="flex justify-between text-xs">
                           <span className="text-gray-600">{service.serviceName} × {quantity}</span>
-                          <span className="text-gray-900">${service.price * quantity}</span>
+                          <span className="text-gray-900">${Number(service.price) * quantity}</span>
                         </div>
                       );
                     }

@@ -105,6 +105,6 @@ export const useMyBookings = () => {
     setSearch,
     filteredBookings,
     handleCheckIn,
-    handleCheckOut, 
+    handleCheckOut,
   };
 };
