@@ -10,7 +10,7 @@ export default function BookingSummarySidebar({ state }) {
   const { room, bookingData, totalPrice, extraServicesTotal, grandTotal, selectedExtraServices, extraServices } = state;
 
   return (
-    <Card className="sticky top-4">
+    <Card className="sticky top-24 md:top-32 shadow-xl border-slate-200">
       <h3 className="text-lg font-semibold mb-4">Booking Summary</h3>
 
       <div className="space-y-4">

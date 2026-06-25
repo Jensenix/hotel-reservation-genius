@@ -114,25 +114,24 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Dropdown Menu - FIX: Changed to a floating rounded card */}
       {isMobileMenuOpen && (
-        <div className="xl:hidden absolute top-full left-0 w-full bg-amber-900 border-b border-amber-800 shadow-xl py-4 px-4 flex flex-col space-y-3 max-h-[80vh] overflow-y-auto overflow-x-hidden">
-          <Link to="/" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2">Home</Link>
-          <Link to="/our-rooms" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2">Our Rooms</Link>
-          <Link to="/facilities" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2">Facilities</Link>
-          <Link to="/my-bookings" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2">My Bookings</Link>
-          <Link to="/reviews" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2">Reviews</Link>
+        <div className="xl:hidden absolute top-full right-2 left-2 sm:left-auto sm:w-80 mt-2 bg-amber-900 border border-amber-700/50 rounded-2xl shadow-2xl py-4 px-4 flex flex-col space-y-2 max-h-[80vh] overflow-y-auto">
+          <Link to="/" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">Home</Link>
+          <Link to="/our-rooms" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">Our Rooms</Link>
+          <Link to="/facilities" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">Facilities</Link>
+          <Link to="/my-bookings" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">My Bookings</Link>
+          <Link to="/reviews" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">Reviews</Link>
           
-          <div className="pt-4 border-t border-amber-800/50 flex flex-col space-y-4 mt-2">
-            <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3 font-bold shadow-lg"
+          <div className="pt-4 border-t border-amber-800/50 flex flex-col space-y-3 mt-2">
+            <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3 font-bold shadow-lg rounded-xl"
               onClick={() => { navigate('/our-rooms'); toggleMenu(); }}
             >
               Book Now
             </Button>
             
             {isAuthenticated ? (
-              /* FIX: Stacked the user info and logout button vertically to permanently solve the overflow issue */
-              <div className="bg-amber-950/40 rounded-xl p-4 flex flex-col space-y-4">
+              <div className="bg-amber-950/40 rounded-xl p-4 flex flex-col space-y-4 border border-amber-800/30">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0">
                     <span className="text-amber-900 font-bold text-sm">{user?.fullName?.charAt(0)?.toUpperCase()}</span>
@@ -144,16 +143,16 @@ const Header = () => {
                 </div>
                 <Button 
                   variant="outline" 
-                  className="w-full justify-center border-amber-700 hover:bg-amber-800 text-white" 
+                  className="w-full justify-center border-amber-700 hover:bg-amber-800 text-white rounded-xl" 
                   onClick={() => { handleLogout(); toggleMenu(); }}
                 >
                   Logout
                 </Button>
               </div>
             ) : (
-              <div className="flex space-x-3">
-                <Link to="/login" onClick={toggleMenu} className="flex-1"><Button variant="outline" className="w-full">Sign In</Button></Link>
-                <Link to="/register" onClick={toggleMenu} className="flex-1"><Button className="w-full">Register</Button></Link>
+              <div className="flex space-x-2">
+                <Link to="/login" onClick={toggleMenu} className="flex-1"><Button variant="outline" className="w-full rounded-xl">Sign In</Button></Link>
+                <Link to="/register" onClick={toggleMenu} className="flex-1"><Button className="w-full rounded-xl">Register</Button></Link>
               </div>
             )}
           </div>

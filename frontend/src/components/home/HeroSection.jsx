@@ -12,25 +12,23 @@ const HeroSection = () => (
   >
     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70"></div>
     <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto w-full">
-      <div className="mb-8 w-full">
+      <div className="mb-8">
         <div className="flex items-center justify-center space-x-2 mb-4">
-          <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 shrink-0" />
+          <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
           <span className="text-sm sm:text-lg font-light tracking-wider text-yellow-400">
             LUXURY & COMFORT
           </span>
-          <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 shrink-0" />
+          <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
         </div>
-        
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 leading-tight break-words whitespace-normal">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
           Genius Society Hotel
         </h1>
-        
-        <p className="text-lg sm:text-xl md:text-2xl mb-8 font-light leading-relaxed max-w-2xl mx-auto break-words whitespace-normal">
+        <p className="text-lg sm:text-xl md:text-2xl mb-8 font-light leading-relaxed max-w-2xl mx-auto">
           Where elegance meets exceptional service in the heart of the city
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-10 sm:mb-12 w-full px-4 sm:px-0">
+      <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-10 sm:mb-12">
         <Link to="/facilities" className="w-full sm:w-auto">
           <Button
             size="lg"
@@ -50,18 +48,18 @@ const HeroSection = () => (
         </Link>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-white/80 w-full px-4">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-white/80">
         <div className="flex items-center space-x-2">
           <MapPin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-          <span className="text-sm sm:text-base text-center">123 Luxury Ave, Paradise City</span>
+          <span className="text-xs sm:text-sm text-center">123 Luxury Ave, Paradise City</span>
         </div>
         <div className="flex items-center space-x-2">
           <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 shrink-0" />
-          <span className="text-sm sm:text-base text-center">5-Star Luxury</span>
+          <span className="text-xs sm:text-sm">5-Star Luxury</span>
         </div>
         <div className="flex items-center space-x-2">
           <Shield className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-          <span className="text-sm sm:text-base text-center">Premium Service</span>
+          <span className="text-xs sm:text-sm">Premium Service</span>
         </div>
       </div>
     </div>

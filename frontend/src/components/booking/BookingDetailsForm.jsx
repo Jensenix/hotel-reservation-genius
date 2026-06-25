@@ -8,9 +8,9 @@ import PropTypes from 'prop-types';
 /**
  * Component for Step 1 of the booking process, where users input their booking details.
  *
- *  @param {Object} props
+ * @param {Object} props
  * @param {Object} props.bookingData - Current booking state containing check-in/out dates, guest count, etc.
- *  @param {Function} props.setBookingData - State setter to update booking details.
+ * @param {Function} props.setBookingData - State setter to update booking details.
  * @param {Object} props.room - The room being booked, used for validation and display.
  * @param {Array} props.extraServices - List of available extra services fetched from API.
  * @param {Object} props.selectedExtraServices - Current state of selected extra services and their quantities.
@@ -43,7 +43,7 @@ export default function BookingDetailsForm({
           Continue Payment
         </h2>
         <p className="text-gray-600 mb-6">
-          You have a pending booking. Click "Continue to Payment" to proceed
+          You have a pending booking. Click &quot;Continue to Payment&quot; to proceed
           with payment.
         </p>
         <Button onClick={onContinue} disabled={isProcessingPayment}>
@@ -62,32 +62,58 @@ export default function BookingDetailsForm({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Check-in Date
           </label>
-          <DatePicker
-            selected={bookingData.checkInDate}
-            onChange={(date) =>
-              setBookingData((prev) => ({ ...prev, checkInDate: date }))
-            }
-            minDate={new Date()}
-            dateFormat="MMMM d, yyyy"
-            placeholderText="Select check-in date"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative w-full">
+            <DatePicker
+              selected={bookingData.checkInDate}
+              onChange={(date) =>
+                setBookingData((prev) => ({ ...prev, checkInDate: date }))
+              }
+              minDate={new Date()}
+              dateFormat="MMMM d, yyyy"
+              placeholderText="Select check-in date"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              popperPlacement="bottom-start"
+              popperModifiers={[
+                {
+                  name: 'preventOverflow',
+                  options: {
+                    rootBoundary: 'viewport',
+                    tether: false,
+                    altAxis: true,
+                  },
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Check-out Date
           </label>
-          <DatePicker
-            selected={bookingData.checkOutDate}
-            onChange={(date) =>
-              setBookingData((prev) => ({ ...prev, checkOutDate: date }))
-            }
-            minDate={bookingData.checkInDate || new Date()}
-            dateFormat="MMMM d, yyyy"
-            placeholderText="Select check-out date"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative w-full">
+            <DatePicker
+              selected={bookingData.checkOutDate}
+              onChange={(date) =>
+                setBookingData((prev) => ({ ...prev, checkOutDate: date }))
+              }
+              minDate={bookingData.checkInDate || new Date()}
+              dateFormat="MMMM d, yyyy"
+              placeholderText="Select check-out date"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              popperPlacement="bottom-end"
+              popperModifiers={[
+                {
+                  name: 'preventOverflow',
+                  options: {
+                    rootBoundary: 'viewport',
+                    tether: false,
+                    altAxis: true,
+                  },
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div>
@@ -164,3 +190,14 @@ export default function BookingDetailsForm({
   );
 }
 
+BookingDetailsForm.propTypes = {
+  bookingData: PropTypes.object.isRequired,
+  setBookingData: PropTypes.func.isRequired,
+  room: PropTypes.object.isRequired,
+  extraServices: PropTypes.array.isRequired,
+  selectedExtraServices: PropTypes.object.isRequired,
+  setSelectedExtraServices: PropTypes.func.isRequired,
+  bookingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onContinue: PropTypes.func.isRequired,
+  isProcessingPayment: PropTypes.bool.isRequired,
+};
