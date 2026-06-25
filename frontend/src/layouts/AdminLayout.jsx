@@ -12,7 +12,7 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-slate-50">
       <AdminHeader />
-      <main className="pt-20 py-6">
+      <main className="pt-20 pb-10 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
         {children}
       </main>
     </div>

@@ -51,26 +51,29 @@ const AdminHeader = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 to-slate-800 shadow-lg border-b border-slate-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          
+          {/* Logo Section */}
+          <div className="flex items-center shrink-0">
             <Link to="/admin" className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-sm">AD</span>
               </div>
-              <div>
-                <h1 className="text-white font-bold text-lg">Admin Portal</h1>
-                <p className="text-slate-400 text-xs">Genius Society Hotel</p>
+              <div className="hidden sm:block">
+                <h1 className="text-white font-bold text-lg leading-tight">Admin Portal</h1>
+                <p className="text-slate-400 text-[10px] sm:text-xs whitespace-nowrap">Genius Society Hotel</p>
               </div>
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop Navigation - Shifted to XL to prevent squishing */}
+          <nav className="hidden xl:flex items-center space-x-1 lg:space-x-2">
             {adminNavItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 whitespace-nowrap ${
                   isActive(item.path)
                     ? 'bg-blue-600 text-white shadow-lg'
                     : 'text-slate-300 hover:bg-slate-700 hover:text-white'
@@ -84,32 +87,36 @@ const AdminHeader = () => {
             <ManagementDropdown items={managementItems} isActive={isActive} />
           </nav>
 
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-3">
+          {/* User & Actions */}
+          <div className="flex items-center space-x-2 sm:space-x-4 shrink-0">
+            {/* User Info - Hidden on tablet to save space */}
+            <div className="hidden xl:flex items-center space-x-3">
               <div className="text-right">
-                <p className="text-white text-sm font-medium">
-                  {user?.fullName}
+                <p className="text-white text-sm font-medium whitespace-nowrap">
+                  {user?.fullName || 'Admin User'}
                 </p>
                 <p className="text-slate-400 text-xs">Administrator</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shrink-0">
                 <span className="text-white font-bold">
-                  {user?.fullName?.charAt(0)?.toUpperCase()}
+                  {user?.fullName?.charAt(0)?.toUpperCase() || 'A'}
                 </span>
               </div>
             </div>
 
+            {/* Desktop Logout - Hidden below XL */}
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+              className="hidden xl:flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 shrink-0"
             >
               <LogOut size={18} />
-              <span className="hidden sm:inline">Logout</span>
+              <span>Logout</span>
             </button>
 
+            {/* Mobile/Tablet Menu Toggle - Visible up to XL */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700"
+              className="xl:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
