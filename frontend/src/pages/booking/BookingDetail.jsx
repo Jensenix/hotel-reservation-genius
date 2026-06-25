@@ -4,7 +4,7 @@ import BookingRoomInfo from '@/components/booking/detail/BookingRoomInfo';
 import BookingSidebar from '@/components/booking/detail/BookingSidebar';
 
 const BookingDetail = () => {
-  const { booking, loading, goBack, goToModify } = useBookingDetail();
+  const { booking, loading, goBack, goToModify, handleCheckOut } = useBookingDetail();
 
   if (loading) {
     return (
@@ -47,7 +47,11 @@ const BookingDetail = () => {
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <BookingRoomInfo booking={booking} />
-          <BookingSidebar booking={booking} onModify={goToModify} />
+          <BookingSidebar 
+            booking={booking} 
+            onModify={goToModify}
+            onCheckOut={handleCheckOut}
+          />
         </div>
       </div>
     </div>
