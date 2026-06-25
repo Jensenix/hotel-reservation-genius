@@ -5,7 +5,7 @@ import { ImageAssets } from '@/config';
 
 const HeroSection = () => (
   <section
-    className="relative h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat -mt-32"
+    className="relative min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-120px)] flex items-center justify-center bg-cover bg-center bg-no-repeat w-full overflow-hidden"
     style={{
       backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url(${ImageAssets.HomeWallpaper})`,
     }}
