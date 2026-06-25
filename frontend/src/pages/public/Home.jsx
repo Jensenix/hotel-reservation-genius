@@ -7,7 +7,8 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 const Home = () => {
   return (
-    <div className="min-h-screen">
+    // FIX: Added w-full max-w-[100vw] and overflow-hidden to quarantine any blowouts inside these components
+    <div className="min-h-screen w-full max-w-[100vw] overflow-hidden">
       <HeroSection />
       <FeaturedRooms />
       <FacilitiesSection />
