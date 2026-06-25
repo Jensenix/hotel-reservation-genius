@@ -8,8 +8,10 @@ export default function BookingsPagination({
   if (!pagination || pagination.totalPages <= 0) return null;
 
   return (
-    <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <div className="flex items-center gap-4">
+    <div className="mt-6 flex flex-col lg:flex-row justify-between items-center gap-6">
+      
+      {/* Left side info & dropdown */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left w-full lg:w-auto justify-between sm:justify-start">
         <div className="text-sm text-gray-700">
           Showing {(pagination.currentPage - 1) * pagination.itemsPerPage + 1}{' '}
           to{' '}
@@ -27,7 +29,7 @@ export default function BookingsPagination({
             onChange={(e) =>
               handleFilterChange('limit', parseInt(e.target.value))
             }
-            className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 bg-white"
           >
             <option value={10}>10</option>
             <option value={15}>15</option>
@@ -38,17 +40,18 @@ export default function BookingsPagination({
         </div>
       </div>
 
-      <div className="flex items-center space-x-2">
+      {/* Right side buttons - FIX: Added flex-wrap and justify-center so they wrap nicely on small phones */}
+      <div className="flex flex-wrap items-center justify-center gap-2 w-full lg:w-auto">
         <Button
           variant="outline"
           size="sm"
           onClick={() => handleFilterChange('page', pagination.currentPage - 1)}
           disabled={pagination.currentPage === 1}
         >
-          Previous
+          Prev
         </Button>
 
-        <div className="flex space-x-1">
+        <div className="flex flex-wrap items-center justify-center gap-1">
           {Array.from(
             { length: Math.min(5, pagination.totalPages) },
             (_, i) => {
@@ -67,7 +70,7 @@ export default function BookingsPagination({
                   }
                   size="sm"
                   onClick={() => handleFilterChange('page', pageNum)}
-                  className="min-w-[40px]"
+                  className="min-w-[36px] sm:min-w-[40px] px-2"
                 >
                   {pageNum}
                 </Button>

@@ -122,7 +122,9 @@ const Header = () => {
           <Link to="/reviews" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">Reviews</Link>
           
           <div className="pt-4 border-t border-amber-800/50 flex flex-col space-y-3">
-            <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3 font-bold shadow-lg">
+            <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3 font-bold shadow-lg"
+              onClick={() => navigate('/our-rooms')}
+            >
               Book Now
             </Button>
             

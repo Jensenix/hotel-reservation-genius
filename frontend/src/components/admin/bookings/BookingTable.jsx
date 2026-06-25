@@ -130,6 +130,80 @@ export default function BookingTable({
     return buttons;
   };
 
+  const tableHeaderStyle =
+    "px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider";
+
+  const columns = [
+    {
+      label: 'Booking ID',
+      render: (booking) => (
+        <span className="font-semibold text-slate-800">
+          #{booking.id}
+        </span>
+      ),
+    },
+    {
+      label: 'Guest',
+      render: (booking) => (
+        <>
+          <div className="text-sm font-semibold text-slate-800">
+            {booking.user?.fullName}
+          </div>
+          {/* FIX: Changed to text-xs and added truncation for mobile */}
+          <div className="text-xs text-slate-500 truncate max-w-[120px] sm:max-w-none">
+            {booking.user?.email}
+          </div>
+        </>
+      ),
+    },
+    {
+      label: 'Room',
+      render: (booking) => (
+        <>
+          <div className="text-sm font-semibold text-slate-800">
+            {booking.room?.roomNumber}
+          </div>
+          <div className="text-sm text-slate-500">
+            {booking.room?.roomType?.name}
+          </div>
+        </>
+      ),
+    },
+    {
+      label: 'Dates',
+      render: (booking) => (
+        <>
+          <div className="text-sm text-slate-700">
+            {new Date(booking.checkInDate).toLocaleDateString()}
+          </div>
+          <div className="text-sm text-slate-500">
+            to {new Date(booking.checkOutDate).toLocaleDateString()}
+          </div>
+        </>
+      ),
+    },
+    {
+      label: 'Total',
+      render: (booking) => (
+        <span className="font-semibold text-slate-900">
+          ${booking.totalPrice}
+        </span>
+      ),
+    },
+    {
+      label: 'Status',
+      render: (booking) => getStatusBadge(booking.status),
+    },
+    {
+      label: 'Actions',
+      render: (booking) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          {getActionButtons(booking)}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-slate-100">
