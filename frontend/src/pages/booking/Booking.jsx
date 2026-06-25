@@ -17,26 +17,15 @@ const Booking = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // 1. Destructure exactly what the refactored hook returns natively
-  const { 
-    state, 
-    setBookingData, 
-    setSelectedExtraServices, 
-    setStep, 
-    setErrorState, 
-    handleNextStep, 
-    handleConfirmPayment 
-  } = useBookingProcess(roomId, location.state, user);
-
-  // 2. Re-bundle them into the 'actions' object that your JSX expects
-  const actions = {
+  const {
+    state,
     setBookingData,
     setSelectedExtraServices,
     setStep,
     setErrorState,
     handleNextStep,
-    handleConfirmPayment
-  };
+    handleConfirmPayment,
+  } = useBookingProcess(roomId, location.state, user);
 
   if (state.loading) {
     return (
@@ -54,9 +43,11 @@ const Booking = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Room not found
           </h2>
+
           <p className="text-gray-600 mb-6">
             The room you're trying to book doesn't exist or is unavailable.
           </p>
+
           <Button onClick={() => navigate('/our-rooms')}>
             View Available Rooms
           </Button>
@@ -68,12 +59,14 @@ const Booking = () => {
   const getButtonText = () => {
     if (state.isProcessingPayment) return 'Processing...';
     if (state.step === 1) return 'Continue to Payment';
+
     return `Pay $${state.grandTotal}`;
   };
 
   const canProceed =
     state.step === 1
-      ? state.bookingData.checkInDate && state.bookingData.checkOutDate
+      ? state.bookingData.checkInDate &&
+        state.bookingData.checkOutDate
       : state.bookingData.paymentMethodId;
 
   return (
@@ -81,75 +74,107 @@ const Booking = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         <BookingStepper currentStep={state.step} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <div className="flex flex-col-reverse lg:grid lg:grid-cols-3 gap-8 mt-8">
+
           <div className="lg:col-span-2">
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
+
               {state.step === 1 ? (
-              <BookingDetailsForm
-                room={state.room}
-                bookingData={state.bookingData}
-                setBookingData={actions.setBookingData}
-                extraServices={state.extraServices}                     
-                selectedExtraServices={state.selectedExtraServices}     
-                setSelectedExtraServices={actions.setSelectedExtraServices} 
-                onNext={actions.handleNextStep}
-              />
+                <BookingDetailsForm
+                  room={state.room}
+                  bookingData={state.bookingData}
+                  setBookingData={setBookingData}
+                  extraServices={state.extraServices}
+                  selectedExtraServices={state.selectedExtraServices}
+                  setSelectedExtraServices={setSelectedExtraServices}
+                  onNext={handleNextStep}
+                />
               ) : (
                 <PaymentSelection
                   paymentMethods={state.paymentMethods}
                   bookingData={state.bookingData}
-                  setBookingData={actions.setBookingData}
+                  setBookingData={setBookingData}
                 />
               )}
 
-              <div className="mt-8 flex justify-between pt-6 border-t border-gray-200">
+              <div className="mt-8 flex flex-col sm:flex-row justify-between pt-6 border-t border-gray-200 gap-4 sm:gap-0">
+
                 {state.step === 2 && (
                   <Button
                     variant="outline"
-                    onClick={() => actions.setStep(state.step - 1)}
+                    onClick={() => setStep(state.step - 1)}
+                    className="w-full sm:w-auto order-2 sm:order-1"
                   >
                     Back
                   </Button>
                 )}
+
                 <Button
-                  onClick={state.step === 1 ? actions.handleNextStep : actions.handleConfirmPayment}
+                  onClick={
+                    state.step === 1
+                      ? handleNextStep
+                      : handleConfirmPayment
+                  }
                   disabled={!canProceed || state.isProcessingPayment}
-                  className="ml-auto"
+                  className="w-full sm:w-auto ml-auto order-1 sm:order-2"
                 >
                   {getButtonText()}
                 </Button>
+
               </div>
             </Card>
           </div>
 
+
           <div className="lg:col-span-1">
             <BookingSummarySidebar state={state} />
           </div>
-        </div>
-      </div>
 
-      <Modal
-        isOpen={state.errorState.show}
-        onClose={() => actions.setErrorState({ show: false, message: '' })}
-        title="Booking Error"
-      >
-        <div className="text-center">
-          <p className="text-gray-600 mb-6">{state.errorState.message}</p>
-          <div className="flex space-x-3 justify-center">
-            <Button
-              variant="outline"
-              onClick={() =>
-                actions.setErrorState({ show: false, message: '' })
-              }
-            >
-              Try Again
-            </Button>
-            <Button onClick={() => navigate('/our-rooms')}>
-              View Other Rooms
-            </Button>
-          </div>
         </div>
-      </Modal>
+
+
+        <Modal
+          isOpen={state.errorState.show}
+          onClose={() =>
+            setErrorState({
+              show: false,
+              message: '',
+            })
+          }
+          title="Booking Error"
+        >
+
+          <div className="text-center">
+
+            <p className="text-gray-600 mb-6">
+              {state.errorState.message}
+            </p>
+
+            <div className="flex space-x-3 justify-center">
+
+              <Button
+                variant="outline"
+                onClick={() =>
+                  setErrorState({
+                    show: false,
+                    message: '',
+                  })
+                }
+              >
+                Try Again
+              </Button>
+
+              <Button onClick={() => navigate('/our-rooms')}>
+                View Other Rooms
+              </Button>
+
+            </div>
+
+          </div>
+
+        </Modal>
+
+      </div>
     </div>
   );
 };
