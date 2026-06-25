@@ -9,8 +9,17 @@ import { getStatusText } from '@/utils/bookingStatusUtils';
 
 const MyBookings = () => {
   const navigate = useNavigate();
-  const { loading, filter, setFilter, search, setSearch, filteredBookings } =
-    useMyBookings();
+  
+  const { 
+    loading, 
+    filter, 
+    setFilter, 
+    search, 
+    setSearch, 
+    filteredBookings,
+    handleCheckIn,
+    handleCheckOut,
+  } = useMyBookings();
 
   if (loading) {
     return (
@@ -100,6 +109,8 @@ const MyBookings = () => {
                 onWriteReview={(bookingId) =>
                   navigate('/reviews', { state: { bookingId } })
                 }
+                onCheckIn={handleCheckIn} 
+                onCheckOut={handleCheckOut}
               />
             ))}
           </div>

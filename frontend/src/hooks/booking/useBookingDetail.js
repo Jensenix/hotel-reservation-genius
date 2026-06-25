@@ -39,5 +39,18 @@ export const useBookingDetail = () => {
 
   const goToModify = (roomId) => navigate(`/booking/${roomId}`);
 
-  return { booking, loading, goBack, goToModify, id };
+  const handleCheckOut = async () => {
+    try {
+      await apiService.bookings.checkOutGuest(id);
+      
+      setBooking((prev) => ({
+        ...prev,
+        status: 'checked_out'
+      }));
+    } catch (error) {
+      console.error('Error checking out:', error);
+    }
+  };
+
+  return { booking, loading, goBack, goToModify, id, handleCheckOut };
 };

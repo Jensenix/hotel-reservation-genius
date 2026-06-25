@@ -10,9 +10,18 @@ const BookingCard = ({
   onViewDetails,
   onContinuePayment,
   onWriteReview,
+  onCheckIn,
+  onCheckOut,
 }) => {
   const roomInitial = booking.room?.roomType?.name?.charAt(0) || 'R';
   const maxCapacity = booking.room?.roomType?.maxCapacity;
+
+  // --- NEW: Calculate if check-out is allowed (Today >= CheckOutDate) ---
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const checkOutDate = new Date(booking.checkOutDate);
+  checkOutDate.setHours(0, 0, 0, 0);
+  const isCheckOutAllowed = today >= checkOutDate;
 
   return (
     <Card
@@ -116,7 +125,10 @@ const BookingCard = ({
               <Button
                 size="sm"
                 className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCheckIn(booking.id);
+                }}
               >
                 Check In
               </Button>
@@ -125,8 +137,19 @@ const BookingCard = ({
             {booking.status === 'checked_in' && (
               <Button
                 size="sm"
-                className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                onClick={(e) => e.stopPropagation()}
+                className={`flex-1 border-0 ${
+                  isCheckOutAllowed 
+                    ? 'bg-slate-600 hover:bg-slate-700 text-white' 
+                    : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isCheckOutAllowed) {
+                    onCheckOut(booking.id);
+                  } else {
+                    alert('You can only check out on or after your scheduled check-out date.');
+                  }
+                }}
               >
                 Check Out
               </Button>
@@ -172,6 +195,8 @@ BookingCard.propTypes = {
   onViewDetails: PropTypes.func.isRequired,
   onContinuePayment: PropTypes.func.isRequired,
   onWriteReview: PropTypes.func.isRequired,
+  onCheckIn: PropTypes.func.isRequired,
+  onCheckOut: PropTypes.func.isRequired,
 };
 
 export default BookingCard;

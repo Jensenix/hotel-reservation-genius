@@ -42,13 +42,44 @@ export const useMyBookings = () => {
     };
   }, [userId]);
 
-  // Sync state to URL
   useEffect(() => {
     const params = new URLSearchParams();
     if (filter !== 'all') params.set('status', filter);
     if (search) params.set('search', search);
     setSearchParams(params, { replace: true });
   }, [filter, search, setSearchParams]);
+
+  const handleCheckIn = async (bookingId) => {
+    try {
+      await apiService.bookings.checkInGuest(bookingId);
+
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, status: 'checked_in' }
+            : booking
+        )
+      );
+    } catch (error) {
+      console.error('Error checking in:', error);
+    }
+  };
+
+  const handleCheckOut = async (bookingId) => {
+    try {
+      await apiService.bookings.checkOutGuest(bookingId);
+
+      setBookings((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, status: 'checked_out' }
+            : booking
+        )
+      );
+    } catch (error) {
+      console.error('Error checking out:', error);
+    }
+  };
 
   const filteredBookings = useMemo(() => {
     return bookings.filter((booking) => {
@@ -73,5 +104,7 @@ export const useMyBookings = () => {
     search,
     setSearch,
     filteredBookings,
+    handleCheckIn,
+    handleCheckOut, 
   };
 };
