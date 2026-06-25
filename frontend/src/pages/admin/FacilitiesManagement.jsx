@@ -8,8 +8,9 @@ import {
   Search,
 } from 'lucide-react';
 import AdminLayout from '@/layouts/AdminLayout';
-import Modal from '@/components/ui/Modal';
 import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
+import FacilityFormModal from '@/components/admin/facilities/FacilityFormModal';
+import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
 
 export default function FacilitiesManagement() {
   const initialFormState = { facilityName: '', iconUrl: '' };
@@ -40,6 +41,10 @@ export default function FacilitiesManagement() {
     };
     const Icon = icons[iconName] || Building2;
     return <Icon size={24} />;
+  };
+
+  const handleFormChange = (field, value) => {
+    actions.setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -152,93 +157,21 @@ export default function FacilitiesManagement() {
         )}
       </div>
 
-      {/* Add/Edit Modal */}
-      <Modal
+      <FacilityFormModal
         isOpen={state.showModal}
         onClose={actions.closeModal}
-        title={state.editingItem ? 'Edit Facility' : 'Add Facility'}
-      >
-        <form onSubmit={actions.handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="fm-facilityName" className="block text-sm font-medium text-slate-700 mb-2">
-              Facility Name
-            </label>
-            <input
-              id="fm-facilityName"
-              type="text"
-              required
-              value={state.formData.facilityName}
-              onChange={(e) =>
-                actions.setFormData({
-                  ...state.formData,
-                  facilityName: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="fm-iconUrl" className="block text-sm font-medium text-slate-700 mb-2">
-              Icon URL
-            </label>
-            <input
-              id="fm-iconUrl"
-              type="text"
-              value={state.formData.iconUrl}
-              onChange={(e) =>
-                actions.setFormData({
-                  ...state.formData,
-                  iconUrl: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-          <div className="flex gap-4 pt-4">
-            <button
-              type="button"
-              onClick={actions.closeModal}
-              className="flex-1 bg-slate-500 text-white py-3 rounded-xl font-semibold"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-amber-500 text-white py-3 rounded-xl font-semibold"
-            >
-              {state.editingItem ? 'Update' : 'Add'}
-            </button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={actions.handleSubmit}
+        formData={state.formData}
+        onChange={handleFormChange}
+        isEditing={!!state.editingItem}
+      />
 
-      {/* Delete Modal */}
-      <Modal
+      <DeleteConfirmModal
         isOpen={state.showDeleteModal}
         onClose={actions.closeDeleteModal}
-        title="Confirm Delete"
-      >
-        <div className="space-y-6">
-          <p>
-            Are you sure you want to delete{' '}
-            <strong>{state.deleteTarget?.name}</strong>?
-          </p>
-          <div className="flex gap-4">
-            <button
-              onClick={actions.closeDeleteModal}
-              className="flex-1 bg-slate-500 text-white py-3 rounded-xl"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={actions.handleDelete}
-              className="flex-1 bg-red-500 text-white py-3 rounded-xl"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </Modal>
+        onConfirm={actions.handleDelete}
+        itemName={state.deleteTarget?.name}
+      />
     </AdminLayout>
   );
 }
