@@ -93,8 +93,58 @@ const Header = () => {
             </Button>
           </nav>
 
-          {/* User Section */}
-          <div className="flex items-center space-x-4">
+          {/* Desktop User Section & Mobile Toggle - Added shrink-0 here! */}
+          <div className="flex items-center space-x-3 md:space-x-4 shrink-0">
+            <div className="hidden md:flex items-center space-x-4">
+              {isAuthenticated ? (
+                <>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-right">
+                      <p className="text-sm font-medium">{user?.fullName}</p>
+                      <p className="text-xs text-blue-100">{user?.email}</p>
+                    </div>
+                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+                      <span className="text-blue-600 font-bold text-sm">
+                        {user?.fullName?.charAt(0)?.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleLogout}>Logout</Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login"><Button variant="outline" size="sm">Sign In</Button></Link>
+                  <Link to="/register"><Button size="sm">Register</Button></Link>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="lg:hidden p-2 text-white hover:text-amber-200 transition-colors"
+              onClick={toggleMenu}
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-amber-900 border-b border-amber-800 shadow-xl py-4 px-4 flex flex-col space-y-4 max-h-[80vh] overflow-y-auto">
+          <Link to="/" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">Home</Link>
+          <Link to="/our-rooms" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">Our Rooms</Link>
+          <Link to="/facilities" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">Facilities</Link>
+          <Link to="/my-bookings" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">My Bookings</Link>
+          <Link to="/reviews" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-lg">Reviews</Link>
+          
+          <div className="pt-4 border-t border-amber-800/50 flex flex-col space-y-3">
+            <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3 font-bold shadow-lg"
+              onClick={() => navigate('/our-rooms')}
+            >
+              Book Now
+            </Button>
+            
             {isAuthenticated ? (
               <>
                 <div className="flex items-center space-x-3">

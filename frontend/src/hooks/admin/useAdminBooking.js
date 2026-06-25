@@ -88,12 +88,11 @@ export const useAdminBooking = () => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => {
-      const newFilters = { ...prev, [key]: value };
+    const newFilters = { ...filters, [key]: value };
       if (key !== 'page') newFilters.page = 1;
+    
+      setFilters(newFilters);
       updateURLParams(newFilters);
-      return newFilters;
-    });
   };
 
   const executeAction = async () => {

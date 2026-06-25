@@ -22,9 +22,10 @@ export default function BookingDetailModal({
           <p className="mt-2 text-gray-600">Loading booking details...</p>
         </div>
       ) : bookingDetails ? (
-        <div className="space-y-3">
+        <div className="space-y-3 sm:space-y-4">
           {/* Guest & Room Info - Combined */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* FIX: Swapped grid-cols-2 to grid-cols-1 sm:grid-cols-2 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">
                 Guest Information
@@ -38,7 +39,8 @@ export default function BookingDetailModal({
                 </div>
                 <div>
                   <div className="text-xs text-gray-500">Email</div>
-                  <div className="text-sm text-gray-700">
+                  {/* FIX: Added break-all so long emails wrap to the next line */}
+                  <div className="text-sm text-gray-700 break-all">
                     {bookingDetails.user?.email || 'N/A'}
                   </div>
                 </div>
@@ -71,7 +73,8 @@ export default function BookingDetailModal({
             <h3 className="text-sm font-semibold text-gray-900 mb-3">
               Booking Details
             </h3>
-            <div className="grid grid-cols-4 gap-4 text-sm">
+            {/* FIX: Swapped grid-cols-4 to grid-cols-2 sm:grid-cols-4 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
               <div>
                 <div className="text-xs text-gray-500">Check-in</div>
                 <div className="font-medium text-gray-900">
@@ -110,13 +113,13 @@ export default function BookingDetailModal({
                   {bookingDetails.extraServices.map((item) => (
                     <div
                       key={item.id}
-                      className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0 text-sm"
+                      className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0 text-sm gap-2"
                     >
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-gray-900 break-words">
                         {item.serviceName} ×{' '}
                         {item.BookingExtraService?.quantity || 1}
                       </span>
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-semibold text-gray-900 shrink-0">
                         $
                         {parseFloat(item.BookingExtraService?.subtotal) ||
                           parseFloat(item.price)}
@@ -133,7 +136,7 @@ export default function BookingDetailModal({
               <h3 className="text-sm font-semibold text-gray-900 mb-3">
                 Special Requests
               </h3>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-700 break-words">
                 {bookingDetails.specialRequests}
               </p>
             </div>
@@ -146,21 +149,21 @@ export default function BookingDetailModal({
                 Payment Information
               </h3>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2">
                   <span className="text-gray-600">Method</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 text-right">
                     {bookingDetails.payment.paymentMethod?.methodName || 'N/A'}
                   </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2">
                   <span className="text-gray-600">Amount</span>
-                  <span className="font-bold text-gray-900">
+                  <span className="font-bold text-gray-900 text-right">
                     ${parseFloat(bookingDetails.payment.amount)}
                   </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center gap-2 mt-1">
                   <span className="text-gray-600">Status</span>
-                  {getStatusBadge(bookingDetails.payment.paymentStatus)}
+                  <span className="shrink-0">{getStatusBadge(bookingDetails.payment.paymentStatus)}</span>
                 </div>
               </div>
             </div>
