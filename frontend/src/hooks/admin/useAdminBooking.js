@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();

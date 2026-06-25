@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useReviews = () => {
   const { user } = useAuth();
@@ -9,12 +9,19 @@ export const useReviews = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 1. LAZY INITIALIZATION: Derive initial state directly from URL/location to prevent extra renders
-  const [activeTab, setActiveTab] = useState(() => location.state?.bookingId ? 'my' : (searchParams.get('tab') || 'all'));
-  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') || '');
-  const [ratingFilter, setRatingFilter] = useState(() => searchParams.get('rating') || '');
-  
-  const [showReviewModal, setShowReviewModal] = useState(() => !!location.state?.bookingId);
+  const [activeTab, setActiveTab] = useState(() =>
+    location.state?.bookingId ? 'my' : searchParams.get('tab') || 'all',
+  );
+  const [searchTerm, setSearchTerm] = useState(
+    () => searchParams.get('search') || '',
+  );
+  const [ratingFilter, setRatingFilter] = useState(
+    () => searchParams.get('rating') || '',
+  );
+
+  const [showReviewModal, setShowReviewModal] = useState(
+    () => !!location.state?.bookingId,
+  );
   const [reviewFormData, setReviewFormData] = useState(() => ({
     bookingId: location.state?.bookingId || null,
     rating: 5,
@@ -23,33 +30,30 @@ export const useReviews = () => {
 
   const [allReviews, setAllReviews] = useState([]);
   const [myReviews, setMyReviews] = useState([]);
-  const [loading, setLoading] = useState(true); // initially true, no sync update needed
+  const [loading, setLoading] = useState(true); 
   const [editingReview, setEditingReview] = useState(null);
 
-  // 2. Clear location state to prevent modal reopening on refresh (NO state setting here)
   useEffect(() => {
     if (location.state?.bookingId) {
-      navigate(location.pathname, { replace: true, state: {} }); 
+      navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, navigate, location.pathname]);
 
-  // 3. Update URL ONLY when local state filters change
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    
+
     if (activeTab !== 'all') params.set('tab', activeTab);
     else params.delete('tab');
-    
+
     if (searchTerm) params.set('search', searchTerm);
     else params.delete('search');
-    
+
     if (ratingFilter) params.set('rating', ratingFilter);
     else params.delete('rating');
 
     setSearchParams(params, { replace: true });
   }, [activeTab, searchTerm, ratingFilter, setSearchParams, searchParams]);
 
-  // 4. Initial Fetch (Strict Mode Compliant)
   useEffect(() => {
     let ignore = false;
 
@@ -57,7 +61,9 @@ export const useReviews = () => {
       try {
         const [allResponse, myResponse] = await Promise.all([
           apiService.reviews.getAll(),
-          user ? apiService.reviews.getUserReviews(user.id) : Promise.resolve({ data: { data: [] } }),
+          user
+            ? apiService.reviews.getUserReviews(user.id)
+            : Promise.resolve({ data: { data: [] } }),
         ]);
         if (!ignore) {
           setAllReviews(allResponse.data.data || []);
@@ -77,13 +83,14 @@ export const useReviews = () => {
     };
   }, [user]);
 
-  // 5. Refetcher for Mutations (Safe to set loading synchronously here)
   const refetchReviews = async () => {
     setLoading(true);
     try {
       const [allResponse, myResponse] = await Promise.all([
         apiService.reviews.getAll(),
-        user ? apiService.reviews.getUserReviews(user.id) : Promise.resolve({ data: { data: [] } }),
+        user
+          ? apiService.reviews.getUserReviews(user.id)
+          : Promise.resolve({ data: { data: [] } }),
       ]);
       setAllReviews(allResponse.data.data || []);
       setMyReviews(myResponse.data.data || []);
@@ -97,7 +104,11 @@ export const useReviews = () => {
   const handleOpenReviewModal = (review = null, bookingId = null) => {
     if (review) {
       setEditingReview(review);
-      setReviewFormData({ bookingId: review.bookingId, rating: review.rating, comment: review.comment });
+      setReviewFormData({
+        bookingId: review.bookingId,
+        rating: review.rating,
+        comment: review.comment,
+      });
     } else {
       setEditingReview(null);
       setReviewFormData({ bookingId, rating: 5, comment: '' });
@@ -131,7 +142,10 @@ export const useReviews = () => {
       refetchReviews();
     } catch (error) {
       console.error('Error saving review:', error);
-      alert('Error saving review: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving review: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -142,7 +156,10 @@ export const useReviews = () => {
         refetchReviews();
       } catch (error) {
         console.error('Error deleting review:', error);
-        alert('Error deleting review: ' + (error.response?.data?.message || error.message));
+        alert(
+          'Error deleting review: ' +
+            (error.response?.data?.message || error.message),
+        );
       }
     }
   };
@@ -152,9 +169,14 @@ export const useReviews = () => {
     return source.filter((review) => {
       const matchesSearch =
         review.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.user?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.booking?.room?.roomType?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRating = !ratingFilter || review.rating.toString() === ratingFilter;
+        review.user?.fullName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        review.booking?.room?.roomType?.name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      const matchesRating =
+        !ratingFilter || review.rating.toString() === ratingFilter;
       return matchesSearch && matchesRating;
     });
   }, [activeTab, allReviews, myReviews, searchTerm, ratingFilter]);

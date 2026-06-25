@@ -1,4 +1,4 @@
-import { apiClient } from "@/services/apiClient";
+import { apiClient } from '@/services/api/apiClient';
 
 /**
  * Authentication and Authorization endpoints.

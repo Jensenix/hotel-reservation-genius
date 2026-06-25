@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useBookingDetail = () => {
   const { id } = useParams();
@@ -36,7 +36,7 @@ export const useBookingDetail = () => {
   }, [id]);
 
   const goBack = () => navigate('/my-bookings');
-  
+
   const goToModify = (roomId) => navigate(`/booking/${roomId}`);
 
   return { booking, loading, goBack, goToModify, id };

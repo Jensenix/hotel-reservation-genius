@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 /**
  * A generic CRUD hook for Admin Management pages.
@@ -31,7 +31,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
   const fetchData = useCallback(() => {
     setLoading(true);
     setError(null);
-    setRefreshKey(k => k + 1);
+    setRefreshKey((k) => k + 1);
   }, []);
 
   // The effect only starts the async operation. Every setState call lands inside a
@@ -40,8 +40,9 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
   useEffect(() => {
     let cancelled = false;
 
-    api.getAll()
-      .then(response => {
+    api
+      .getAll()
+      .then((response) => {
         if (cancelled) return;
         let dataToMap = response.data;
         if (response.data?.data && Array.isArray(response.data.data)) {
@@ -49,7 +50,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
         }
         setData(mapApiResponse(dataToMap || []));
       })
-      .catch(err => {
+      .catch((err) => {
         if (cancelled) return;
         console.error(`Error fetching ${endpoint}:`, err);
         setError(err);
@@ -58,7 +59,9 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
         if (!cancelled) setLoading(false);
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [api, mapApiResponse, endpoint, refreshKey]);
 
   const handleSubmit = async (e) => {
@@ -72,7 +75,8 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
       closeModal();
       fetchData();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Unknown error occurred';
+      const errorMessage =
+        err.response?.data?.message || err.message || 'Unknown error occurred';
       alert(`Error saving item: ${errorMessage}`);
     }
   };
@@ -83,7 +87,9 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
       closeDeleteModal();
       fetchData();
     } catch (err) {
-      alert(`Error deleting item: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Error deleting item: ${err.response?.data?.message || err.message}`,
+      );
     }
   };
 
@@ -108,20 +114,41 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
     const searchStr = searchTerm.toLowerCase();
-    return data.filter(item =>
-      item.name?.toLowerCase().includes(searchStr) ||
-      item.methodName?.toLowerCase().includes(searchStr) ||
-      item.facilityName?.toLowerCase().includes(searchStr) ||
-      item.extraServiceName?.toLowerCase().includes(searchStr) ||
-      item.description?.toLowerCase().includes(searchStr)
+    return data.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(searchStr) ||
+        item.methodName?.toLowerCase().includes(searchStr) ||
+        item.facilityName?.toLowerCase().includes(searchStr) ||
+        item.extraServiceName?.toLowerCase().includes(searchStr) ||
+        item.description?.toLowerCase().includes(searchStr),
     );
   }, [data, searchTerm]);
 
   return {
-    state: { data, filteredData, loading, error, searchTerm, showModal, showDeleteModal, editingItem, deleteTarget, formData },
+    state: {
+      data,
+      filteredData,
+      loading,
+      error,
+      searchTerm,
+      showModal,
+      showDeleteModal,
+      editingItem,
+      deleteTarget,
+      formData,
+    },
     actions: {
-      setSearchTerm, setShowModal, setShowDeleteModal, setDeleteTarget,
-      setFormData, handleEdit, handleDelete, handleSubmit, closeModal, closeDeleteModal, fetchData
-    }
+      setSearchTerm,
+      setShowModal,
+      setShowDeleteModal,
+      setDeleteTarget,
+      setFormData,
+      handleEdit,
+      handleDelete,
+      handleSubmit,
+      closeModal,
+      closeDeleteModal,
+      fetchData,
+    },
   };
 }

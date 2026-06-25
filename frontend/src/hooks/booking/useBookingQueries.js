@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useBookingQueries = (roomId, initialBookingId) => {
   const [room, setRoom] = useState(null);
@@ -18,11 +18,13 @@ export const useBookingQueries = (roomId, initialBookingId) => {
           apiService.paymentMethods.getAll(),
           apiService.extraServices.getAll(),
         ];
-        
-        if (roomId) promises.push(apiService.roomTypes.getById(roomId));
-        if (initialBookingId) promises.push(apiService.bookings.getById(initialBookingId));
 
-        const [paymentRes, servicesRes, roomRes, bookingRes] = await Promise.all(promises);
+        if (roomId) promises.push(apiService.roomTypes.getById(roomId));
+        if (initialBookingId)
+          promises.push(apiService.bookings.getById(initialBookingId));
+
+        const [paymentRes, servicesRes, roomRes, bookingRes] =
+          await Promise.all(promises);
 
         if (isMounted) {
           setPaymentMethods(paymentRes?.data?.data || []);

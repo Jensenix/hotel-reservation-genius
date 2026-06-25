@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 import { dateToString } from '@/utils/availabilityUtils';
 
 export const useRoomAvailability = () => {
@@ -18,7 +18,10 @@ export const useRoomAvailability = () => {
       if (response.data.success) {
         setAvailabilityData(response.data.data);
       } else {
-        console.error('Error fetching availability data:', response.data.message);
+        console.error(
+          'Error fetching availability data:',
+          response.data.message,
+        );
       }
     } catch (error) {
       console.error('Error fetching availability data:', error);

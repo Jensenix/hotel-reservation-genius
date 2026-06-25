@@ -1,4 +1,4 @@
-import { apiClient } from '@/services/apiClient';
+import { apiClient } from '@/services/api/apiClient';
 
 /**
  * Room Categories / Types endpoints.

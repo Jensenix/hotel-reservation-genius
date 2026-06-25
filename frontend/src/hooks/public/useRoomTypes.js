@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/api/apiService';
 
 export const useRoomTypes = () => {
   const [roomTypes, setRoomTypes] = useState([]);
@@ -37,10 +37,10 @@ export const useRoomTypes = () => {
     initialFetch();
 
     return () => {
-      ignore = true; 
+      ignore = true;
     };
-  }, []); 
- 
+  }, []);
+
   const refetchRoomTypes = async () => {
     setLoading(true);
     try {
@@ -77,7 +77,12 @@ export const useRoomTypes = () => {
   const handleCloseRoomTypeModal = () => {
     setShowRoomTypeModal(false);
     setEditingRoomType(null);
-    setRoomTypeFormData({ name: '', description: '', basePrice: '', maxCapacity: '' });
+    setRoomTypeFormData({
+      name: '',
+      description: '',
+      basePrice: '',
+      maxCapacity: '',
+    });
   };
 
   const handleSubmitRoomType = async (e) => {
@@ -89,10 +94,13 @@ export const useRoomTypes = () => {
         await apiService.roomTypes.create(roomTypeFormData);
       }
       handleCloseRoomTypeModal();
-      refetchRoomTypes(); 
+      refetchRoomTypes();
     } catch (error) {
       console.error('Error saving room type:', error);
-      alert('Error saving room type: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error saving room type: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -101,16 +109,23 @@ export const useRoomTypes = () => {
       await apiService.roomTypes.delete(deleteTarget.id);
       setShowDeleteModal(false);
       setDeleteTarget(null);
-      refetchRoomTypes(); 
+      refetchRoomTypes();
     } catch (error) {
       console.error('Error deleting room type:', error);
-      alert('Error deleting room type: ' + (error.response?.data?.message || error.message));
+      alert(
+        'Error deleting room type: ' +
+          (error.response?.data?.message || error.message),
+      );
     }
   };
 
-  const filteredRoomTypes = useMemo(() => 
-    roomTypes.filter((rt) => rt.name.toLowerCase().includes(searchTerm.toLowerCase())),
-  [roomTypes, searchTerm]);
+  const filteredRoomTypes = useMemo(
+    () =>
+      roomTypes.filter((rt) =>
+        rt.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    [roomTypes, searchTerm],
+  );
 
   return {
     roomTypes,
@@ -129,6 +144,6 @@ export const useRoomTypes = () => {
     setShowDeleteModal,
     deleteTarget,
     setDeleteTarget,
-    handleDelete
+    handleDelete,
   };
 };
