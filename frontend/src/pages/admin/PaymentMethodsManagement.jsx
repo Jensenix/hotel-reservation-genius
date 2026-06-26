@@ -63,11 +63,11 @@ export default function PaymentMethodsManagement() {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Header - Made Responsive */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-light text-slate-800 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-light text-slate-800 mb-2">
               Payment{' '}
               <span className="font-semibold text-amber-600">Methods</span>
             </h1>
@@ -75,39 +75,39 @@ export default function PaymentMethodsManagement() {
           </div>
           <button
             onClick={() => actions.setShowModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold flex items-center transition-all"
+            className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center transition-all"
           >
             <Plus className="w-5 h-5 mr-2" /> Add Method
           </button>
         </div>
 
         {/* Search */}
-        <div className="relative mb-8">
+        <div className="relative mb-6 sm:mb-8">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type="text"
             placeholder="Search payment methods..."
             value={state.searchTerm}
             onChange={(e) => actions.setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 text-sm sm:text-base"
           />
         </div>
 
-        {/* Grid */}
+        {/* Grid - Retained existing responsive cols, added text-sm clamping for mobile */}
         {state.loading ? (
           <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {state.filteredData.map((payment) => (
               <div
                 key={payment.id}
                 className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
               >
-                <div className="bg-slate-900 p-6">
+                <div className="bg-slate-900 p-5 sm:p-6">
                   <div className="flex justify-between items-start mb-4">
-                    <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-xl flex items-center justify-center shrink-0">
                       {getIconComponent(payment.type)}
                     </div>
                     <span
@@ -121,20 +121,19 @@ export default function PaymentMethodsManagement() {
                       {payment.isActive ? 'Active' : 'Disabled'}
                     </span>
                   </div>
-                  <h3 className="text-xl font-medium text-white mb-1">
+                  <h3 className="text-lg sm:text-xl font-medium text-white mb-1">
                     {payment.methodName}
                   </h3>
-                  <p className="text-slate-400 text-sm line-clamp-2 mb-3">
+                  <p className="text-slate-400 text-xs sm:text-sm line-clamp-2 mb-3">
                     {payment.description}
                   </p>
 
-                  {/* Informational Subtext Badges */}
                   <div className="mt-2 text-xs text-slate-400 space-y-1 border-t border-slate-800 pt-2">
                     {payment.accountNumber && <div><span className="font-medium text-slate-500">Acc No:</span> {payment.accountNumber}</div>}
                     {payment.address && <div><span className="font-medium text-slate-500">Address:</span> {payment.address}</div>}
                   </div>
                 </div>
-                <div className="p-4 bg-white flex justify-end gap-2 border-t border-slate-100">
+                <div className="p-3 sm:p-4 bg-white flex justify-end gap-2 border-t border-slate-100">
                   <button
                     onClick={() => actions.handleEdit(payment, payment)}
                     className="p-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors"

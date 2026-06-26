@@ -27,7 +27,7 @@ export default function PaymentMethodFormModal({
             placeholder="e.g., Bank Transfer, Stripe Gateway"
             value={formData.methodName || ''}
             onChange={(e) => onChange('methodName', e.target.value)}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            className="w-full px-3 py-3 sm:px-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 text-sm sm:text-base"
           />
         </div>
         <div>
@@ -39,7 +39,7 @@ export default function PaymentMethodFormModal({
             required
             value={formData.type || 'card'}
             onChange={(e) => onChange('type', e.target.value)}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white"
+            className="w-full px-3 py-3 sm:px-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white text-sm sm:text-base"
           >
             <option value="card">Credit Card</option>
             <option value="wallet">Digital Wallet</option>
@@ -57,7 +57,7 @@ export default function PaymentMethodFormModal({
             placeholder="Payment instructions displayed to users"
             value={formData.description || ''}
             onChange={(e) => onChange('description', e.target.value)}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
+            className="w-full px-3 py-3 sm:px-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none text-sm sm:text-base"
             rows={3}
           />
         </div>
@@ -71,7 +71,7 @@ export default function PaymentMethodFormModal({
             placeholder="e.g., 123-456-7890"
             value={formData.accountNumber || ''}
             onChange={(e) => onChange('accountNumber', e.target.value)}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+            className="w-full px-3 py-3 sm:px-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 text-sm sm:text-base"
           />
         </div>
         <div>
@@ -83,7 +83,7 @@ export default function PaymentMethodFormModal({
             placeholder="Enter merchant physical address or explicit transfer wiring details"
             value={formData.address || ''}
             onChange={(e) => onChange('address', e.target.value)}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none"
+            className="w-full px-3 py-3 sm:px-4 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 resize-none text-sm sm:text-base"
             rows={2}
           />
         </div>
@@ -98,17 +98,18 @@ export default function PaymentMethodFormModal({
             Enable this method
           </span>
         </label>
-        <div className="flex gap-3 pt-4">
+        {/* Buttons - Made Responsive */}
+        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200"
+            className="w-full sm:flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600"
+            className="w-full sm:flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600 transition-colors shadow-sm"
           >
             {isEditing ? 'Update' : 'Add'}
           </button>
