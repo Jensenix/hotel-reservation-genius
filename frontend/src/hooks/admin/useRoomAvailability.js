@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import apiService from '@/services/api/apiService';
-import { dateToString } from '@/utils/availabilityUtils';
 
 export const useRoomAvailability = () => {
   const [availabilityData, setAvailabilityData] = useState(null);
@@ -10,8 +9,14 @@ export const useRoomAvailability = () => {
 
   const fetchAvailabilityData = useCallback(async (date) => {
     try {
-      const dateString = dateToString(date);
-      const response = await apiService.roomAvailability.getStats({
+      setLoading(true);
+      
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+
+      const response =  await apiService.roomAvailability.getAvailability({
         date: dateString,
       });
 

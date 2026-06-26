@@ -13,13 +13,25 @@ const ReviewFilters = ({ searchTerm, setSearchTerm, ratingFilter, setRatingFilte
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+              
+              {/* FIX: Mobile Input (Short Placeholder) */}
+              <input
+                id="searchReviewsMobile"
+                type="text"
+                placeholder="Search reviews..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all sm:hidden"
+              />
+              
+              {/* FIX: Desktop Input (Long Placeholder) */}
               <input
                 id="searchReviews"
                 type="text"
                 placeholder="Search by comment, user, or room type..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                className="hidden sm:block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
