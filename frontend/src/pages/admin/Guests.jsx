@@ -67,19 +67,19 @@ export default function Guests() {
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
-        <div className="container mx-auto px-6 py-8">
-          {/* Header */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          {/* Header - Made Responsive */}
+          <div className="mb-8 sm:mb-12">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div>
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
+                <div className="flex items-center space-x-3 mb-2 sm:mb-3">
+                  <div className="w-8 sm:w-12 h-0.5 bg-gradient-to-r from-transparent to-amber-500"></div>
                   <span className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
                     User Management
                   </span>
-                  <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
+                  <div className="w-8 sm:w-12 h-0.5 bg-gradient-to-l from-transparent to-amber-500"></div>
                 </div>
-                <h1 className="text-5xl font-light text-slate-800 mb-2 tracking-tight">
+                <h1 className="text-3xl sm:text-5xl font-light text-slate-800 mb-1 sm:mb-2 tracking-tight">
                   Hotel{' '}
                   <span className="font-semibold text-amber-600">
                     Users & Staff
@@ -91,7 +91,7 @@ export default function Guests() {
               </div>
               <Button
                 onClick={() => actions.setShowModal(true)}
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xl border-0 px-8 py-3 rounded-xl font-semibold transition-all duration-300"
+                className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xl border-0 px-8 py-3.5 sm:py-3 rounded-xl font-semibold transition-all duration-300 flex justify-center items-center"
               >
                 <Plus className="w-5 h-5 mr-2" /> Add User
               </Button>

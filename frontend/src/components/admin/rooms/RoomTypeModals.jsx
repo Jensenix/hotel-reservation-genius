@@ -22,11 +22,11 @@ const RoomTypeModals = ({
         onClose={handleCloseRoomTypeModal}
         title={editingRoomType ? 'Edit Room Type' : 'Add New Room Type'}
       >
-        <form onSubmit={handleSubmitRoomType} className="space-y-6">
+        <form onSubmit={handleSubmitRoomType} className="space-y-4 sm:space-y-6">
           <div>
             <label
               htmlFor="roomTypeName"
-              className="block text-sm font-medium text-slate-700 mb-2"
+              className="block text-sm font-medium text-slate-700 mb-1 sm:mb-2"
             >
               Room Type Name
             </label>
@@ -41,7 +41,7 @@ const RoomTypeModals = ({
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., Standard Room"
             />
           </div>
@@ -49,7 +49,7 @@ const RoomTypeModals = ({
           <div>
             <label
               htmlFor="roomTypeDescription"
-              className="block text-sm font-medium text-slate-700 mb-2"
+              className="block text-sm font-medium text-slate-700 mb-1 sm:mb-2"
             >
               Description
             </label>
@@ -62,7 +62,7 @@ const RoomTypeModals = ({
                   description: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="Describe the room type..."
               rows={3}
             />
@@ -71,7 +71,7 @@ const RoomTypeModals = ({
           <div>
             <label
               htmlFor="roomTypeBasePrice"
-              className="block text-sm font-medium text-slate-700 mb-2"
+              className="block text-sm font-medium text-slate-700 mb-1 sm:mb-2"
             >
               Base Price ($)
             </label>
@@ -88,7 +88,7 @@ const RoomTypeModals = ({
                   basePrice: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., 100"
             />
           </div>
@@ -96,7 +96,7 @@ const RoomTypeModals = ({
           <div>
             <label
               htmlFor="roomTypeMaxCapacity"
-              className="block text-sm font-medium text-slate-700 mb-2"
+              className="block text-sm font-medium text-slate-700 mb-1 sm:mb-2"
             >
               Max Capacity (Guests)
             </label>
@@ -112,24 +112,25 @@ const RoomTypeModals = ({
                   maxCapacity: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
               placeholder="e.g., 2"
             />
           </div>
 
-          <div className="flex gap-4 pt-4">
+          {/* Action Buttons - Stacked on Mobile */}
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
             <Button
               type="button"
               onClick={handleCloseRoomTypeModal}
-              className="flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300"
+              className="w-full sm:flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300 py-3"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300"
+              className="w-full sm:flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300 py-3"
             >
-              {editingRoomType ? 'Update Room Type' : 'Create Room Type'}
+              {editingRoomType ? 'Update' : 'Create Room'}
             </Button>
           </div>
         </form>
@@ -144,27 +145,27 @@ const RoomTypeModals = ({
         title="Delete Room Type"
       >
         <div className="space-y-6">
-          <p className="text-slate-600">
+          <p className="text-slate-600 text-sm sm:text-base">
             Are you sure you want to delete{' '}
             <strong>{deleteTarget?.name}</strong>? This will also delete all
             physical rooms associated with this type. This action cannot be
             undone.
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
             <Button
               onClick={() => {
                 setShowDeleteModal(false);
                 setDeleteTarget(null);
               }}
-              className="flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300"
+              className="w-full sm:flex-1 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white shadow-md border-0 rounded-xl font-semibold transition-all duration-300 py-3"
             >
               Cancel
             </Button>
             <Button
               onClick={handleDelete}
-              className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300"
+              className="w-full sm:flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg border-0 rounded-xl font-semibold transition-all duration-300 py-3"
             >
-              Delete Room Type
+              Delete Type
             </Button>
           </div>
         </div>

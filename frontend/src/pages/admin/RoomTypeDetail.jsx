@@ -36,7 +36,7 @@ const RoomTypeDetail = () => {
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50">
-        <div className="container mx-auto px-6 py-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <RoomTypeHeader
             roomType={roomType}
             roomsCount={rooms.length}
