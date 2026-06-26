@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-white shadow-2xl border-b border-amber-700">
-      {/* Top Bar - Hidden on very small screens, reduced content on mobile */}
+      {/* Top Bar */}
       <div className="bg-black/20 backdrop-blur-sm border-b border-black/10 hidden sm:block">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-10 text-xs">
@@ -44,39 +44,41 @@ const Header = () => {
 
       {/* Main Navigation */}
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20 gap-4">
+        <div className="flex items-center justify-between h-16 md:h-20 gap-4 relative">
           
-          {/* 1. THE LOGO */}
-          <Link to="/" className="flex items-center space-x-3 z-50 min-w-0">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-400 shrink-0">
-              <span className="text-white font-bold text-lg md:text-xl">GSH</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight truncate">
-                Genius Society Hotel
-              </h1>
-              <p className="text-[10px] md:text-xs text-amber-200 font-light tracking-wider hidden sm:block">
-                LUXURY & COMFORT
-              </p>
-            </div>
-          </Link>
+          {/* 1. THE LOGO (Locked to the Left) */}
+          <div className="flex-1 flex justify-start min-w-0">
+            <Link to="/" className="flex items-center space-x-3 z-50 min-w-0">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-400 shrink-0">
+                <span className="text-white font-bold text-lg md:text-xl">GSH</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight truncate">
+                  Genius Society Hotel
+                </h1>
+                <p className="text-[10px] md:text-xs text-amber-200 font-light tracking-wider hidden sm:block">
+                  LUXURY & COMFORT
+                </p>
+              </div>
+            </Link>
+          </div>
 
-          {/* 2. THE RIGHT SIDE GROUP */}
-          <div className="flex items-center space-x-4 xl:space-x-8 shrink-0">
+          {/* 2. THE NAVIGATION (Perfectly Centered with Book Now button!) */}
+          <nav className="hidden xl:flex items-center space-x-6 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 shrink-0 z-10">
+            <Link to="/" className="hover:text-amber-200 transition-colors duration-200 font-medium">Home</Link>
+            <Link to="/our-rooms" className="hover:text-amber-200 transition-colors duration-200 font-medium">Our Rooms</Link>
+            <Link to="/facilities" className="hover:text-amber-200 transition-colors duration-200 font-medium">Facilities</Link>
+            <Link to="/my-bookings" className="hover:text-amber-200 transition-colors duration-200 font-medium">My Bookings</Link>
+            <Link to="/reviews" className="hover:text-amber-200 transition-colors duration-200 font-medium">Reviews</Link>
             
-            {/* Desktop Navigation */}
-            <nav className="hidden xl:flex items-center space-x-6 shrink-0">
-              <Link to="/" className="hover:text-amber-200 transition-colors duration-200 font-medium">Home</Link>
-              <Link to="/our-rooms" className="hover:text-amber-200 transition-colors duration-200 font-medium">Our Rooms</Link>
-              <Link to="/facilities" className="hover:text-amber-200 transition-colors duration-200 font-medium">Facilities</Link>
-              <Link to="/my-bookings" className="hover:text-amber-200 transition-colors duration-200 font-medium">My Bookings</Link>
-              <Link to="/reviews" className="hover:text-amber-200 transition-colors duration-200 font-medium">Reviews</Link>
-              <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-2 font-medium shadow-lg">
-                Book Now
-              </Button>
-            </nav>
+            {/* Book Now moved here, right next to the links */}
+            <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-2 font-medium shadow-lg">
+              Book Now
+            </Button>
+          </nav>
 
-            {/* User Section & Mobile Toggle */}
+          {/* 3. THE RIGHT SIDE GROUP (User Profile only, Locked to the Right) */}
+          <div className="flex-1 flex items-center justify-end space-x-4 shrink-0 z-20">
             <div className="flex items-center space-x-3 md:space-x-4 shrink-0">
               <div className="hidden md:flex items-center space-x-4">
                 {isAuthenticated ? (
@@ -114,7 +116,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu - FIX: Changed to a floating rounded card */}
+      {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="xl:hidden absolute top-full right-2 left-2 sm:left-auto sm:w-80 mt-2 bg-amber-900 border border-amber-700/50 rounded-2xl shadow-2xl py-4 px-4 flex flex-col space-y-2 max-h-[80vh] overflow-y-auto">
           <Link to="/" onClick={toggleMenu} className="text-white hover:text-amber-200 font-medium text-base px-2 py-1">Home</Link>

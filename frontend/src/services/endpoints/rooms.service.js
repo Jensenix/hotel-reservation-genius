@@ -41,5 +41,5 @@ export const facilityAPI = {
  */
 export const roomAvailabilityAPI = {
   getStats: (params) => apiClient.get('/room-availability/stats', { params }),
-  getAvailability: (params) => apiClient.get('/room-availability', { params }),
+  getAvailability: (params) => apiClient.get('/room-availability/stats', { params }), 
 };
