@@ -5,7 +5,7 @@ export default function GuestTable({ users, loading, allUsers, onEdit, onDelete,
   const getRoleColor = (role) =>
     role === 'admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200';
   const getRoleIcon = (role) =>
-    role === 'admin' ? <Shield className="w-4 h-4" /> : <User className="w-4 h-4" />;
+    role === 'admin' ? <Shield className="w-3 h-3 sm:w-4 sm:h-4" /> : <User className="w-3 h-3 sm:w-4 sm:h-4" />;
 
   if (loading) {
     return (
@@ -18,14 +18,14 @@ export default function GuestTable({ users, loading, allUsers, onEdit, onDelete,
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[600px] sm:min-w-full">
+        <table className="w-full min-w-[500px] sm:min-w-full">
           <thead>
             <tr className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
-              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">User</th>
-              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">Email</th>
-              <th className="hidden sm:table-cell px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">Phone</th>
-              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">Role</th>
-              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider">Actions</th>
+              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider">User</th>
+              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider">Email</th>
+              <th className="hidden sm:table-cell px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider">Phone</th>
+              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-left text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider">Role</th>
+              <th className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-center text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -41,32 +41,33 @@ export default function GuestTable({ users, loading, allUsers, onEdit, onDelete,
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-slate-600 text-sm">
+                <td className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-slate-600 text-xs sm:text-sm">
                   <Mail className="hidden lg:inline w-4 h-4 mr-2 text-slate-400" />
                   <span className="break-all">{user.email}</span>
                 </td>
-                <td className="hidden sm:table-cell px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-slate-600 text-sm">
+                <td className="hidden sm:table-cell px-4 py-3 sm:px-6 lg:px-8 lg:py-5 text-slate-600 text-xs sm:text-sm">
                   {user.phoneNumber ? (
                     <><Phone className="hidden lg:inline w-4 h-4 mr-2 text-slate-400" />{user.phoneNumber}</>
                   ) : ('-')}
                 </td>
                 <td className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5">
-                  <div className={`inline-flex items-center px-2 py-1 lg:px-4 lg:py-2 rounded-full text-[10px] lg:text-xs font-semibold uppercase tracking-wider border ${getRoleColor(user.role)}`}>
-                    {getRoleIcon(user.role)} <span className="ml-1 lg:ml-2">{user.role}</span>
+                  <div className={`inline-flex items-center px-2 py-1 lg:px-3 lg:py-1.5 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider border ${getRoleColor(user.role)}`}>
+                    {getRoleIcon(user.role)} <span className="ml-1 lg:ml-1.5">{user.role}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3 sm:px-6 lg:px-8 lg:py-5">
-                  <div className="flex flex-col xl:flex-row items-center justify-center gap-2">
+                  {/* Changed to flex-col on very small screens, row on sm+ */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2">
                     <Button
                       onClick={() => onEdit(user, { ...user, password: '' })}
-                      className="w-full xl:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm rounded-lg shadow-md transition-all flex items-center justify-center"
+                      className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white border-0 px-2 py-1.5 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 text-[10px] sm:text-xs lg:text-sm rounded-lg shadow-md transition-all flex items-center justify-center"
                     >
                       <Edit className="w-3 h-3 lg:w-4 lg:h-4 mr-1" /> Edit
                     </Button>
                     <Button
                       onClick={() => onDelete(user)}
                       disabled={user.role === 'admin' && allUsers.filter((u) => u.role === 'admin').length === 1}
-                      className="w-full xl:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm rounded-lg shadow-md transition-all flex items-center justify-center disabled:opacity-50"
+                      className="w-full sm:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 px-2 py-1.5 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 text-[10px] sm:text-xs lg:text-sm rounded-lg shadow-md transition-all flex items-center justify-center disabled:opacity-50"
                     >
                       <Trash2 className="w-3 h-3 lg:w-4 lg:h-4 mr-1" /> Delete
                     </Button>
@@ -79,11 +80,11 @@ export default function GuestTable({ users, loading, allUsers, onEdit, onDelete,
       </div>
       {users.length === 0 && (
         <div className="text-center py-16">
-          <UsersIcon className="w-20 h-20 text-slate-300 mx-auto mb-6" />
-          <p className="text-slate-500 text-lg mb-4">No users found</p>
+          <UsersIcon className="w-16 h-16 sm:w-20 sm:h-20 text-slate-300 mx-auto mb-4 sm:mb-6" />
+          <p className="text-slate-500 text-base sm:text-lg mb-4">No users found</p>
           <Button
             onClick={onAddUser}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border-0 px-8 py-3 rounded-xl font-semibold"
+            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border-0 px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold"
           >
             <Plus className="w-4 h-4 mr-2" /> Add First User
           </Button>
