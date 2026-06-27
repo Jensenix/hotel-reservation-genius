@@ -1,5 +1,6 @@
-const { ExtraService } = require('../models');
-const BaseService = require('./base/baseService');
+import db from '../models/index.js';
+const { ExtraService } = db;
+import BaseService from './base/baseService.js';
 
 class ExtraServiceService extends BaseService {
   constructor() {
@@ -35,4 +36,4 @@ class ExtraServiceService extends BaseService {
   }
 }
 
-module.exports = new ExtraServiceService();
+export default new ExtraServiceService();

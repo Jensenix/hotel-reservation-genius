@@ -1,28 +1,28 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const bookingController = require('../controllers/bookingController');
+import bookingController from '../controllers/bookingController.js';
 
 // CRUD Routes
-router.post('/', bookingController.createBooking.bind(bookingController));
-router.get('/', bookingController.getAllBookings.bind(bookingController));
+router.post('/', bookingController.createBooking);
+router.get('/', bookingController.getAllBookings);
 
 // Business Logic Routes (must come before /:id)
-router.get('/check-availability', bookingController.checkRoomAvailability.bind(bookingController));
-router.get('/available-rooms', bookingController.getAvailableRooms.bind(bookingController));
+router.get('/check-availability', bookingController.checkRoomAvailability);
+router.get('/available-rooms', bookingController.getAvailableRooms);
 
 // Admin Routes (must come before /:id)
-router.get('/admin/all', bookingController.getAllBookingsAdmin.bind(bookingController));
-router.put('/admin/:id/confirm', bookingController.confirmBooking.bind(bookingController));
-router.put('/admin/:id/check-in', bookingController.checkInGuest.bind(bookingController));
-router.put('/admin/:id/check-out', bookingController.checkOutGuest.bind(bookingController));
-router.put('/admin/:id/cancel', bookingController.cancelBooking.bind(bookingController));
+router.get('/admin/all', bookingController.getAllBookingsAdmin);
+router.put('/admin/:id/confirm', bookingController.confirmBooking);
+router.put('/admin/:id/check-in', bookingController.checkInGuest);
+router.put('/admin/:id/check-out', bookingController.checkOutGuest);
+router.put('/admin/:id/cancel', bookingController.cancelBooking);
 
 // User-specific routes (must come before /:id)
-router.get('/user/:userId', bookingController.getUserBookings.bind(bookingController));
+router.get('/user/:userId', bookingController.getUserBookings);
 
 // CRUD Routes with ID (must come last)
-router.get('/:id', bookingController.getBookingById.bind(bookingController));
-router.put('/:id', bookingController.updateBooking.bind(bookingController));
-router.delete('/:id', bookingController.deleteBooking.bind(bookingController));
+router.get('/:id', bookingController.getBookingById);
+router.put('/:id', bookingController.updateBooking);
+router.delete('/:id', bookingController.deleteBooking);
 
-module.exports = router;
+export default router;

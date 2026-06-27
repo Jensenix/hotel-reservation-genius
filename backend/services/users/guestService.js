@@ -1,5 +1,6 @@
-const { User, Booking, Payment, Review } = require('../../models');
-const { Op } = require('sequelize');
+import db from '../../models/index.js';
+const { User, Booking, Payment, Review } = db;
+import { Op } from 'sequelize';
 
 class GuestService {
   /**
@@ -17,7 +18,7 @@ class GuestService {
     if (search) {
       whereCondition[Op.or] = [
         { fullName: { [Op.like]: `%${search}%` } },
-        { email: { [Op.like]: `%${search}%` } }
+        { email: { [Op.like]: `%${search}%` } },
       ];
     }
 
@@ -29,28 +30,37 @@ class GuestService {
         {
           model: Booking,
           as: 'bookings',
-          include: [{ model: Payment, as: 'payment' }]
+          include: [{ model: Payment, as: 'payment' }],
         },
         {
           model: Review,
-          as: 'reviews'
-        }
+          as: 'reviews',
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
 
-    const formattedGuests = guests.map(guest => {
+    const formattedGuests = guests.map((guest) => {
       const bookings = guest.bookings || [];
-      const paidBookings = bookings.filter(booking => booking.payment && booking.payment.paymentStatus === 'paid');
-      const totalSpent = paidBookings.reduce((sum, booking) => sum + parseFloat(booking.payment.amount), 0);
-      const averageRating = guest.reviews.length > 0
-        ? guest.reviews.reduce((sum, review) => sum + review.rating, 0) / guest.reviews.length
-        : 0;
-      const lastBookingDate = bookings.length > 0
-        ? new Date(Math.max(...bookings.map(b => new Date(b.createdAt))))
-        : null;
+      const paidBookings = bookings.filter(
+        (booking) =>
+          booking.payment && booking.payment.paymentStatus === 'paid',
+      );
+      const totalSpent = paidBookings.reduce(
+        (sum, booking) => sum + parseFloat(booking.payment.amount),
+        0,
+      );
+      const averageRating =
+        guest.reviews.length > 0
+          ? guest.reviews.reduce((sum, review) => sum + review.rating, 0) /
+            guest.reviews.length
+          : 0;
+      const lastBookingDate =
+        bookings.length > 0
+          ? new Date(Math.max(...bookings.map((b) => new Date(b.createdAt))))
+          : null;
 
       return {
         id: guest.id,
@@ -64,7 +74,7 @@ class GuestService {
         totalSpent,
         averageRating,
         reviewCount: guest.reviews.length,
-        lastBookingDate
+        lastBookingDate,
       };
     });
 
@@ -73,7 +83,7 @@ class GuestService {
       totalGuests: count,
       currentPage: parseInt(page),
       totalPages: Math.ceil(count / limit),
-      hasMore: page * limit < count
+      hasMore: page * limit < count,
     };
   }
 
@@ -91,14 +101,14 @@ class GuestService {
           model: Booking,
           as: 'bookings',
           include: [{ model: Payment, as: 'payment' }],
-          order: [['createdAt', 'DESC']]
+          order: [['createdAt', 'DESC']],
         },
         {
           model: Review,
           as: 'reviews',
-          order: [['createdAt', 'DESC']]
-        }
-      ]
+          order: [['createdAt', 'DESC']],
+        },
+      ],
     });
 
     if (!guest) {
@@ -108,14 +118,22 @@ class GuestService {
     }
 
     const bookings = guest.bookings || [];
-    const paidBookings = bookings.filter(booking => booking.payment && booking.payment.paymentStatus === 'paid');
-    const totalSpent = paidBookings.reduce((sum, booking) => sum + parseFloat(booking.payment.amount), 0);
-    const averageRating = guest.reviews.length > 0
-      ? guest.reviews.reduce((sum, review) => sum + review.rating, 0) / guest.reviews.length
-      : 0;
-    const lastBookingDate = bookings.length > 0
-      ? new Date(Math.max(...bookings.map(b => new Date(b.createdAt))))
-      : null;
+    const paidBookings = bookings.filter(
+      (booking) => booking.payment && booking.payment.paymentStatus === 'paid',
+    );
+    const totalSpent = paidBookings.reduce(
+      (sum, booking) => sum + parseFloat(booking.payment.amount),
+      0,
+    );
+    const averageRating =
+      guest.reviews.length > 0
+        ? guest.reviews.reduce((sum, review) => sum + review.rating, 0) /
+          guest.reviews.length
+        : 0;
+    const lastBookingDate =
+      bookings.length > 0
+        ? new Date(Math.max(...bookings.map((b) => new Date(b.createdAt))))
+        : null;
 
     return {
       id: guest.id,
@@ -130,17 +148,17 @@ class GuestService {
       averageRating,
       reviewCount: guest.reviews.length,
       lastBookingDate,
-      bookings: bookings.map(booking => ({
+      bookings: bookings.map((booking) => ({
         id: booking.id,
         checkInDate: booking.checkInDate,
         checkOutDate: booking.checkOutDate,
         status: booking.status,
         totalPrice: booking.totalPrice,
-        payment: booking.payment
+        payment: booking.payment,
       })),
-      reviews: guest.reviews
+      reviews: guest.reviews,
     };
   }
 }
 
-module.exports = new GuestService();
+export default new GuestService();

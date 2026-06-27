@@ -1,12 +1,18 @@
-const express = require('express');
+import express from 'express';
+import guestController from '../controllers/guestController.js';
+import { authenticateToken, requireAdmin } from '../middleware/auth.js';
+
 const router = express.Router();
-const { getGuests, getGuestDetails } = require('../controllers/guestController');
-const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // Get all guests with pagination and search
-router.get('/', authenticateToken, requireAdmin, getGuests);
+router.get('/', authenticateToken, requireAdmin, guestController.getGuests);
 
 // Get guest details by ID
-router.get('/:id', authenticateToken, requireAdmin, getGuestDetails);
+router.get(
+  '/:id',
+  authenticateToken,
+  requireAdmin,
+  guestController.getGuestDetails,
+);
 
-module.exports = router;
+export default router;

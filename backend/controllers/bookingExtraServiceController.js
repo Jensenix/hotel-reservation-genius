@@ -1,7 +1,7 @@
-const bookingExtraServiceService = require('../services/booking/bookingExtraServiceService');
+import bookingExtraServiceService from '../services/booking/bookingExtraServiceService.js';
 
 class BookingExtraServiceController {
-  async createBookingExtraService(req, res) {
+  createBookingExtraService = async (req, res) => {
     try {
       const data = await bookingExtraServiceService.createBookingExtraService(req.body);
       res.status(201).json({ success: true, data });
@@ -10,7 +10,7 @@ class BookingExtraServiceController {
     }
   }
 
-  async getBookingExtraServicesByBookingId(req, res) {
+  getBookingExtraServicesByBookingId = async (req, res) => {
     try {
       const data = await bookingExtraServiceService.getBookingExtraServicesByBookingId(req.params.bookingId);
       res.status(200).json({ success: true, data });
@@ -19,7 +19,7 @@ class BookingExtraServiceController {
     }
   }
 
-  async deleteBookingExtraService(req, res) {
+  deleteBookingExtraService = async (req, res) => {
     try {
       await bookingExtraServiceService.deleteBookingExtraService(req.params.id);
       res.status(200).json({ success: true, message: 'Booking extra service deleted successfully' });
@@ -29,4 +29,4 @@ class BookingExtraServiceController {
   }
 }
 
-module.exports = new BookingExtraServiceController();
+export default new BookingExtraServiceController();

@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const extraServiceController = require('../controllers/extraServiceController');
+import extraServiceController from '../controllers/extraServiceController.js';
 
 // CRUD Routes
-router.post('/', extraServiceController.createExtraService.bind(extraServiceController));
-router.get('/', extraServiceController.getAllExtraServices.bind(extraServiceController));
-router.get('/:id', extraServiceController.getExtraServiceById.bind(extraServiceController));
-router.put('/:id', extraServiceController.updateExtraService.bind(extraServiceController));
-router.delete('/:id', extraServiceController.deleteExtraService.bind(extraServiceController));
+router.post('/', extraServiceController.createExtraService);
+router.get('/', extraServiceController.getAllExtraServices);
+router.get('/:id', extraServiceController.getExtraServiceById);
+router.put('/:id', extraServiceController.updateExtraService);
+router.delete('/:id', extraServiceController.deleteExtraService);
 
-module.exports = router;
+export default router;

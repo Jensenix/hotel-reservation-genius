@@ -1,6 +1,7 @@
-const { Payment, Booking, PaymentMethod } = require('../../models');
-const pagination = require('../../utils/pagination');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { Payment, Booking, PaymentMethod } = db;
+import pagination from '../../utils/pagination.js';
+import BaseService from '../base/baseService.js';
 
 class PaymentService extends BaseService {
   constructor() {
@@ -18,35 +19,41 @@ class PaymentService extends BaseService {
    * @returns {Promise<Object>} An object containing the created payment and the updated booking.
    * @throws {Error} If bookingId/amount are missing, or if the payment method is invalid.
    */
-  async createPayment({ bookingId, paymentMethodId, amount, paymentStatus, transactionTime }) {
+  async createPayment({
+    bookingId,
+    paymentMethodId,
+    amount,
+    paymentStatus,
+    transactionTime,
+  }) {
     if (!bookingId || !amount) {
-      const err = new Error('bookingId and amount are required'); 
-      err.statusCode = 400; 
+      const err = new Error('bookingId and amount are required');
+      err.statusCode = 400;
       throw err;
     }
-    
+
     if (paymentMethodId) {
       const method = await PaymentMethod.findByPk(paymentMethodId);
-      if (!method) { 
-        const err = new Error('Invalid payment method'); 
-        err.statusCode = 400; 
-        throw err; 
+      if (!method) {
+        const err = new Error('Invalid payment method');
+        err.statusCode = 400;
+        throw err;
       }
     }
 
-    const payment = await super.create({ 
-      bookingId, 
-      paymentMethodId, 
-      amount, 
-      paymentStatus: paymentStatus || 'paid', 
-      transactionTime: transactionTime || new Date() 
+    const payment = await super.create({
+      bookingId,
+      paymentMethodId,
+      amount,
+      paymentStatus: paymentStatus || 'paid',
+      transactionTime: transactionTime || new Date(),
     });
-    
+
     const booking = await Booking.findByPk(bookingId);
     if (booking) {
       await booking.update({ status: 'confirmed' });
     }
-    
+
     return { payment, booking: await Booking.findByPk(bookingId) };
   }
 
@@ -64,21 +71,28 @@ class PaymentService extends BaseService {
     if (paymentStatus) where.paymentStatus = paymentStatus;
     if (bookingId) where.bookingId = bookingId;
 
-    const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
+    const { offset, limit: parsedLimit } = pagination.getPagination(
+      page,
+      limit,
+    );
     const { count, rows } = await super.getAll({
-      where, 
-      offset, 
-      limit: parsedLimit, 
+      where,
+      offset,
+      limit: parsedLimit,
       order: [['createdAt', 'DESC']],
       include: [
-        { model: Booking, as: 'booking', include: ['user', 'room'] }, 
-        { model: PaymentMethod, as: 'paymentMethod' }
-      ]
+        { model: Booking, as: 'booking', include: ['user', 'room'] },
+        { model: PaymentMethod, as: 'paymentMethod' },
+      ],
     });
 
-    return { 
-      rows, 
-      pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit) 
+    return {
+      rows,
+      pagination: pagination.getPagingData(
+        { count, rows },
+        parseInt(page),
+        parsedLimit,
+      ),
     };
   }
 
@@ -89,11 +103,11 @@ class PaymentService extends BaseService {
    * @throws {Error} If the payment is not found.
    */
   async getPaymentById(id) {
-    return super.getById(id, { 
+    return super.getById(id, {
       include: [
-        { model: Booking, as: 'booking', include: ['user', 'room'] }, 
-        { model: PaymentMethod, as: 'paymentMethod' }
-      ] 
+        { model: Booking, as: 'booking', include: ['user', 'room'] },
+        { model: PaymentMethod, as: 'paymentMethod' },
+      ],
     });
   }
 
@@ -119,4 +133,4 @@ class PaymentService extends BaseService {
   }
 }
 
-module.exports = new PaymentService();
+export default new PaymentService();

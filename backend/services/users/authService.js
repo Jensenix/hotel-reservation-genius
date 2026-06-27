@@ -1,4 +1,5 @@
-const { User } = require('../../models');
+import db from '../../models/index.js';
+const { User } = db;
 
 class AuthService {
   /**
@@ -28,7 +29,7 @@ class AuthService {
       fullName: user.fullName,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      role: user.role
+      role: user.role,
     };
   }
 
@@ -62,7 +63,7 @@ class AuthService {
       email,
       password,
       phoneNumber,
-      role: role || 'guest'
+      role: role || 'guest',
     });
 
     return {
@@ -70,9 +71,9 @@ class AuthService {
       fullName: user.fullName,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      role: user.role
+      role: user.role,
     };
   }
 }
 
-module.exports = new AuthService();
+export default new AuthService();

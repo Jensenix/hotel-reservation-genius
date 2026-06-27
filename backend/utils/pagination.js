@@ -11,14 +11,14 @@ class Pagination {
     const currentPage = page ? parseInt(page) : 1;
     const safeLimit = limit && parseInt(limit) > 0 ? parseInt(limit) : 10;
     const totalPages = totalItems > 0 ? Math.ceil(totalItems / safeLimit) : 0;
-    
-    return { 
-        totalItems, 
-        results, 
-        totalPages, 
-        currentPage 
+
+    return {
+      totalItems,
+      results,
+      totalPages,
+      currentPage,
     };
   }
 }
 
-module.exports = Pagination;
+export default Pagination;

@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const facilityController = require('../controllers/facilityController');
+import facilityController from '../controllers/facilityController.js';
 
 // CRUD Routes
-router.post('/', facilityController.createFacility.bind(facilityController));
-router.get('/', facilityController.getAllFacilities.bind(facilityController));
-router.get('/:id', facilityController.getFacilityById.bind(facilityController));
-router.put('/:id', facilityController.updateFacility.bind(facilityController));
-router.delete('/:id', facilityController.deleteFacility.bind(facilityController));
+router.post('/', facilityController.createFacility);
+router.get('/', facilityController.getAllFacilities);
+router.get('/:id', facilityController.getFacilityById);
+router.put('/:id', facilityController.updateFacility);
+router.delete('/:id', facilityController.deleteFacility);
 
-module.exports = router;
+export default router;

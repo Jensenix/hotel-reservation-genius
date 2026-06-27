@@ -1,21 +1,21 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const roomTypeRoutes = require('./routes/roomTypeRoutes');
-const facilityRoutes = require('./routes/facilityRoutes');
-const roomRoutes = require('./routes/roomRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const extraServiceRoutes = require('./routes/extraServiceRoutes');
-const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
-const bookingExtraServiceRoutes = require('./routes/bookingExtraServiceRoutes');
-const revenueRoutes = require('./routes/revenueRoutes');
-const roomAvailabilityRoutes = require('./routes/roomAvailabilityRoutes');
-const guestRoutes = require('./routes/guestRoutes');
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import roomTypeRoutes from './routes/roomTypeRoutes.js';
+import facilityRoutes from './routes/facilityRoutes.js';
+import roomRoutes from './routes/roomRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import extraServiceRoutes from './routes/extraServiceRoutes.js';
+import paymentMethodRoutes from './routes/paymentMethodRoutes.js';
+import bookingExtraServiceRoutes from './routes/bookingExtraServiceRoutes.js';
+import revenueRoutes from './routes/revenueRoutes.js';
+import roomAvailabilityRoutes from './routes/roomAvailabilityRoutes.js';
+import guestRoutes from './routes/guestRoutes.js';
 
 const app = express();
 
@@ -51,4 +51,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-module.exports = app;
+export default app;

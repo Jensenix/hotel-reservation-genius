@@ -1,4 +1,4 @@
-const guestService = require('../services/users/guestService');
+import guestService from '../services/users/guestService.js';
 
 class GuestController {
   /**
@@ -7,7 +7,7 @@ class GuestController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<void>} JSON response with guest data.
    */
-  async getGuests(req, res) {
+  getGuests = async (req, res) => {
     try {
       const { page, limit, search, role } = req.query;
       const guestData = await guestService.getGuests(page, limit, search, role);
@@ -15,7 +15,7 @@ class GuestController {
     } catch (error) {
       res.status(500).json({
         message: 'Error fetching guests',
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -26,7 +26,7 @@ class GuestController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<void>} JSON response with detailed guest data.
    */
-  async getGuestDetails(req, res) {
+  getGuestDetails = async (req, res) => {
     try {
       const { id } = req.params;
       const guestDetails = await guestService.getGuestDetails(id);
@@ -34,11 +34,13 @@ class GuestController {
     } catch (error) {
       const statusCode = error.statusCode || 500;
       res.status(statusCode).json({
-        message: error.statusCode ? error.message : 'Error fetching guest details',
-        error: error.message
+        message: error.statusCode
+          ? error.message
+          : 'Error fetching guest details',
+        error: error.message,
       });
     }
   }
 }
 
-module.exports = new GuestController();
+export default new GuestController();

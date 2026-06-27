@@ -5,11 +5,11 @@ module.exports = {
     const bookings = [];
     const users = await queryInterface.sequelize.query(
       `SELECT id FROM "Users"`,
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
     const rooms = await queryInterface.sequelize.query(
       `SELECT id, "roomTypeId" FROM "Rooms"`,
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
 
     if (users.length === 0 || rooms.length === 0) {
@@ -24,55 +24,55 @@ module.exports = {
         roomId: rooms[0]?.id || 1,
         checkInDate: new Date('2026-04-15'),
         checkOutDate: new Date('2026-04-17'),
-        totalPrice: 200.00,
+        totalPrice: 200.0,
         status: 'pending',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[1]?.id || 2,
         checkInDate: new Date('2026-04-20'),
         checkOutDate: new Date('2026-04-22'),
-        totalPrice: 300.00,
+        totalPrice: 300.0,
         status: 'confirmed',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[2]?.id || 3,
         checkInDate: new Date('2026-04-10'),
         checkOutDate: new Date('2026-04-12'),
-        totalPrice: 250.00,
+        totalPrice: 250.0,
         status: 'checked_in',
         actualCheckIn: new Date('2026-04-10'),
         createdAt: new Date('2026-04-05'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[3]?.id || 4,
         checkInDate: new Date('2026-04-08'),
         checkOutDate: new Date('2026-04-10'),
-        totalPrice: 180.00,
+        totalPrice: 180.0,
         status: 'checked_out',
         actualCheckIn: new Date('2026-04-08'),
         actualCheckOut: new Date('2026-04-10'),
         createdAt: new Date('2026-04-01'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[4]?.id || 5,
         checkInDate: new Date('2026-04-25'),
         checkOutDate: new Date('2026-04-27'),
-        totalPrice: 220.00,
+        totalPrice: 220.0,
         status: 'cancelled',
         cancelReason: 'Guest requested cancellation',
         cancelledAt: new Date('2026-04-20'),
         createdAt: new Date('2026-04-15'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       // Additional 20 dummy bookings
       {
@@ -80,217 +80,217 @@ module.exports = {
         roomId: rooms[5]?.id || 6,
         checkInDate: new Date('2026-05-01'),
         checkOutDate: new Date('2026-05-03'),
-        totalPrice: 280.00,
+        totalPrice: 280.0,
         status: 'pending',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[6]?.id || 7,
         checkInDate: new Date('2026-05-05'),
         checkOutDate: new Date('2026-05-07'),
-        totalPrice: 320.00,
+        totalPrice: 320.0,
         status: 'confirmed',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[7]?.id || 8,
         checkInDate: new Date('2026-04-28'),
         checkOutDate: new Date('2026-04-30'),
-        totalPrice: 260.00,
+        totalPrice: 260.0,
         status: 'checked_in',
         actualCheckIn: new Date('2026-04-28'),
         createdAt: new Date('2026-04-25'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[8]?.id || 9,
         checkInDate: new Date('2026-04-26'),
         checkOutDate: new Date('2026-04-28'),
-        totalPrice: 240.00,
+        totalPrice: 240.0,
         status: 'checked_out',
         actualCheckIn: new Date('2026-04-26'),
         actualCheckOut: new Date('2026-04-28'),
         createdAt: new Date('2026-04-20'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[9]?.id || 10,
         checkInDate: new Date('2026-05-10'),
         checkOutDate: new Date('2026-05-12'),
-        totalPrice: 350.00,
+        totalPrice: 350.0,
         status: 'pending',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[0]?.id || 1,
         checkInDate: new Date('2026-05-08'),
         checkOutDate: new Date('2026-05-10'),
-        totalPrice: 200.00,
+        totalPrice: 200.0,
         status: 'confirmed',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[1]?.id || 2,
         checkInDate: new Date('2026-04-29'),
         checkOutDate: new Date('2026-05-01'),
-        totalPrice: 300.00,
+        totalPrice: 300.0,
         status: 'checked_in',
         actualCheckIn: new Date('2026-04-29'),
         createdAt: new Date('2026-04-27'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[2]?.id || 3,
         checkInDate: new Date('2026-04-27'),
         checkOutDate: new Date('2026-04-29'),
-        totalPrice: 250.00,
+        totalPrice: 250.0,
         status: 'checked_out',
         actualCheckIn: new Date('2026-04-27'),
         actualCheckOut: new Date('2026-04-29'),
         createdAt: new Date('2026-04-25'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[3]?.id || 4,
         checkInDate: new Date('2026-05-15'),
         checkOutDate: new Date('2026-05-17'),
-        totalPrice: 180.00,
+        totalPrice: 180.0,
         status: 'cancelled',
         cancelReason: 'Emergency cancellation',
         cancelledAt: new Date('2026-04-28'),
         createdAt: new Date('2026-04-20'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[4]?.id || 5,
         checkInDate: new Date('2026-05-12'),
         checkOutDate: new Date('2026-05-14'),
-        totalPrice: 220.00,
+        totalPrice: 220.0,
         status: 'pending',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[5]?.id || 6,
         checkInDate: new Date('2026-05-18'),
         checkOutDate: new Date('2026-05-20'),
-        totalPrice: 280.00,
+        totalPrice: 280.0,
         status: 'confirmed',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[6]?.id || 7,
         checkInDate: new Date('2026-04-30'),
         checkOutDate: new Date('2026-05-02'),
-        totalPrice: 320.00,
+        totalPrice: 320.0,
         status: 'checked_in',
         actualCheckIn: new Date('2026-04-30'),
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[7]?.id || 8,
         checkInDate: new Date('2026-04-28'),
         checkOutDate: new Date('2026-04-30'),
-        totalPrice: 260.00,
+        totalPrice: 260.0,
         status: 'checked_out',
         actualCheckIn: new Date('2026-04-28'),
         actualCheckOut: new Date('2026-04-30'),
         createdAt: new Date('2026-04-26'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[8]?.id || 9,
         checkInDate: new Date('2026-05-20'),
         checkOutDate: new Date('2026-05-22'),
-        totalPrice: 240.00,
+        totalPrice: 240.0,
         status: 'pending',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[9]?.id || 10,
         checkInDate: new Date('2026-05-25'),
         checkOutDate: new Date('2026-05-27'),
-        totalPrice: 350.00,
+        totalPrice: 350.0,
         status: 'confirmed',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[0]?.id || 1,
         checkInDate: new Date('2026-05-02'),
         checkOutDate: new Date('2026-05-04'),
-        totalPrice: 200.00,
+        totalPrice: 200.0,
         status: 'checked_in',
         actualCheckIn: new Date('2026-05-02'),
         createdAt: new Date('2026-04-30'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[1]?.id || 2,
         checkInDate: new Date('2026-05-01'),
         checkOutDate: new Date('2026-05-03'),
-        totalPrice: 300.00,
+        totalPrice: 300.0,
         status: 'checked_out',
         actualCheckIn: new Date('2026-05-01'),
         actualCheckOut: new Date('2026-05-03'),
         createdAt: new Date('2026-04-29'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[2]?.id || 2,
         roomId: rooms[2]?.id || 3,
         checkInDate: new Date('2026-05-28'),
         checkOutDate: new Date('2026-05-30'),
-        totalPrice: 250.00,
+        totalPrice: 250.0,
         status: 'cancelled',
         cancelReason: 'Payment issue',
         cancelledAt: new Date('2026-04-28'),
         createdAt: new Date('2026-04-25'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[0]?.id || 1,
         roomId: rooms[3]?.id || 4,
         checkInDate: new Date('2026-05-30'),
         checkOutDate: new Date('2026-06-01'),
-        totalPrice: 180.00,
+        totalPrice: 180.0,
         status: 'pending',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         userId: users[1]?.id || 2,
         roomId: rooms[4]?.id || 5,
         checkInDate: new Date('2026-06-02'),
         checkOutDate: new Date('2026-06-04'),
-        totalPrice: 220.00,
+        totalPrice: 220.0,
         status: 'confirmed',
         createdAt: new Date('2026-04-28'),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     ];
 
     await queryInterface.bulkInsert('Bookings', sampleBookings);
@@ -298,5 +298,5 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Bookings', null, {});
-  }
+  },
 };

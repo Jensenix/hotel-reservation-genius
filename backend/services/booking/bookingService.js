@@ -1,7 +1,8 @@
-const { Booking, User, Room, Payment, Review, ExtraService, RoomType, PaymentMethod } = require('../../models');
-const { Op } = require('sequelize');
-const BookingUtils = require('../../utils/bookingUtils');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { Booking, User, Room, Payment, Review, ExtraService, RoomType, PaymentMethod } = db;
+import { Op } from 'sequelize';
+import BookingUtils from '../../utils/bookingUtils.js';
+import BaseService from '../base/baseService.js';
 
 class BookingService extends BaseService {
   constructor() {
@@ -20,21 +21,42 @@ class BookingService extends BaseService {
    * @returns {Promise<Object>} The created booking.
    * @throws {Error} If required fields are missing or no rooms are available.
    */
-  async createBooking({ userId, roomTypeId, checkInDate, checkOutDate, totalPrice, status }) {
+  async createBooking({
+    userId,
+    roomTypeId,
+    checkInDate,
+    checkOutDate,
+    totalPrice,
+    status,
+  }) {
     if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
-      const err = new Error('userId, roomTypeId, checkInDate, and checkOutDate are required');
-      err.statusCode = 400; 
+      const err = new Error(
+        'userId, roomTypeId, checkInDate, and checkOutDate are required',
+      );
+      err.statusCode = 400;
       throw err;
     }
 
-    const availableRoom = await BookingUtils.findAvailableRoom(roomTypeId, checkInDate, checkOutDate);
+    const availableRoom = await BookingUtils.findAvailableRoom(
+      roomTypeId,
+      checkInDate,
+      checkOutDate,
+    );
     if (!availableRoom) {
-      const err = new Error('All rooms of this type are fully booked for the selected dates');
-      err.statusCode = 400; 
+      const err = new Error(
+        'All rooms of this type are fully booked for the selected dates',
+      );
+      err.statusCode = 400;
       throw err;
     }
 
-    let calculatedPrice = totalPrice || await BookingUtils.calculateTotalPrice(roomTypeId, checkInDate, checkOutDate);
+    let calculatedPrice =
+      totalPrice ||
+      (await BookingUtils.calculateTotalPrice(
+        roomTypeId,
+        checkInDate,
+        checkOutDate,
+      ));
 
     return super.create({
       userId,
@@ -42,7 +64,7 @@ class BookingService extends BaseService {
       checkInDate,
       checkOutDate,
       totalPrice: calculatedPrice,
-      status: status || 'pending'
+      status: status || 'pending',
     });
   }
 
@@ -66,14 +88,28 @@ class BookingService extends BaseService {
     const offset = (parseInt(page, 10) - 1) * parsedLimit;
 
     const { count, rows } = await Booking.findAndCountAll({
-      where, 
-      offset, 
+      where,
+      offset,
       limit: parsedLimit,
       order: [['createdAt', 'DESC']],
       include: [
-        { model: User, as: 'user', attributes: ['id', 'fullName', 'email', 'phoneNumber'] },
-        { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] }
-      ]
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
+        },
+        {
+          model: Room,
+          as: 'room',
+          include: [
+            {
+              model: RoomType,
+              as: 'roomType',
+              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
+            },
+          ],
+        },
+      ],
     });
 
     return {
@@ -82,8 +118,8 @@ class BookingService extends BaseService {
         currentPage: parseInt(page, 10),
         totalPages: Math.ceil(count / parsedLimit),
         totalItems: count,
-        itemsPerPage: parsedLimit
-      }
+        itemsPerPage: parsedLimit,
+      },
     };
   }
 
@@ -97,11 +133,29 @@ class BookingService extends BaseService {
     return super.getById(id, {
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
-        { model: Payment, as: 'payment', include: [{ model: PaymentMethod, as: 'paymentMethod' }] },
+        {
+          model: Room,
+          as: 'room',
+          include: [
+            {
+              model: RoomType,
+              as: 'roomType',
+              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
+            },
+          ],
+        },
+        {
+          model: Payment,
+          as: 'payment',
+          include: [{ model: PaymentMethod, as: 'paymentMethod' }],
+        },
         { model: Review, as: 'reviews' },
-        { model: ExtraService, as: 'extraServices', through: { attributes: ['quantity', 'subtotal'] } }
-      ]
+        {
+          model: ExtraService,
+          as: 'extraServices',
+          through: { attributes: ['quantity', 'subtotal'] },
+        },
+      ],
     });
   }
 
@@ -112,16 +166,20 @@ class BookingService extends BaseService {
    * @throws {Error} If the booking is not found or not in 'pending' status.
    */
   async confirmBooking(id) {
-    const booking = await super.getById(id, { 
-      include: ['user', { model: Room, as: 'room', include: ['roomType'] }, 'payment'] 
+    const booking = await super.getById(id, {
+      include: [
+        'user',
+        { model: Room, as: 'room', include: ['roomType'] },
+        'payment',
+      ],
     });
 
-    if (booking.status !== 'pending') { 
-      const err = new Error('Booking cannot be confirmed'); 
-      err.statusCode = 400; 
-      throw err; 
+    if (booking.status !== 'pending') {
+      const err = new Error('Booking cannot be confirmed');
+      err.statusCode = 400;
+      throw err;
     }
-    
+
     return booking.update({ status: 'confirmed' });
   }
 
@@ -132,16 +190,20 @@ class BookingService extends BaseService {
    * @throws {Error} If the booking is not found or not in 'confirmed' status.
    */
   async checkInGuest(id) {
-    const booking = await super.getById(id, { 
-      include: ['user', { model: Room, as: 'room', include: ['roomType'] }, 'payment'] 
+    const booking = await super.getById(id, {
+      include: [
+        'user',
+        { model: Room, as: 'room', include: ['roomType'] },
+        'payment',
+      ],
     });
 
-    if (booking.status !== 'confirmed') { 
-      const err = new Error('Only confirmed bookings can be checked in'); 
-      err.statusCode = 400; 
-      throw err; 
+    if (booking.status !== 'confirmed') {
+      const err = new Error('Only confirmed bookings can be checked in');
+      err.statusCode = 400;
+      throw err;
     }
-    
+
     await booking.room.update({ status: 'occupied' });
     return booking.update({ status: 'checked_in', actualCheckIn: new Date() });
   }
@@ -153,18 +215,25 @@ class BookingService extends BaseService {
    * @throws {Error} If the booking is not found or not in 'checked_in' status.
    */
   async checkOutGuest(id) {
-    const booking = await super.getById(id, { 
-      include: ['user', { model: Room, as: 'room', include: ['roomType'] }, 'payment'] 
+    const booking = await super.getById(id, {
+      include: [
+        'user',
+        { model: Room, as: 'room', include: ['roomType'] },
+        'payment',
+      ],
     });
 
-    if (booking.status !== 'checked_in') { 
-      const err = new Error('Only checked-in guests can be checked out'); 
-      err.statusCode = 400; 
-      throw err; 
+    if (booking.status !== 'checked_in') {
+      const err = new Error('Only checked-in guests can be checked out');
+      err.statusCode = 400;
+      throw err;
     }
 
     await booking.room.update({ status: 'available' });
-    return booking.update({ status: 'checked_out', actualCheckOut: new Date() });
+    return booking.update({
+      status: 'checked_out',
+      actualCheckOut: new Date(),
+    });
   }
 
   /**
@@ -175,24 +244,28 @@ class BookingService extends BaseService {
    * @throws {Error} If the booking is not found or is currently checked-in.
    */
   async cancelBooking(id, reason) {
-    const booking = await super.getById(id, { 
-      include: ['user', { model: Room, as: 'room', include: ['roomType'] }, 'payment'] 
+    const booking = await super.getById(id, {
+      include: [
+        'user',
+        { model: Room, as: 'room', include: ['roomType'] },
+        'payment',
+      ],
     });
 
-    if (booking.status === 'checked_in') { 
-      const err = new Error('Cannot cancel checked-in booking'); 
-      err.statusCode = 400; 
-      throw err; 
+    if (booking.status === 'checked_in') {
+      const err = new Error('Cannot cancel checked-in booking');
+      err.statusCode = 400;
+      throw err;
     }
 
     if (booking.room.status === 'occupied') {
       await booking.room.update({ status: 'available' });
     }
-    
-    return booking.update({ 
-      status: 'cancelled', 
-      cancelReason: reason || 'Cancelled by admin', 
-      cancelledAt: new Date() 
+
+    return booking.update({
+      status: 'cancelled',
+      cancelReason: reason || 'Cancelled by admin',
+      cancelledAt: new Date(),
     });
   }
 
@@ -206,11 +279,17 @@ class BookingService extends BaseService {
    */
   async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
     if (!roomId || !checkInDate || !checkOutDate) {
-      const err = new Error('roomId, checkInDate, and checkOutDate are required');
-      err.statusCode = 400; 
+      const err = new Error(
+        'roomId, checkInDate, and checkOutDate are required',
+      );
+      err.statusCode = 400;
       throw err;
     }
-    return BookingUtils.checkRoomAvailability(roomId, checkInDate, checkOutDate);
+    return BookingUtils.checkRoomAvailability(
+      roomId,
+      checkInDate,
+      checkOutDate,
+    );
   }
 
   /**
@@ -224,10 +303,14 @@ class BookingService extends BaseService {
   async getAvailableRooms(checkInDate, checkOutDate, roomTypeId) {
     if (!checkInDate || !checkOutDate) {
       const err = new Error('checkInDate and checkOutDate are required');
-      err.statusCode = 400; 
+      err.statusCode = 400;
       throw err;
     }
-    return BookingUtils.getAvailableRooms(checkInDate, checkOutDate, roomTypeId);
+    return BookingUtils.getAvailableRooms(
+      checkInDate,
+      checkOutDate,
+      roomTypeId,
+    );
   }
 
   /**
@@ -237,20 +320,44 @@ class BookingService extends BaseService {
    * @throws {Error} If the user ID is not provided.
    */
   async getUserBookings(userId) {
-    if (!userId) { 
-      const err = new Error('User ID is required'); 
-      err.statusCode = 400; 
-      throw err; 
+    if (!userId) {
+      const err = new Error('User ID is required');
+      err.statusCode = 400;
+      throw err;
     }
 
     return Booking.findAll({
       where: { userId },
       include: [
-        { model: User, as: 'user', attributes: ['id', 'fullName', 'email', 'phoneNumber'] },
-        { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice', 'maxCapacity'] }] },
-        { model: Payment, as: 'payment', attributes: ['id', 'paymentMethodId', 'amount', 'paymentStatus', 'transactionTime'] }
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
+        },
+        {
+          model: Room,
+          as: 'room',
+          include: [
+            {
+              model: RoomType,
+              as: 'roomType',
+              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
+            },
+          ],
+        },
+        {
+          model: Payment,
+          as: 'payment',
+          attributes: [
+            'id',
+            'paymentMethodId',
+            'amount',
+            'paymentStatus',
+            'transactionTime',
+          ],
+        },
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -266,17 +373,34 @@ class BookingService extends BaseService {
    * @param {number} [query.limit=10] - Number of items per page.
    * @returns {Promise<Object>} An object containing the mapped bookings and pagination details.
    */
-  async getAllBookingsAdmin({ status, search, checkInDate, checkOutDate, userId, page = 1, limit = 10 }) {
+  async getAllBookingsAdmin({
+    status,
+    search,
+    checkInDate,
+    checkOutDate,
+    userId,
+    page = 1,
+    limit = 10,
+  }) {
     const sanitizedPage = Math.max(1, parseInt(page) || 1);
     const sanitizedLimit = Math.min(100, Math.max(1, parseInt(limit) || 10));
     const where = {};
-    
-    const statusMapping = { 'pending': 'pending', 'confirmed': 'confirmed', 'checked-in': 'checked_in', 'checked-out': 'checked_out', 'cancelled': 'cancelled' };
+
+    const statusMapping = {
+      pending: 'pending',
+      confirmed: 'confirmed',
+      'checked-in': 'checked_in',
+      'checked-out': 'checked_out',
+      cancelled: 'cancelled',
+    };
     if (status && statusMapping[status]) where.status = statusMapping[status];
-    if (checkInDate && !isNaN(Date.parse(checkInDate))) where.checkInDate = { [Op.gte]: checkInDate };
-    if (checkOutDate && !isNaN(Date.parse(checkOutDate))) where.checkOutDate = { [Op.lte]: checkOutDate };
-    if (userId && !isNaN(parseInt(userId)) && parseInt(userId) > 0) where.userId = parseInt(userId);
-    
+    if (checkInDate && !isNaN(Date.parse(checkInDate)))
+      where.checkInDate = { [Op.gte]: checkInDate };
+    if (checkOutDate && !isNaN(Date.parse(checkOutDate)))
+      where.checkOutDate = { [Op.lte]: checkOutDate };
+    if (userId && !isNaN(parseInt(userId)) && parseInt(userId) > 0)
+      where.userId = parseInt(userId);
+
     if (search) {
       const searchId = parseInt(search);
       if (!isNaN(searchId) && searchId > 0) {
@@ -289,26 +413,50 @@ class BookingService extends BaseService {
     const { count, rows: bookings } = await Booking.findAndCountAll({
       where,
       include: [
-        { model: User, as: 'user', attributes: ['id', 'fullName', 'email', 'phoneNumber'] },
-        { model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'maxCapacity'] }], attributes: ['id', 'roomNumber', 'status'] },
-        { model: Payment, as: 'payment' }
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
+        },
+        {
+          model: Room,
+          as: 'room',
+          include: [
+            {
+              model: RoomType,
+              as: 'roomType',
+              attributes: ['id', 'name', 'maxCapacity'],
+            },
+          ],
+          attributes: ['id', 'roomNumber', 'status'],
+        },
+        { model: Payment, as: 'payment' },
       ],
       order: [['id', 'DESC']],
       limit: sanitizedLimit,
-      offset: (sanitizedPage - 1) * sanitizedLimit
+      offset: (sanitizedPage - 1) * sanitizedLimit,
     });
 
-    const responseStatusMapping = { 'pending': 'pending', 'confirmed': 'confirmed', 'checked_in': 'checked-in', 'checked_out': 'checked-out', 'cancelled': 'cancelled' };
-    const mappedBookings = bookings.map(b => ({ ...b.toJSON(), status: responseStatusMapping[b.status] || b.status }));
+    const responseStatusMapping = {
+      pending: 'pending',
+      confirmed: 'confirmed',
+      checked_in: 'checked-in',
+      checked_out: 'checked-out',
+      cancelled: 'cancelled',
+    };
+    const mappedBookings = bookings.map((b) => ({
+      ...b.toJSON(),
+      status: responseStatusMapping[b.status] || b.status,
+    }));
 
     return {
       bookings: mappedBookings,
-      pagination: { 
-        currentPage: sanitizedPage, 
-        totalPages: Math.ceil(count / sanitizedLimit), 
-        totalItems: count, 
-        itemsPerPage: sanitizedLimit 
-      }
+      pagination: {
+        currentPage: sanitizedPage,
+        totalPages: Math.ceil(count / sanitizedLimit),
+        totalItems: count,
+        itemsPerPage: sanitizedLimit,
+      },
     };
   }
 
@@ -334,4 +482,4 @@ class BookingService extends BaseService {
   }
 }
 
-module.exports = new BookingService();
+export default new BookingService();

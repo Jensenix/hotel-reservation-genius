@@ -1,4 +1,4 @@
-const revenueService = require('../services/revenueService');
+import revenueService from '../services/revenueService.js';
 
 class RevenueController {
   /**
@@ -7,7 +7,7 @@ class RevenueController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with the calculated revenue statistics.
    */
-  async getRevenueStats(req, res) {
+  getRevenueStats = async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
       const stats = await revenueService.getRevenueStats(startDate, endDate);
@@ -15,16 +15,16 @@ class RevenueController {
       return res.status(200).json({
         success: true,
         message: 'Revenue data retrieved successfully',
-        data: stats
+        data: stats,
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
         message: 'Error fetching revenue data',
-        error: error.message
+        error: error.message,
       });
     }
   }
 }
 
-module.exports = new RevenueController();
+export default new RevenueController();

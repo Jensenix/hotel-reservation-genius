@@ -1,8 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
   class Room extends Model {
     /**
      * Helper method for defining associations.
@@ -10,21 +7,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Room.belongsTo(models.RoomType, { foreignKey: 'roomTypeId', as: 'roomType' });
+      Room.belongsTo(models.RoomType, {
+        foreignKey: 'roomTypeId',
+        as: 'roomType',
+      });
       Room.hasMany(models.Booking, { foreignKey: 'roomId', as: 'bookings' });
     }
   }
-  Room.init({
-    roomNumber: DataTypes.STRING,
-    roomTypeId: DataTypes.INTEGER,
-    floor: DataTypes.INTEGER,
-    status: {
-      type: DataTypes.ENUM('available', 'occupied', 'maintenance'),
-      defaultValue: 'available'
-    }
-  }, {
-    sequelize,
-    modelName: 'Room',
-  });
+  Room.init(
+    {
+      roomNumber: DataTypes.STRING,
+      roomTypeId: DataTypes.INTEGER,
+      floor: DataTypes.INTEGER,
+      status: {
+        type: DataTypes.ENUM('available', 'occupied', 'maintenance'),
+        defaultValue: 'available',
+      },
+    },
+    {
+      sequelize,
+      modelName: 'Room',
+    },
+  );
   return Room;
 };

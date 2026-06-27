@@ -1,5 +1,6 @@
-const { Facility, RoomType } = require('../../models');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { Facility, RoomType } = db;
+import BaseService from '../base/baseService.js';
 
 class FacilityService extends BaseService {
   constructor() {
@@ -13,7 +14,7 @@ class FacilityService extends BaseService {
    */
   async getById(id) {
     return super.getById(id, {
-      include: [{ model: RoomType, as: 'roomTypes' }]
+      include: [{ model: RoomType, as: 'roomTypes' }],
     });
   }
 
@@ -23,7 +24,7 @@ class FacilityService extends BaseService {
    */
   async getAll() {
     return super.getAll({
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -38,7 +39,7 @@ class FacilityService extends BaseService {
 
   async getFacilityById(id) {
     return this.getById(id, {
-      include: [{ model: RoomType, as: 'roomTypes' }]
+      include: [{ model: RoomType, as: 'roomTypes' }],
     });
   }
 
@@ -51,4 +52,4 @@ class FacilityService extends BaseService {
   }
 }
 
-module.exports = new FacilityService();
+export default new FacilityService();

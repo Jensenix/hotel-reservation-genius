@@ -1,6 +1,7 @@
-const { Review, Booking, User, Room, RoomType } = require('../models');
-const pagination = require('../utils/pagination');
-const BaseService = require('./base/baseService');
+import db from '../models/index.js';
+const { Review, Booking, User, Room, RoomType } = db;
+import pagination from '../utils/pagination.js';
+import BaseService from './base/baseService.js';
 
 class ReviewService extends BaseService {
   constructor() {
@@ -19,8 +20,8 @@ class ReviewService extends BaseService {
    */
   async createReview({ bookingId, userId, rating, comment }) {
     if (!bookingId || !userId || !rating) {
-      const err = new Error('bookingId, userId, and rating are required'); 
-      err.statusCode = 400; 
+      const err = new Error('bookingId, userId, and rating are required');
+      err.statusCode = 400;
       throw err;
     }
     return super.create({ bookingId, userId, rating, comment });
@@ -42,21 +43,38 @@ class ReviewService extends BaseService {
     if (userId) where.userId = userId;
     if (bookingId) where.bookingId = bookingId;
 
-    const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
+    const { offset, limit: parsedLimit } = pagination.getPagination(
+      page,
+      limit,
+    );
     const { count, rows } = await super.getAll({
-      where, 
-      offset, 
-      limit: parsedLimit, 
+      where,
+      offset,
+      limit: parsedLimit,
       order: [['createdAt', 'DESC']],
       include: [
-        { model: Booking, as: 'booking', include: [{ model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] }] },
-        { model: User, as: 'user', attributes: { exclude: ['password'] } }
-      ]
+        {
+          model: Booking,
+          as: 'booking',
+          include: [
+            {
+              model: Room,
+              as: 'room',
+              include: [{ model: RoomType, as: 'roomType' }],
+            },
+          ],
+        },
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      ],
     });
 
-    return { 
-      rows, 
-      pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit) 
+    return {
+      rows,
+      pagination: pagination.getPagingData(
+        { count, rows },
+        parseInt(page),
+        parsedLimit,
+      ),
     };
   }
 
@@ -68,17 +86,27 @@ class ReviewService extends BaseService {
    */
   async getUserReviews(userId) {
     if (!userId) {
-      const err = new Error('userId is required'); 
-      err.statusCode = 400; 
+      const err = new Error('userId is required');
+      err.statusCode = 400;
       throw err;
     }
     return super.getAll({
-      where: { userId }, 
+      where: { userId },
       order: [['createdAt', 'DESC']],
       include: [
-        { model: Booking, as: 'booking', include: [{ model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] }] },
-        { model: User, as: 'user', attributes: { exclude: ['password'] } }
-      ]
+        {
+          model: Booking,
+          as: 'booking',
+          include: [
+            {
+              model: Room,
+              as: 'room',
+              include: [{ model: RoomType, as: 'roomType' }],
+            },
+          ],
+        },
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      ],
     });
   }
 
@@ -91,9 +119,19 @@ class ReviewService extends BaseService {
   async getReviewById(id) {
     return super.getById(id, {
       include: [
-        { model: Booking, as: 'booking', include: [{ model: Room, as: 'room', include: [{ model: RoomType, as: 'roomType' }] }] },
-        { model: User, as: 'user', attributes: { exclude: ['password'] } }
-      ]
+        {
+          model: Booking,
+          as: 'booking',
+          include: [
+            {
+              model: Room,
+              as: 'room',
+              include: [{ model: RoomType, as: 'roomType' }],
+            },
+          ],
+        },
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      ],
     });
   }
 
@@ -119,4 +157,4 @@ class ReviewService extends BaseService {
   }
 }
 
-module.exports = new ReviewService();
+export default new ReviewService();
