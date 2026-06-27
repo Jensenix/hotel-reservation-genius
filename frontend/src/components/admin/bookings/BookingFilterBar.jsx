@@ -23,8 +23,8 @@ export default function BookingFilterBar({
             <option value="">All Status</option>
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
-            <option value="checked_in">Checked In</option>
-            <option value="checked_out">Checked Out</option>
+            <option value="checked-in">Checked In</option>
+            <option value="checked-out">Checked Out</option>
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
