@@ -15,7 +15,7 @@ const BookingSuccess = () => {
             Booking Not Found
           </h1>
           <p className="text-gray-600 mb-8">
-            We couldn't find your booking details.
+            We couldn&apos;t find your booking details.
           </p>
           <Button onClick={() => navigate('/our-rooms')}>
             Browse Our Rooms
@@ -45,7 +45,7 @@ const BookingSuccess = () => {
             Booking Confirmed!
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Your reservation has been successfully confirmed. We've sent a
+            Your reservation has been successfully confirmed. We&apos;ve sent a
             confirmation email with all the details.
           </p>
         </div>
@@ -138,7 +138,7 @@ const BookingSuccess = () => {
         <div className="mt-12 text-center">
           <div className="bg-blue-50 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-3 text-blue-900">
-              What's Next?
+              What&apos;s Next?
             </h3>
             <p className="text-blue-700 mb-4">
               Check your email for booking confirmation. You can also manage

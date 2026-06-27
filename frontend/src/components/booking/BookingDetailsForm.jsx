@@ -59,11 +59,12 @@ export default function BookingDetailsForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="checkInDate" className="block text-sm font-medium text-gray-700 mb-2">
             Check-in Date
           </label>
           <div className="relative w-full">
             <DatePicker
+              id="checkInDate"
               selected={bookingData.checkInDate}
               onChange={(date) =>
                 setBookingData((prev) => ({ ...prev, checkInDate: date }))
@@ -88,11 +89,12 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="checkOutDate" className="block text-sm font-medium text-gray-700 mb-2">
             Check-out Date
           </label>
           <div className="relative w-full">
             <DatePicker
+              id="checkOutDate"
               selected={bookingData.checkOutDate}
               onChange={(date) =>
                 setBookingData((prev) => ({ ...prev, checkOutDate: date }))
@@ -117,7 +119,7 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700 mb-2">
             Number of Guests
           </label>
           <div className="flex items-center space-x-4">

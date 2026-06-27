@@ -24,10 +24,19 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay */}
-      <div
-        className="fixed inset-0 bg-gray-500 bg-opacity-75"
-        onClick={onClose}
-      />
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-75"
+          onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClose();
+            }
+          }}
+          role="button" 
+          tabIndex={0}
+          aria-label="Close modal"
+        />
 
       {/* Modal panel — overflow-y-auto so tall content scrolls inside the modal, not the page */}
       <div className={`relative w-full ${sizeClasses[size]} p-6 mx-4 max-h-[90vh] overflow-y-auto text-left align-middle transition-all transform bg-white shadow-xl rounded-lg`}>

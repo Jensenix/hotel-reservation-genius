@@ -27,10 +27,11 @@ export default function BookingActionModal({
               Please provide a reason for cancelling this booking. This action
               cannot be undone.
             </p>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="cancelReason" className="block text-sm font-medium text-gray-700 mb-2">
               Cancel Reason
             </label>
             <textarea
+              id="cancelReason"
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
               rows={3}

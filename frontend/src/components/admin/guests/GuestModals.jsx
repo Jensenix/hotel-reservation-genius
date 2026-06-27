@@ -12,7 +12,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
       >
         <form onSubmit={handleCustomSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="fullName" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Full Name
             </label>
             <input
@@ -30,7 +30,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Email
             </label>
             <input
@@ -48,7 +48,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Password {state.editingItem && '(leave empty to keep current)'}
             </label>
             <input
@@ -70,11 +70,12 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="phoneNumber" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Phone Number
             </label>
             <input
               type="tel"
+              id="phoneNumber"
               value={state.formData.phoneNumber}
               onChange={(e) =>
                 actions.setFormData({
@@ -87,10 +88,11 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="role" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
               Role
             </label>
             <select
+              id="role"
               required
               value={state.formData.role}
               onChange={(e) =>
