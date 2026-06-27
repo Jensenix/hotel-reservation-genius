@@ -68,17 +68,17 @@ export default function ExtraServiceFormModal({
             className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
           />
         </div>
-        <div className="flex gap-3 pt-4">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200"
+            className="w-full sm:flex-1 bg-slate-100 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-200 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600"
+            className="w-full sm:flex-1 bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600 transition-colors"
           >
             {isEditing ? 'Update' : 'Add'}
           </button>
