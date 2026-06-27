@@ -45,7 +45,7 @@ const Booking = () => {
           </h2>
 
           <p className="text-gray-600 mb-6">
-            The room you're trying to book doesn't exist or is unavailable.
+            The room you&apos;re trying to book doesn&apos;t exist or is unavailable.
           </p>
 
           <Button onClick={() => navigate('/our-rooms')}>

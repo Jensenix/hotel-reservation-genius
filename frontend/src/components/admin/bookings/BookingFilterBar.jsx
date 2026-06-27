@@ -11,10 +11,11 @@ export default function BookingFilterBar({
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-8">
       <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-end">
         <div className="w-full md:flex-1 min-w-[200px]">
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label htmlFor="statusFilter" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Status Filter
           </label>
           <select
+            id="statusFilter"
             value={filters.status}
             onChange={(e) => handleFilterChange('status', e.target.value)}
             className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-slate-700 bg-slate-50 focus:bg-white"
@@ -29,11 +30,12 @@ export default function BookingFilterBar({
         </div>
 
         <div className="w-full md:flex-1 min-w-[200px]">
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label htmlFor="searchInput" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Search
           </label>
           <input
             ref={searchInputRef}
+            id="searchInput"
             type="text"
             placeholder="Search by name or ID..."
             value={filters.search}
