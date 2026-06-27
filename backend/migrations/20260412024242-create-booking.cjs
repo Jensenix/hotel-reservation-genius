@@ -7,50 +7,56 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       roomId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Rooms',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       checkInDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       checkOutDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       totalPrice: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       status: {
-        type: Sequelize.ENUM('pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'),
-        defaultValue: 'pending'
+        type: Sequelize.ENUM(
+          'pending',
+          'confirmed',
+          'checked_in',
+          'checked_out',
+          'cancelled',
+        ),
+        defaultValue: 'pending',
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Bookings');
-  }
+  },
 };

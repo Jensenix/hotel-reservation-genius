@@ -1,4 +1,5 @@
-const { Booking, Room, RoomType } = require('../models');
+import db from '../models/index.js';
+const { Booking, Room, RoomType } = db;
 
 class BookingUtils {
   /**
@@ -9,7 +10,12 @@ class BookingUtils {
    * @param {number} excludeBookingId - Exclude this booking ID from check (for updates)
    * @returns {Promise<boolean>}
    */
-  static async checkRoomAvailability(roomId, checkInDate, checkOutDate, excludeBookingId = null) {
+  static async checkRoomAvailability(
+    roomId,
+    checkInDate,
+    checkOutDate,
+    excludeBookingId = null,
+  ) {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
@@ -26,7 +32,7 @@ class BookingUtils {
       roomId,
       status: { [require('sequelize').Op.ne]: 'cancelled' },
       checkInDate: { [require('sequelize').Op.lte]: checkOutDate },
-      checkOutDate: { [require('sequelize').Op.gt]: checkInDate }
+      checkOutDate: { [require('sequelize').Op.gt]: checkInDate },
     };
 
     // Exclude current booking if updating
@@ -35,7 +41,7 @@ class BookingUtils {
     }
 
     const overlappingBookings = await Booking.findAll({ where });
-    
+
     return overlappingBookings.length === 0;
   }
 
@@ -48,25 +54,25 @@ class BookingUtils {
    */
   static async calculateTotalPrice(roomTypeId, checkInDate, checkOutDate) {
     const roomType = await RoomType.findByPk(roomTypeId);
-    
+
     if (!roomType) {
       throw new Error('Room type not found');
     }
 
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
-    
+
     // Calculate duration in days
     const durationInMs = checkOut - checkIn;
     const durationInDays = Math.ceil(durationInMs / (1000 * 60 * 60 * 24));
-    
+
     if (durationInDays <= 0) {
       throw new Error('Invalid date range');
     }
 
     // Calculate total price
     const totalPrice = parseFloat(roomType.basePrice) * durationInDays;
-    
+
     return totalPrice;
   }
 
@@ -88,15 +94,19 @@ class BookingUtils {
 
     // Get all rooms of this type that are available
     const rooms = await Room.findAll({
-      where: { 
+      where: {
         roomTypeId,
-        status: 'available'
-      }
+        status: 'available',
+      },
     });
 
     // Check each room for availability
     for (const room of rooms) {
-      const isAvailable = await this.checkRoomAvailability(room.id, checkIn, checkOut);
+      const isAvailable = await this.checkRoomAvailability(
+        room.id,
+        checkIn,
+        checkOut,
+      );
       if (isAvailable) {
         return room;
       }
@@ -123,7 +133,7 @@ class BookingUtils {
 
     // Get all rooms
     const where = { status: 'available' };
-    
+
     if (roomTypeId) {
       where.roomTypeId = roomTypeId;
     }
@@ -133,16 +143,20 @@ class BookingUtils {
       include: [
         {
           model: RoomType,
-          as: 'roomType'
-        }
-      ]
+          as: 'roomType',
+        },
+      ],
     });
 
     // Filter out rooms with overlapping bookings
     const availableRooms = [];
-    
+
     for (const room of allRooms) {
-      const isAvailable = await this.checkRoomAvailability(room.id, checkIn, checkOut);
+      const isAvailable = await this.checkRoomAvailability(
+        room.id,
+        checkIn,
+        checkOut,
+      );
       if (isAvailable) {
         availableRooms.push(room);
       }
@@ -152,4 +166,4 @@ class BookingUtils {
   }
 }
 
-module.exports = BookingUtils;
+export default BookingUtils;

@@ -1,5 +1,6 @@
-const { BookingExtraService, ExtraService, Booking } = require('../../models');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { BookingExtraService, Booking, ExtraService } = db;
+import BaseService from '../base/baseService.js';
 
 class BookingExtraServiceService extends BaseService {
   constructor() {
@@ -16,18 +17,23 @@ class BookingExtraServiceService extends BaseService {
    * @returns {Promise<Object>} The created booking extra service record.
    * @throws {Error} If the booking or extra service is not found.
    */
-  async createBookingExtraService({ bookingId, extraServiceId, quantity, subtotal }) {
+  async createBookingExtraService({
+    bookingId,
+    extraServiceId,
+    quantity,
+    subtotal,
+  }) {
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
-      const err = new Error('Booking not found'); 
-      err.statusCode = 404; 
+      const err = new Error('Booking not found');
+      err.statusCode = 404;
       throw err;
     }
 
     const extraService = await ExtraService.findByPk(extraServiceId);
     if (!extraService) {
-      const err = new Error('Extra service not found'); 
-      err.statusCode = 404; 
+      const err = new Error('Extra service not found');
+      err.statusCode = 404;
       throw err;
     }
 
@@ -42,7 +48,7 @@ class BookingExtraServiceService extends BaseService {
   async getBookingExtraServicesByBookingId(bookingId) {
     return super.getAll({
       where: { bookingId },
-      include: [{ model: ExtraService, as: 'extraService' }]
+      include: [{ model: ExtraService, as: 'extraService' }],
     });
   }
 
@@ -57,4 +63,4 @@ class BookingExtraServiceService extends BaseService {
   }
 }
 
-module.exports = new BookingExtraServiceService();
+export default new BookingExtraServiceService();

@@ -1,4 +1,4 @@
-const paymentMethodService = require('../services/payment/paymentMethodService');
+import paymentMethodService from '../services/payment/paymentMethodService.js';
 
 class PaymentMethodController {
   /**
@@ -7,21 +7,25 @@ class PaymentMethodController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with the newly created payment method.
    */
-  async createPaymentMethod(req, res) {
+  createPaymentMethod = async (req, res) => {
     try {
-      const paymentMethod = await paymentMethodService.createPaymentMethod(req.body);
-      
+      const paymentMethod = await paymentMethodService.createPaymentMethod(
+        req.body,
+      );
+
       return res.status(201).json({
         success: true,
         message: 'Payment method created successfully',
-        data: paymentMethod
+        data: paymentMethod,
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
-        message: error.statusCode ? error.message : 'Error creating payment method',
-        error: error.message
+        message: error.statusCode
+          ? error.message
+          : 'Error creating payment method',
+        error: error.message,
       });
     }
   }
@@ -32,20 +36,22 @@ class PaymentMethodController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with the array of payment methods.
    */
-  async getAllPaymentMethods(req, res) {
+  getAllPaymentMethods = async (req, res) => {
     try {
-      const paymentMethods = await paymentMethodService.getAllPaymentMethods(req.query);
-      
+      const paymentMethods = await paymentMethodService.getAllPaymentMethods(
+        req.query,
+      );
+
       return res.status(200).json({
         success: true,
         message: 'Payment methods retrieved successfully',
-        data: paymentMethods
+        data: paymentMethods,
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
         message: 'Error getting payment methods',
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -56,21 +62,25 @@ class PaymentMethodController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response containing the payment method details.
    */
-  async getPaymentMethodById(req, res) {
+  getPaymentMethodById = async (req, res) => {
     try {
-      const paymentMethod = await paymentMethodService.getPaymentMethodById(req.params.id);
-      
+      const paymentMethod = await paymentMethodService.getPaymentMethodById(
+        req.params.id,
+      );
+
       return res.status(200).json({
         success: true,
         message: 'Payment method retrieved successfully',
-        data: paymentMethod
+        data: paymentMethod,
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
-        message: error.statusCode ? error.message : 'Error getting payment method',
-        error: error.message
+        message: error.statusCode
+          ? error.message
+          : 'Error getting payment method',
+        error: error.message,
       });
     }
   }
@@ -81,21 +91,26 @@ class PaymentMethodController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with the updated payment method.
    */
-  async updatePaymentMethod(req, res) {
+  updatePaymentMethod = async (req, res) => {
     try {
-      const paymentMethod = await paymentMethodService.updatePaymentMethod(req.params.id, req.body);
-      
+      const paymentMethod = await paymentMethodService.updatePaymentMethod(
+        req.params.id,
+        req.body,
+      );
+
       return res.status(200).json({
         success: true,
         message: 'Payment method updated successfully',
-        data: paymentMethod
+        data: paymentMethod,
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
-        message: error.statusCode ? error.message : 'Error updating payment method',
-        error: error.message
+        message: error.statusCode
+          ? error.message
+          : 'Error updating payment method',
+        error: error.message,
       });
     }
   }
@@ -106,23 +121,25 @@ class PaymentMethodController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response confirming deletion.
    */
-  async deletePaymentMethod(req, res) {
+  deletePaymentMethod = async (req, res) => {
     try {
       await paymentMethodService.deletePaymentMethod(req.params.id);
-      
+
       return res.status(200).json({
         success: true,
-        message: 'Payment method deleted successfully'
+        message: 'Payment method deleted successfully',
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
-        message: error.statusCode ? error.message : 'Error deleting payment method',
-        error: error.message
+        message: error.statusCode
+          ? error.message
+          : 'Error deleting payment method',
+        error: error.message,
       });
     }
   }
 }
 
-module.exports = new PaymentMethodController();
+export default new PaymentMethodController();

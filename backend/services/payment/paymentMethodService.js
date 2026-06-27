@@ -1,4 +1,5 @@
-    const { PaymentMethod, Payment } = require('../../models');
+import db from '../../models/index.js';
+const { PaymentMethod, Payment } = db;
 
 class PaymentMethodService {
   /**
@@ -20,7 +21,7 @@ class PaymentMethodService {
     return PaymentMethod.create({
       methodName,
       accountNumber,
-      isActive: isActive !== undefined ? isActive : true
+      isActive: isActive !== undefined ? isActive : true,
     });
   }
 
@@ -43,9 +44,9 @@ class PaymentMethodService {
       include: [
         {
           model: Payment,
-          as: 'payments'
-        }
-      ]
+          as: 'payments',
+        },
+      ],
     });
   }
 
@@ -60,9 +61,9 @@ class PaymentMethodService {
       include: [
         {
           model: Payment,
-          as: 'payments'
-        }
-      ]
+          as: 'payments',
+        },
+      ],
     });
 
     if (!paymentMethod) {
@@ -93,7 +94,7 @@ class PaymentMethodService {
     return paymentMethod.update({
       methodName: methodName || paymentMethod.methodName,
       accountNumber: accountNumber || paymentMethod.accountNumber,
-      isActive: isActive !== undefined ? isActive : paymentMethod.isActive
+      isActive: isActive !== undefined ? isActive : paymentMethod.isActive,
     });
   }
 
@@ -116,4 +117,4 @@ class PaymentMethodService {
   }
 }
 
-module.exports = new PaymentMethodService();
+export default new PaymentMethodService();

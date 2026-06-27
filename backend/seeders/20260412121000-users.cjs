@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     const users = [
       {
         fullName: 'John Doe',
@@ -11,7 +11,7 @@ module.exports = {
         role: 'guest',
         phoneNumber: '+1234567890',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         fullName: 'Jane Smith',
@@ -20,7 +20,7 @@ module.exports = {
         role: 'guest',
         phoneNumber: '+0987654321',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         fullName: 'Admin User',
@@ -29,14 +29,14 @@ module.exports = {
         role: 'admin',
         phoneNumber: '+1122334455',
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     ];
 
     await queryInterface.bulkInsert('Users', users, {});
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Users', null, {});
-  }
+  },
 };

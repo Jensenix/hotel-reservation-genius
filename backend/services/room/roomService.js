@@ -1,6 +1,7 @@
-const { Room, RoomType, Booking } = require('../../models');
-const pagination = require('../../utils/pagination');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { Room, RoomType, Booking } = db;
+import pagination from '../../utils/pagination.js';
+import BaseService from '../base/baseService.js';
 
 class RoomService extends BaseService {
   constructor() {
@@ -19,19 +20,24 @@ class RoomService extends BaseService {
    */
   async createRoom({ roomNumber, roomTypeId, floor, status }) {
     if (!roomNumber || !roomTypeId) {
-      const err = new Error('roomNumber and roomTypeId are required'); 
-      err.statusCode = 400; 
+      const err = new Error('roomNumber and roomTypeId are required');
+      err.statusCode = 400;
       throw err;
     }
 
     const existingRoom = await Room.findOne({ where: { roomNumber } });
     if (existingRoom) {
-      const err = new Error('Room number already exists'); 
-      err.statusCode = 400; 
+      const err = new Error('Room number already exists');
+      err.statusCode = 400;
       throw err;
     }
 
-    return super.create({ roomNumber, roomTypeId, floor, status: status || 'available' });
+    return super.create({
+      roomNumber,
+      roomTypeId,
+      floor,
+      status: status || 'available',
+    });
   }
 
   /**
@@ -55,24 +61,37 @@ class RoomService extends BaseService {
       const result = await super.getAll({
         where,
         order: [['createdAt', 'DESC']],
-        include: [{ model: RoomType, as: 'roomType' }, { model: Booking, as: 'bookings' }]
+        include: [
+          { model: RoomType, as: 'roomType' },
+          { model: Booking, as: 'bookings' },
+        ],
       });
       return result; // Return array langsung
     }
 
     // Jika limit diset, gunakan pagination
-    const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
+    const { offset, limit: parsedLimit } = pagination.getPagination(
+      page,
+      limit,
+    );
     const { count, rows } = await super.getAll({
-      where, 
-      offset, 
-      limit: parsedLimit, 
+      where,
+      offset,
+      limit: parsedLimit,
       order: [['createdAt', 'DESC']],
-      include: [{ model: RoomType, as: 'roomType' }, { model: Booking, as: 'bookings' }]
+      include: [
+        { model: RoomType, as: 'roomType' },
+        { model: Booking, as: 'bookings' },
+      ],
     });
 
-    return { 
-      rows, 
-      pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit) 
+    return {
+      rows,
+      pagination: pagination.getPagingData(
+        { count, rows },
+        parseInt(page),
+        parsedLimit,
+      ),
     };
   }
 
@@ -84,7 +103,10 @@ class RoomService extends BaseService {
    */
   async getRoomById(id) {
     return super.getById(id, {
-      include: [{ model: RoomType, as: 'roomType' }, { model: Booking, as: 'bookings' }]
+      include: [
+        { model: RoomType, as: 'roomType' },
+        { model: Booking, as: 'bookings' },
+      ],
     });
   }
 
@@ -99,10 +121,12 @@ class RoomService extends BaseService {
     const room = await super.getById(id);
 
     if (data.roomNumber && data.roomNumber !== room.roomNumber) {
-      const existingRoom = await Room.findOne({ where: { roomNumber: data.roomNumber } });
+      const existingRoom = await Room.findOne({
+        where: { roomNumber: data.roomNumber },
+      });
       if (existingRoom) {
-        const err = new Error('Room number already exists'); 
-        err.statusCode = 400; 
+        const err = new Error('Room number already exists');
+        err.statusCode = 400;
         throw err;
       }
     }
@@ -134,10 +158,19 @@ class RoomService extends BaseService {
 
     return super.getAll({
       where,
-      include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'description', 'basePrice', 'maxCapacity'] }],
-      order: [['floor', 'ASC'], ['roomNumber', 'ASC']]
+      include: [
+        {
+          model: RoomType,
+          as: 'roomType',
+          attributes: ['id', 'name', 'description', 'basePrice', 'maxCapacity'],
+        },
+      ],
+      order: [
+        ['floor', 'ASC'],
+        ['roomNumber', 'ASC'],
+      ],
     });
   }
 }
 
-module.exports = new RoomService();
+export default new RoomService();

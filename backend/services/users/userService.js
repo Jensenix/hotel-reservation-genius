@@ -1,6 +1,6 @@
-const { User, Booking, Review } = require('../../models');
-const pagination = require('../../utils/pagination');
-const { Op } = require('sequelize');
+import db from '../../models/index.js';
+const { User, Booking, Payment, Review } = db;
+import { Op } from 'sequelize';
 
 class UserService {
   /**
@@ -10,15 +10,25 @@ class UserService {
    */
   async createUser({ fullName, email, password, phoneNumber, role }) {
     if (!fullName || !email || !password) {
-      const err = new Error('fullName, email, and password are required'); err.statusCode = 400; throw err;
+      const err = new Error('fullName, email, and password are required');
+      err.statusCode = 400;
+      throw err;
     }
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      const err = new Error('Email already exists'); err.statusCode = 400; throw err;
+      const err = new Error('Email already exists');
+      err.statusCode = 400;
+      throw err;
     }
 
-    return User.create({ fullName, email, password, phoneNumber, role: role || 'guest' });
+    return User.create({
+      fullName,
+      email,
+      password,
+      phoneNumber,
+      role: role || 'guest',
+    });
   }
 
   /**
@@ -32,17 +42,30 @@ class UserService {
     if (search) {
       where[Op.or] = [
         { fullName: { [Op.like]: `%${search}%` } },
-        { email: { [Op.like]: `%${search}%` } }
+        { email: { [Op.like]: `%${search}%` } },
       ];
     }
 
-    const { offset, limit: parsedLimit } = pagination.getPagination(page, limit);
+    const { offset, limit: parsedLimit } = pagination.getPagination(
+      page,
+      limit,
+    );
     const { count, rows } = await User.findAndCountAll({
-      where, offset, limit: parsedLimit, order: [['createdAt', 'DESC']],
-      attributes: { exclude: ['password'] }
+      where,
+      offset,
+      limit: parsedLimit,
+      order: [['createdAt', 'DESC']],
+      attributes: { exclude: ['password'] },
     });
 
-    return { rows, pagination: pagination.getPagingData({ count, rows }, parseInt(page), parsedLimit) };
+    return {
+      rows,
+      pagination: pagination.getPagingData(
+        { count, rows },
+        parseInt(page),
+        parsedLimit,
+      ),
+    };
   }
 
   /**
@@ -53,11 +76,16 @@ class UserService {
   async getUserById(id) {
     const user = await User.findByPk(id, {
       attributes: { exclude: ['password'] },
-      include: [{ model: Booking, as: 'bookings', include: ['room'] }, { model: Review, as: 'reviews' }]
+      include: [
+        { model: Booking, as: 'bookings', include: ['room'] },
+        { model: Review, as: 'reviews' },
+      ],
     });
 
     if (!user) {
-      const err = new Error('User not found'); err.statusCode = 404; throw err;
+      const err = new Error('User not found');
+      err.statusCode = 404;
+      throw err;
     }
     return user;
   }
@@ -71,13 +99,17 @@ class UserService {
   async updateUser(id, data) {
     const user = await User.findByPk(id);
     if (!user) {
-      const err = new Error('User not found'); err.statusCode = 404; throw err;
+      const err = new Error('User not found');
+      err.statusCode = 404;
+      throw err;
     }
 
     if (data.email && data.email !== user.email) {
       const existingUser = await User.findOne({ where: { email: data.email } });
       if (existingUser) {
-        const err = new Error('Email already exists'); err.statusCode = 400; throw err;
+        const err = new Error('Email already exists');
+        err.statusCode = 400;
+        throw err;
       }
     }
 
@@ -92,10 +124,12 @@ class UserService {
   async deleteUser(id) {
     const user = await User.findByPk(id);
     if (!user) {
-      const err = new Error('User not found'); err.statusCode = 404; throw err;
+      const err = new Error('User not found');
+      err.statusCode = 404;
+      throw err;
     }
     await user.destroy();
   }
 }
 
-module.exports = new UserService();
+export default new UserService();

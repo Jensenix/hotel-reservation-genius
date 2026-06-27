@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const paymentMethodController = require('../controllers/paymentMethodController');
+import paymentMethodController from '../controllers/paymentMethodController.js';
 
 // CRUD Routes
-router.post('/', paymentMethodController.createPaymentMethod.bind(paymentMethodController));
-router.get('/', paymentMethodController.getAllPaymentMethods.bind(paymentMethodController));
-router.get('/:id', paymentMethodController.getPaymentMethodById.bind(paymentMethodController));
-router.put('/:id', paymentMethodController.updatePaymentMethod.bind(paymentMethodController));
-router.delete('/:id', paymentMethodController.deletePaymentMethod.bind(paymentMethodController));
+router.post('/', paymentMethodController.createPaymentMethod);
+router.get('/', paymentMethodController.getAllPaymentMethods);
+router.get('/:id', paymentMethodController.getPaymentMethodById);
+router.put('/:id', paymentMethodController.updatePaymentMethod);
+router.delete('/:id', paymentMethodController.deletePaymentMethod);
 
-module.exports = router;
+export default router;

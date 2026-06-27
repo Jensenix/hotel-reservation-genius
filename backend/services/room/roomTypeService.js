@@ -1,6 +1,7 @@
-const { RoomType, Room, Facility } = require('../../models');
-const { Op } = require('sequelize');
-const BaseService = require('../base/baseService');
+import db from '../../models/index.js';
+const { RoomType, Room, Facility } = db;
+import { Op } from 'sequelize';
+import BaseService from '../base/baseService.js';
 
 class RoomTypeService extends BaseService {
   constructor() {
@@ -19,8 +20,8 @@ class RoomTypeService extends BaseService {
    */
   async createRoomType({ name, description, basePrice, maxCapacity }) {
     if (!name || !basePrice || !maxCapacity) {
-      const err = new Error('name, basePrice, and maxCapacity are required'); 
-      err.statusCode = 400; 
+      const err = new Error('name, basePrice, and maxCapacity are required');
+      err.statusCode = 400;
       throw err;
     }
     return super.create({ name, description, basePrice, maxCapacity });
@@ -44,9 +45,12 @@ class RoomTypeService extends BaseService {
     if (search) where.name = { [Op.like]: `%${search}%` };
 
     return super.getAll({
-      where, 
+      where,
       order: [['createdAt', 'DESC']],
-      include: [{ model: Facility, as: 'facilities' }, { model: Room, as: 'rooms' }]
+      include: [
+        { model: Facility, as: 'facilities' },
+        { model: Room, as: 'rooms' },
+      ],
     });
   }
 
@@ -56,8 +60,10 @@ class RoomTypeService extends BaseService {
    */
   async getAllRoomTypesWithFacilities() {
     return super.getAll({
-      include: [{ model: Facility, as: 'facilities', through: { attributes: [] } }],
-      order: [['basePrice', 'ASC']]
+      include: [
+        { model: Facility, as: 'facilities', through: { attributes: [] } },
+      ],
+      order: [['basePrice', 'ASC']],
     });
   }
 
@@ -68,8 +74,11 @@ class RoomTypeService extends BaseService {
    * @throws {Error} If the room type is not found.
    */
   async getRoomTypeById(id) {
-    return super.getById(id, { 
-      include: [{ model: Facility, as: 'facilities' }, { model: Room, as: 'rooms' }] 
+    return super.getById(id, {
+      include: [
+        { model: Facility, as: 'facilities' },
+        { model: Room, as: 'rooms' },
+      ],
     });
   }
 
@@ -95,4 +104,4 @@ class RoomTypeService extends BaseService {
   }
 }
 
-module.exports = new RoomTypeService();
+export default new RoomTypeService();

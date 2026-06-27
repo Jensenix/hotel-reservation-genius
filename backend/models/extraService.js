@@ -1,8 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
   class ExtraService extends Model {
     /**
      * Helper method for defining associations.
@@ -14,16 +11,19 @@ module.exports = (sequelize, DataTypes) => {
         through: 'BookingExtraServices',
         foreignKey: 'extraServiceId',
         otherKey: 'bookingId',
-        as: 'bookings'
+        as: 'bookings',
       });
     }
   }
-  ExtraService.init({
-    serviceName: DataTypes.STRING,
-    price: DataTypes.DECIMAL
-  }, {
-    sequelize,
-    modelName: 'ExtraService',
-  });
+  ExtraService.init(
+    {
+      serviceName: DataTypes.STRING,
+      price: DataTypes.DECIMAL,
+    },
+    {
+      sequelize,
+      modelName: 'ExtraService',
+    },
+  );
   return ExtraService;
 };

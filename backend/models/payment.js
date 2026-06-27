@@ -1,8 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
   class Payment extends Model {
     /**
      * Helper method for defining associations.
@@ -10,22 +7,31 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Payment.belongsTo(models.Booking, { foreignKey: 'bookingId', as: 'booking' });
-      Payment.belongsTo(models.PaymentMethod, { foreignKey: 'paymentMethodId', as: 'paymentMethod' });
+      Payment.belongsTo(models.Booking, {
+        foreignKey: 'bookingId',
+        as: 'booking',
+      });
+      Payment.belongsTo(models.PaymentMethod, {
+        foreignKey: 'paymentMethodId',
+        as: 'paymentMethod',
+      });
     }
   }
-  Payment.init({
-    bookingId: DataTypes.INTEGER,
-    paymentMethodId: DataTypes.INTEGER,
-    amount: DataTypes.DECIMAL,
-    paymentStatus: {
-      type: DataTypes.ENUM('pending', 'paid', 'failed', 'refunded'),
-      defaultValue: 'pending'
+  Payment.init(
+    {
+      bookingId: DataTypes.INTEGER,
+      paymentMethodId: DataTypes.INTEGER,
+      amount: DataTypes.DECIMAL,
+      paymentStatus: {
+        type: DataTypes.ENUM('pending', 'paid', 'failed', 'refunded'),
+        defaultValue: 'pending',
+      },
+      transactionTime: DataTypes.DATE,
     },
-    transactionTime: DataTypes.DATE
-  }, {
-    sequelize,
-    modelName: 'Payment',
-  });
+    {
+      sequelize,
+      modelName: 'Payment',
+    },
+  );
   return Payment;
 };

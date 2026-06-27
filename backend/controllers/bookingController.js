@@ -1,7 +1,7 @@
-const bookingService = require('../services/booking/bookingService');
+import bookingService from '../services/booking/bookingService.js';
 
 class BookingController {
-  async createBooking(req, res) {
+  createBooking = async (req, res) => {
     try {
       const booking = await bookingService.createBooking(req.body);
       res.status(201).json({ success: true, message: 'Booking created successfully', data: booking });
@@ -10,7 +10,7 @@ class BookingController {
     }
   }
 
-  async getAllBookings(req, res) {
+  getAllBookings = async (req, res) => {
     try {
       const data = await bookingService.getAllBookings(req.query);
       res.status(200).json({ success: true, message: 'Bookings retrieved successfully', data: data.rows, pagination: data.pagination });
@@ -19,7 +19,7 @@ class BookingController {
     }
   }
 
-  async getBookingById(req, res) {
+  getBookingById = async (req, res) => {
     try {
       const booking = await bookingService.getBookingById(req.params.id);
       res.status(200).json({ success: true, message: 'Booking retrieved successfully', data: booking });
@@ -28,7 +28,7 @@ class BookingController {
     }
   }
 
-  async updateBooking(req, res) {
+  updateBooking = async (req, res) => {
     try {
       const booking = await bookingService.updateBooking(req.params.id, req.body);
       res.status(200).json({ success: true, message: 'Booking updated successfully', data: booking });
@@ -37,7 +37,7 @@ class BookingController {
     }
   }
 
-  async deleteBooking(req, res) {
+  deleteBooking = async (req, res) => {
     try {
       await bookingService.deleteBooking(req.params.id);
       res.status(200).json({ success: true, message: 'Booking deleted successfully' });
@@ -46,7 +46,7 @@ class BookingController {
     }
   }
 
-  async checkRoomAvailability(req, res) {
+  checkRoomAvailability = async (req, res) => {
     try {
       const { roomId, checkInDate, checkOutDate } = req.query;
       const available = await bookingService.checkRoomAvailability(roomId, checkInDate, checkOutDate);
@@ -56,7 +56,7 @@ class BookingController {
     }
   }
 
-  async getAvailableRooms(req, res) {
+  getAvailableRooms = async (req, res) => {
     try {
       const { checkInDate, checkOutDate, roomTypeId } = req.query;
       const rooms = await bookingService.getAvailableRooms(checkInDate, checkOutDate, roomTypeId);
@@ -66,7 +66,7 @@ class BookingController {
     }
   }
 
-  async confirmBooking(req, res) {
+  confirmBooking = async (req, res) => {
     try {
       const booking = await bookingService.confirmBooking(req.params.id);
       res.status(200).json({ success: true, message: 'Booking confirmed successfully', data: booking });
@@ -75,7 +75,7 @@ class BookingController {
     }
   }
 
-  async checkInGuest(req, res) {
+  checkInGuest = async (req, res) => {
     try {
       const booking = await bookingService.checkInGuest(req.params.id);
       res.status(200).json({ success: true, message: 'Guest checked in successfully', data: booking });
@@ -84,7 +84,7 @@ class BookingController {
     }
   }
 
-  async checkOutGuest(req, res) {
+  checkOutGuest = async (req, res) => {
     try {
       const booking = await bookingService.checkOutGuest(req.params.id);
       res.status(200).json({ success: true, message: 'Guest checked out successfully', data: booking });
@@ -93,7 +93,7 @@ class BookingController {
     }
   }
 
-  async cancelBooking(req, res) {
+  cancelBooking = async (req, res) => {
     try {
       const booking = await bookingService.cancelBooking(req.params.id, req.body.reason);
       res.status(200).json({ success: true, message: 'Booking cancelled successfully', data: booking });
@@ -102,7 +102,7 @@ class BookingController {
     }
   }
 
-  async getUserBookings(req, res) {
+  getUserBookings = async (req, res) => {
     try {
       const bookings = await bookingService.getUserBookings(req.params.userId);
       res.status(200).json({ success: true, message: 'User bookings retrieved successfully', data: bookings });
@@ -111,7 +111,7 @@ class BookingController {
     }
   }
 
-  async getAllBookingsAdmin(req, res) {
+  getAllBookingsAdmin = async (req, res) => {
     try {
       const data = await bookingService.getAllBookingsAdmin(req.query);
       res.status(200).json({ success: true, message: 'Bookings retrieved successfully', data });
@@ -120,5 +120,4 @@ class BookingController {
     }
   }
 }
-
-module.exports = new BookingController();
+export default new BookingController();

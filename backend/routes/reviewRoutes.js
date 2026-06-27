@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const reviewController = require('../controllers/reviewController');
+import reviewController from '../controllers/reviewController.js';
 
 // CRUD Routes
-router.post('/', reviewController.createReview.bind(reviewController));
-router.get('/', reviewController.getAllReviews.bind(reviewController));
-router.get('/user', reviewController.getUserReviews.bind(reviewController));
-router.get('/:id', reviewController.getReviewById.bind(reviewController));
-router.put('/:id', reviewController.updateReview.bind(reviewController));
-router.delete('/:id', reviewController.deleteReview.bind(reviewController));
+router.post('/', reviewController.createReview);
+router.get('/', reviewController.getAllReviews);
+router.get('/user', reviewController.getUserReviews);
+router.get('/:id', reviewController.getReviewById);
+router.put('/:id', reviewController.updateReview);
+router.delete('/:id', reviewController.deleteReview);
 
-module.exports = router;
+export default router;

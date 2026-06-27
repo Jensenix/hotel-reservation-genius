@@ -1,14 +1,17 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const bookingExtraServiceController = require('../controllers/bookingExtraServiceController');
+import bookingExtraServiceController from '../controllers/bookingExtraServiceController.js';
 
 // Create booking extra service
 router.post('/', bookingExtraServiceController.createBookingExtraService);
 
 // Get booking extra services by booking ID
-router.get('/booking/:bookingId', bookingExtraServiceController.getBookingExtraServicesByBookingId);
+router.get(
+  '/booking/:bookingId',
+  bookingExtraServiceController.getBookingExtraServicesByBookingId,
+);
 
 // Delete booking extra service
 router.delete('/:id', bookingExtraServiceController.deleteBookingExtraService);
 
-module.exports = router;
+export default router;

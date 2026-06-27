@@ -1,4 +1,4 @@
-const authService = require('../services/users/authService');
+import authService from '../services/users/authService.js';
 
 class AuthController {
   /**
@@ -7,7 +7,7 @@ class AuthController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with authentication status and user data.
    */
-  async login(req, res) {
+  login = async (req, res) => {
     try {
       const { email, password } = req.body;
       const userData = await authService.login(email, password);
@@ -33,7 +33,7 @@ class AuthController {
    * @param {Object} res - The Express response object.
    * @returns {Promise<Object>} JSON response with registration status and user data.
    */
-  async register(req, res) {
+  register = async (req, res) => {
     try {
       const userData = await authService.register(req.body);
 
@@ -53,4 +53,4 @@ class AuthController {
   }
 }
 
-module.exports = new AuthController();
+export default new AuthController();

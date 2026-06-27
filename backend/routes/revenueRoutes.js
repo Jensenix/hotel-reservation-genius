@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const RevenueController = require('../controllers/revenueController');
+import RevenueController from '../controllers/revenueController.js';
 
 // Get revenue statistics
 router.get('/stats', RevenueController.getRevenueStats);
 
-module.exports = router;
+export default router;

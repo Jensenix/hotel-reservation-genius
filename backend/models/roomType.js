@@ -1,8 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
   class RoomType extends Model {
     /**
      * Helper method for defining associations.
@@ -15,18 +12,21 @@ module.exports = (sequelize, DataTypes) => {
         through: 'RoomTypeFacilities',
         foreignKey: 'roomTypeId',
         otherKey: 'facilityId',
-        as: 'facilities'
+        as: 'facilities',
       });
     }
   }
-  RoomType.init({
-    name: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    basePrice: DataTypes.DECIMAL,
-    maxCapacity: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'RoomType',
-  });
+  RoomType.init(
+    {
+      name: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      basePrice: DataTypes.DECIMAL,
+      maxCapacity: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'RoomType',
+    },
+  );
   return RoomType;
 };

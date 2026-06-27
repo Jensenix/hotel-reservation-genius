@@ -1,8 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
   class Facility extends Model {
     /**
      * Helper method for defining associations.
@@ -14,16 +11,19 @@ module.exports = (sequelize, DataTypes) => {
         through: 'RoomTypeFacilities',
         foreignKey: 'facilityId',
         otherKey: 'roomTypeId',
-        as: 'roomTypes'
+        as: 'roomTypes',
       });
     }
   }
-  Facility.init({
-    facilityName: DataTypes.STRING,
-    iconUrl: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Facility',
-  });
+  Facility.init(
+    {
+      facilityName: DataTypes.STRING,
+      iconUrl: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: 'Facility',
+    },
+  );
   return Facility;
 };

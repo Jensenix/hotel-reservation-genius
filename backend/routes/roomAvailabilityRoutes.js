@@ -1,14 +1,17 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const RoomAvailabilityController = require('../controllers/roomAvailabilityController');
+import RoomAvailabilityController from '../controllers/roomAvailabilityController.js';
 
-// Get general room availability 
+// Get general room availability
 router.get('/', RoomAvailabilityController.getRoomAvailability);
 
-// Get room availability statistics 
+// Get room availability statistics
 router.get('/stats', RoomAvailabilityController.getRoomAvailability);
 
 // Get detailed availability for specific room type
-router.get('/room-type/:roomTypeId', RoomAvailabilityController.getRoomTypeAvailability);
+router.get(
+  '/room-type/:roomTypeId',
+  RoomAvailabilityController.getRoomTypeAvailability,
+);
 
-module.exports = router;
+export default router;

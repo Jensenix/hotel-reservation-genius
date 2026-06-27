@@ -1,13 +1,16 @@
-const express = require('express');
+import express from 'express';
+import roomTypeController from '../controllers/roomTypeController.js';
 const router = express.Router();
-const roomTypeController = require('../controllers/roomTypeController');
 
 // CRUD Routes
-router.post('/', roomTypeController.createRoomType.bind(roomTypeController));
-router.get('/', roomTypeController.getAllRoomTypes.bind(roomTypeController));
-router.get('/with-facilities', roomTypeController.getAllRoomTypesWithFacilities.bind(roomTypeController));
-router.get('/:id', roomTypeController.getRoomTypeById.bind(roomTypeController));
-router.put('/:id', roomTypeController.updateRoomType.bind(roomTypeController));
-router.delete('/:id', roomTypeController.deleteRoomType.bind(roomTypeController));
+router.post('/', roomTypeController.createRoomType);
+router.get('/', roomTypeController.getAllRoomTypes);
+router.get(
+  '/with-facilities',
+  roomTypeController.getAllRoomTypesWithFacilities,
+);
+router.get('/:id', roomTypeController.getRoomTypeById);
+router.put('/:id', roomTypeController.updateRoomType);
+router.delete('/:id', roomTypeController.deleteRoomType);
 
-module.exports = router;
+export default router;
