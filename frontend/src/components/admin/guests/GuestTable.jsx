@@ -1,5 +1,6 @@
 import { Mail, Phone, User, Shield, Edit, Trash2, Users as UsersIcon, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import PropTypes from 'prop-types';
 
 export default function GuestTable({ users, loading, allUsers, onEdit, onDelete, onAddUser }) {
   const getRoleColor = (role) =>
@@ -93,3 +94,24 @@ export default function GuestTable({ users, loading, allUsers, onEdit, onDelete,
     </div>
   );
 }
+
+GuestTable.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      fullName: PropTypes.string,
+      email: PropTypes.string,
+      phoneNumber: PropTypes.string,
+      role: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
+  allUsers: PropTypes.arrayOf(
+    PropTypes.shape({
+      role: PropTypes.string,
+    })
+  ).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onAddUser: PropTypes.func.isRequired,
+};

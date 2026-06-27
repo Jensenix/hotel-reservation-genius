@@ -1,4 +1,5 @@
 import Modal from '@/components/ui/Modal';
+import PropTypes from 'prop-types';
 
 export default function BookingDetailModal({
   isOpen,
@@ -176,3 +177,60 @@ export default function BookingDetailModal({
     </Modal>
   );
 }
+
+BookingDetailModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  selectedBooking: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+  bookingDetails: PropTypes.shape({
+    user: PropTypes.shape({
+      fullName: PropTypes.string,
+      email: PropTypes.string,
+    }),
+    room: PropTypes.shape({
+      roomNumber: PropTypes.string,
+      roomType: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }),
+    checkInDate: PropTypes.string,
+    checkOutDate: PropTypes.string,
+    status: PropTypes.string,
+    totalPrice: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    extraServices: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        serviceName: PropTypes.string,
+        price: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+        ]),
+        BookingExtraService: PropTypes.shape({
+          quantity: PropTypes.number,
+          subtotal: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+          ]),
+        }),
+      })
+    ),
+    specialRequests: PropTypes.string,
+    payment: PropTypes.shape({
+      paymentMethod: PropTypes.shape({
+        methodName: PropTypes.string,
+      }),
+      amount: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+      paymentStatus: PropTypes.string,
+    }),
+  }),
+  loadingDetails: PropTypes.bool.isRequired,
+  getStatusBadge: PropTypes.func.isRequired,
+};

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AdminHeader from './adminHeader/AdminHeader';
+import PropTypes from 'prop-types';
 
 const AdminLayout = ({ children }) => {
   const location = useLocation();
-  
+
   useEffect(() => {
     console.log('AdminLayout rendered - Current path:', location.pathname);
   }, [location.pathname]);
@@ -17,6 +18,10 @@ const AdminLayout = ({ children }) => {
       </main>
     </div>
   );
+};
+
+AdminLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default AdminLayout;

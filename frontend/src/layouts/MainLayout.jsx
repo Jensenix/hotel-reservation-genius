@@ -1,5 +1,6 @@
 import Header from '@/layouts/Header';
 import Footer from '@/layouts/Footer';
+import PropTypes from 'prop-types';
 
 const MainLayout = ({ children }) => {
   return (
@@ -11,6 +12,10 @@ const MainLayout = ({ children }) => {
       <Footer />
     </div>
   );
+};
+
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default MainLayout;

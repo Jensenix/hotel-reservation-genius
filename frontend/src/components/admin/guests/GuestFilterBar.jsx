@@ -1,4 +1,5 @@
 import { Search } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 export default function GuestFilterBar({ searchTerm, setSearchTerm, roleFilter, setRoleFilter }) {
   return (
@@ -33,3 +34,10 @@ export default function GuestFilterBar({ searchTerm, setSearchTerm, roleFilter, 
     </div>
   );
 }
+
+GuestFilterBar.propTypes = {
+  searchTerm: PropTypes.string.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
+  roleFilter: PropTypes.string.isRequired,
+  setRoleFilter: PropTypes.func.isRequired,
+};

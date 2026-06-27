@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function BookingStepper({ step }) {
   return (
     <div className="mb-8 overflow-hidden">
@@ -21,3 +23,7 @@ export default function BookingStepper({ step }) {
     </div>
   );
 }
+
+BookingStepper.propTypes = {
+  step: PropTypes.number.isRequired,
+};

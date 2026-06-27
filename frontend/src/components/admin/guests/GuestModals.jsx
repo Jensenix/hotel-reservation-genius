@@ -1,5 +1,6 @@
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import PropTypes from 'prop-types';
 
 export default function GuestModals({ state, actions, handleCustomSubmit }) {
   return (
@@ -152,3 +153,28 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
     </>
   );
 }
+
+GuestModals.propTypes = {
+  state: PropTypes.shape({
+    showModal: PropTypes.bool.isRequired,
+    showDeleteModal: PropTypes.bool.isRequired,
+    editingItem: PropTypes.object,
+    deleteTarget: PropTypes.shape({
+      fullName: PropTypes.string,
+    }),
+    formData: PropTypes.shape({
+      fullName: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      password: PropTypes.string.isRequired,
+      phoneNumber: PropTypes.string,
+      role: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  actions: PropTypes.shape({
+    closeModal: PropTypes.func.isRequired,
+    closeDeleteModal: PropTypes.func.isRequired,
+    setFormData: PropTypes.func.isRequired,
+    handleDelete: PropTypes.func.isRequired,
+  }).isRequired,
+  handleCustomSubmit: PropTypes.func.isRequired,
+};

@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Card = ({ 
   children, 
   className = '', 
@@ -32,6 +34,14 @@ const Card = ({
       {children}
     </div>
   );
+};
+
+Card.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  hover: PropTypes.bool,
+  shadow: PropTypes.oneOf(['none', 'sm', 'md', 'lg', 'xl']),
+  padding: PropTypes.oneOf(['none', 'small', 'normal', 'large']),
 };
 
 export default Card;
