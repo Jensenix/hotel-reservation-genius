@@ -1,4 +1,4 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { Room, RoomType, Booking } = db;
 import { Op } from 'sequelize';
 

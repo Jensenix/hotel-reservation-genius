@@ -1,7 +1,16 @@
-import db from '../../models/index.js';
-const { Booking, User, Room, Payment, Review, ExtraService, RoomType, PaymentMethod } = db;
+import db from '#models/index.js';
+const {
+  Booking,
+  User,
+  Room,
+  Payment,
+  Review,
+  ExtraService,
+  RoomType,
+  PaymentMethod,
+} = db;
 import { Op } from 'sequelize';
-import BookingUtils from '../../utils/bookingUtils.js';
+import BookingUtils from '#utils/bookingUtils.js';
 import BaseService from '../base/baseService.js';
 
 class BookingService extends BaseService {

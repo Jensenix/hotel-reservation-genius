@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import facilityController from '../../controllers/room/facilityController.js';
+import facilityController from '#controllers/room/facilityController.js';
 
 // CRUD Routes
 router.post('/', facilityController.createFacility);

@@ -1,4 +1,4 @@
-import authService from '../../services/users/authService.js';
+import authService from '#services/users/authService.js';
 
 class AuthController {
   /**
@@ -15,17 +15,17 @@ class AuthController {
       return res.status(200).json({
         success: true,
         message: 'Login successful',
-        data: userData
+        data: userData,
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
         message: error.statusCode ? error.message : 'Error during login',
-        error: error.message
+        error: error.message,
       });
     }
-  }
+  };
 
   /**
    * Handles new user registration requests.
@@ -40,17 +40,17 @@ class AuthController {
       return res.status(201).json({
         success: true,
         message: 'Registration successful',
-        data: userData
+        data: userData,
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
         message: error.statusCode ? error.message : 'Error during registration',
-        error: error.message
+        error: error.message,
       });
     }
-  }
+  };
 }
 
 export default new AuthController();

@@ -1,4 +1,4 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { RoomType, Room, Facility } = db;
 import { Op } from 'sequelize';
 import BaseService from '../base/baseService.js';

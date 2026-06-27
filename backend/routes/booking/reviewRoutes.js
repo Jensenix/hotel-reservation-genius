@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import reviewController from '../../controllers/booking/reviewController.js';
+import reviewController from '#controllers/booking/reviewController.js';
 
 // CRUD Routes
 router.post('/', reviewController.createReview);

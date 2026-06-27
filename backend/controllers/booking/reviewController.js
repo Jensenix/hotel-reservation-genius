@@ -1,4 +1,4 @@
-import reviewService from '../../services/users/reviewService.js';
+import reviewService from '#services/users/reviewService.js';
 
 class ReviewController {
   createReview = async (req, res) => {
@@ -12,7 +12,7 @@ class ReviewController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   getAllReviews = async (req, res) => {
     try {
@@ -30,7 +30,7 @@ class ReviewController {
         error: error.message,
       });
     }
-  }
+  };
 
   getUserReviews = async (req, res) => {
     try {
@@ -45,7 +45,7 @@ class ReviewController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   getReviewById = async (req, res) => {
     try {
@@ -60,7 +60,7 @@ class ReviewController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   updateReview = async (req, res) => {
     try {
@@ -73,7 +73,7 @@ class ReviewController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   deleteReview = async (req, res) => {
     try {
@@ -86,7 +86,7 @@ class ReviewController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 }
 
 export default new ReviewController();

@@ -1,4 +1,4 @@
-import revenueService from '../../services/payment/revenueService.js';
+import revenueService from '#services/payment/revenueService.js';
 
 class RevenueController {
   /**
@@ -24,7 +24,7 @@ class RevenueController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default new RevenueController();

@@ -1,4 +1,4 @@
-import paymentService from '../../services/payment/paymentService.js';
+import paymentService from '#services/payment/paymentService.js';
 
 class PaymentController {
   createPayment = async (req, res) => {
@@ -12,46 +12,40 @@ class PaymentController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   getAllPayments = async (req, res) => {
     try {
       const data = await paymentService.getAllPayments(req.query);
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Payments retrieved successfully',
-          data: data.rows,
-          pagination: data.pagination,
-        });
+      res.status(200).json({
+        success: true,
+        message: 'Payments retrieved successfully',
+        data: data.rows,
+        pagination: data.pagination,
+      });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: 'Error getting payments',
-          error: error.message,
-        });
+      res.status(500).json({
+        success: false,
+        message: 'Error getting payments',
+        error: error.message,
+      });
     }
-  }
+  };
 
   getPaymentById = async (req, res) => {
     try {
       const data = await paymentService.getPaymentById(req.params.id);
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Payment retrieved successfully',
-          data,
-        });
+      res.status(200).json({
+        success: true,
+        message: 'Payment retrieved successfully',
+        data,
+      });
     } catch (error) {
       res
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   updatePayment = async (req, res) => {
     try {
@@ -64,7 +58,7 @@ class PaymentController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   deletePayment = async (req, res) => {
     try {
@@ -77,7 +71,7 @@ class PaymentController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 }
 
 export default new PaymentController();

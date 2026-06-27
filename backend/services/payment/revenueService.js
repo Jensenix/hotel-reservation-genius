@@ -1,5 +1,5 @@
-import db from '../../models/index.js';
-const { Booking, Payment, Room, RoomType } = db;
+import db from '#models/index.js';
+const { Booking, Payment, Room, RoomType, User } = db;
 import { Op, fn, col, literal } from 'sequelize';
 
 class RevenueService {
@@ -87,7 +87,7 @@ class RevenueService {
     const recentTransactions = await Booking.findAll({
       include: [
         {
-          model: require('../../models/index.js').User,
+          model: User, // <--- Fixed: Using the destructured User model
           as: 'user',
           attributes: ['fullName'],
         },

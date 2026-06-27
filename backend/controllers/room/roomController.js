@@ -1,4 +1,4 @@
-import roomService from '../../services/room/roomService.js';
+import roomService from '#services/room/roomService.js';
 
 class RoomController {
   createRoom = async (req, res) => {
@@ -14,7 +14,7 @@ class RoomController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   getAllRooms = async (req, res) => {
     try {
@@ -42,7 +42,7 @@ class RoomController {
         error: error.message,
       });
     }
-  }
+  };
 
   getRoomById = async (req, res) => {
     try {
@@ -57,7 +57,7 @@ class RoomController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   updateRoom = async (req, res) => {
     try {
@@ -70,7 +70,7 @@ class RoomController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   deleteRoom = async (req, res) => {
     try {
@@ -83,7 +83,7 @@ class RoomController {
         .status(error.statusCode || 500)
         .json({ success: false, message: error.message });
     }
-  }
+  };
 
   getAllWithRoomType = async (req, res) => {
     try {
@@ -100,7 +100,7 @@ class RoomController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default new RoomController();

@@ -1,6 +1,6 @@
 import express from 'express';
-import guestController from '../../controllers/users/guestController.js';
-import { authenticateToken, requireAdmin } from '../../middleware/auth.js';
+import guestController from '#controllers/users/guestController.js';
+import { authenticateToken, requireAdmin } from '#middleware/auth.js';
 
 const router = express.Router();
 

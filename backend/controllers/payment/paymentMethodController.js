@@ -1,4 +1,4 @@
-import paymentMethodService from '../../services/payment/paymentMethodService.js';
+import paymentMethodService from '#services/payment/paymentMethodService.js';
 
 class PaymentMethodController {
   /**
@@ -28,7 +28,7 @@ class PaymentMethodController {
         error: error.message,
       });
     }
-  }
+  };
 
   /**
    * Handles retrieving all payment methods.
@@ -54,7 +54,7 @@ class PaymentMethodController {
         error: error.message,
       });
     }
-  }
+  };
 
   /**
    * Handles retrieving a specific payment method by ID.
@@ -83,7 +83,7 @@ class PaymentMethodController {
         error: error.message,
       });
     }
-  }
+  };
 
   /**
    * Handles updating an existing payment method.
@@ -113,7 +113,7 @@ class PaymentMethodController {
         error: error.message,
       });
     }
-  }
+  };
 
   /**
    * Handles deleting a payment method.
@@ -139,7 +139,7 @@ class PaymentMethodController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default new PaymentMethodController();

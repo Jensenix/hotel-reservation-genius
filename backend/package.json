@@ -16,6 +16,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "imports": {
+      "#*": "./*"
+    },
   "bugs": {
     "url": "https://github.com/Jensenix/hotel-reservation-genius/issues"
   },

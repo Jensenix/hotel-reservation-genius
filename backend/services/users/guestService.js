@@ -1,4 +1,4 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { User, Booking, Payment, Review } = db;
 import { Op } from 'sequelize';
 

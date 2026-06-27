@@ -1,4 +1,4 @@
-import guestService from '../../services/users/guestService.js';
+import guestService from '#services/users/guestService.js';
 
 class GuestController {
   /**
