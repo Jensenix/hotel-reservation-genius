@@ -57,7 +57,7 @@ const HeroSection = () => (
           <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 shrink-0" />
           <span className="text-xs sm:text-sm">5-Star Luxury</span>
         </div>
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2">
           <Shield className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span className="text-xs sm:text-sm">Premium Service</span>
         </div>
