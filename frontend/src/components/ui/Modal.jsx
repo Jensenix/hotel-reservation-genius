@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   // Lock body scroll when modal is open — prevents the page overflow/scrollbar bug
@@ -52,6 +53,14 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
         </div>
     </div>
   );
+};
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
 };
 
 export default Modal;

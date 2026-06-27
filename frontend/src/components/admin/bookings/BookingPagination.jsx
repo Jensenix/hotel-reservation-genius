@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import PropTypes from 'prop-types';
 
 export default function BookingsPagination({
   pagination,
@@ -91,3 +92,19 @@ export default function BookingsPagination({
     </div>
   );
 }
+
+BookingsPagination.propTypes = {
+  pagination: PropTypes.shape({
+    currentPage: PropTypes.number.isRequired,
+    itemsPerPage: PropTypes.number.isRequired,
+    totalItems: PropTypes.number.isRequired,
+    totalPages: PropTypes.number.isRequired,
+  }),
+  filters: PropTypes.shape({
+    limit: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]).isRequired,
+  }).isRequired,
+  handleFilterChange: PropTypes.func.isRequired,
+};

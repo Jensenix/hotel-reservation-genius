@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 
@@ -82,3 +83,24 @@ export default function BookingActionModal({
     </Modal>
   );
 }
+
+BookingActionModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  actionType: PropTypes.oneOf(['cancel', 'confirm', 'approve', 'reject']).isRequired,
+  selectedBooking: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    user: PropTypes.shape({
+      fullName: PropTypes.string,
+    }),
+    room: PropTypes.shape({
+      roomNumber: PropTypes.string,
+    }),
+    checkInDate: PropTypes.string,
+    checkOutDate: PropTypes.string,
+    totalPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+  cancelReason: PropTypes.string.isRequired,
+  setCancelReason: PropTypes.func.isRequired,
+  executeAction: PropTypes.func.isRequired,
+};

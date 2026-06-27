@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Button from '@/components/ui/Button';
 
 export default function BookingFilterBar({
@@ -26,7 +27,7 @@ export default function BookingFilterBar({
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        
+
         <div className="w-full md:flex-1 min-w-[200px]">
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Search
@@ -40,7 +41,7 @@ export default function BookingFilterBar({
             className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 text-slate-700 bg-slate-50 focus:bg-white"
           />
         </div>
-        
+
         <div className="w-full md:w-auto">
           <Button
             onClick={() => fetchBookings()}
@@ -53,3 +54,15 @@ export default function BookingFilterBar({
     </div>
   );
 }
+
+BookingFilterBar.propTypes = {
+  filters: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    search: PropTypes.string.isRequired,
+  }).isRequired,
+  handleFilterChange: PropTypes.func.isRequired,
+  fetchBookings: PropTypes.func.isRequired,
+  searchInputRef: PropTypes.shape({
+    current: PropTypes.instanceOf(Element),
+  }),
+};

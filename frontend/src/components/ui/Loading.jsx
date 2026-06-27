@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Loading = ({ 
   size = 'md', 
   text = 'Loading...', 
@@ -21,6 +23,12 @@ const Loading = ({
       )}
     </div>
   );
+};
+
+Loading.propTypes = {
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  text: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default Loading;

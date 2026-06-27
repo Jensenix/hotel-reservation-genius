@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /**
  * Component for selecting a payment method during the booking process (Step 2).
  * * @param {Object} props
@@ -65,3 +66,20 @@ export default function PaymentSelection({ paymentMethods, bookingData, setBooki
     </div>
   );
 }
+
+PaymentSelection.propTypes = {
+  paymentMethods: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      methodName: PropTypes.string.isRequired,
+      accountNumber: PropTypes.string,
+    })
+  ).isRequired,
+  bookingData: PropTypes.shape({
+    paymentMethodId: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+  }).isRequired,
+  setBookingData: PropTypes.func.isRequired,
+};

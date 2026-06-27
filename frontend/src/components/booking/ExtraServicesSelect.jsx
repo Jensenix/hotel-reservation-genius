@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 export default function ExtraServicesSelect({ 
   extraServices = [], 
@@ -75,3 +76,20 @@ export default function ExtraServicesSelect({
     </div>
   );
 }
+
+ExtraServicesSelect.propTypes = {
+  extraServices: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      serviceName: PropTypes.string.isRequired,
+      price: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+      ]),
+    })
+  ),
+  selectedExtraServices: PropTypes.objectOf(
+    PropTypes.number
+  ),
+  setSelectedExtraServices: PropTypes.func.isRequired,
+};

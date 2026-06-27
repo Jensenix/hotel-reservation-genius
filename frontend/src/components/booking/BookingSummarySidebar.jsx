@@ -1,4 +1,5 @@
 import Card from '@/components/ui/Card';
+import PropTypes from 'prop-types';
 
 /**
  * Sidebar component that provides a real-time summary of the user's booking details and pricing.
@@ -81,3 +82,45 @@ export default function BookingSummarySidebar({ state }) {
     </Card>
   );
 }
+
+BookingSummarySidebar.propTypes = {
+  state: PropTypes.shape({
+    room: PropTypes.shape({
+      name: PropTypes.string,
+      description: PropTypes.string,
+    }),
+    bookingData: PropTypes.shape({
+      checkInDate: PropTypes.string,
+      checkOutDate: PropTypes.string,
+      guestCount: PropTypes.number,
+    }).isRequired,
+    totalPrice: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]).isRequired,
+    extraServicesTotal: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]).isRequired,
+    grandTotal: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]).isRequired,
+    selectedExtraServices: PropTypes.objectOf(
+      PropTypes.number
+    ).isRequired,
+    extraServices: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+        ]).isRequired,
+        serviceName: PropTypes.string.isRequired,
+        price: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+        ]),
+      })
+    ).isRequired,
+  }).isRequired,
+};

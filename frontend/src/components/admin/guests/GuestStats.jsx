@@ -1,4 +1,5 @@
 import { Users as UsersIcon, Shield, User } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 export default function GuestStats({ users }) {
   return (
@@ -41,3 +42,11 @@ export default function GuestStats({ users }) {
     </div>
   );
 }
+
+GuestStats.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      role: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
