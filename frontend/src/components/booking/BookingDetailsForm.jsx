@@ -74,16 +74,6 @@ export default function BookingDetailsForm({
               placeholderText="Select check-in date"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               popperPlacement="bottom-start"
-              popperModifiers={[
-                {
-                  name: 'preventOverflow',
-                  options: {
-                    rootBoundary: 'viewport',
-                    tether: false,
-                    altAxis: true,
-                  },
-                },
-              ]}
             />
           </div>
         </div>
@@ -103,17 +93,7 @@ export default function BookingDetailsForm({
               dateFormat="MMMM d, yyyy"
               placeholderText="Select check-out date"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              popperPlacement="bottom-end"
-              popperModifiers={[
-                {
-                  name: 'preventOverflow',
-                  options: {
-                    rootBoundary: 'viewport',
-                    tether: false,
-                    altAxis: true,
-                  },
-                },
-              ]}
+              popperPlacement="bottom-start"
             />
           </div>
         </div>
