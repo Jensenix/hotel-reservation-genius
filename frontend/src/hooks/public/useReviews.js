@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 
 export const useReviews = () => {
@@ -30,7 +30,7 @@ export const useReviews = () => {
 
   const [allReviews, setAllReviews] = useState([]);
   const [myReviews, setMyReviews] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [editingReview, setEditingReview] = useState(null);
 
   useEffect(() => {

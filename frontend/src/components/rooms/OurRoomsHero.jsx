@@ -1,4 +1,3 @@
-import React from 'react';
 import { Star, CheckCircle, Wifi, Shield } from 'lucide-react';
 
 const OurRoomsHero = () => {

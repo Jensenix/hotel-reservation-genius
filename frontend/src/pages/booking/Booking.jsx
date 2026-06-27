@@ -1,5 +1,5 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { useBookingProcess } from '@/hooks/booking/useBookingProcess';
 
 import Card from '@/components/ui/Card';
@@ -65,8 +65,7 @@ const Booking = () => {
 
   const canProceed =
     state.step === 1
-      ? state.bookingData.checkInDate &&
-        state.bookingData.checkOutDate
+      ? state.bookingData.checkInDate && state.bookingData.checkOutDate
       : state.bookingData.paymentMethodId;
 
   return (
@@ -75,10 +74,8 @@ const Booking = () => {
         <BookingStepper currentStep={state.step} />
 
         <div className="flex flex-col-reverse lg:grid lg:grid-cols-3 gap-8 mt-8">
-
           <div className="lg:col-span-2">
             <Card className="p-4 sm:p-6">
-
               {state.step === 1 ? (
                 <BookingDetailsForm
                   room={state.room}
@@ -98,7 +95,6 @@ const Booking = () => {
               )}
 
               <div className="mt-8 flex flex-col sm:flex-row justify-between pt-6 border-t border-gray-200 gap-4 sm:gap-0">
-
                 {state.step === 2 && (
                   <Button
                     variant="outline"
@@ -111,27 +107,21 @@ const Booking = () => {
 
                 <Button
                   onClick={
-                    state.step === 1
-                      ? handleNextStep
-                      : handleConfirmPayment
+                    state.step === 1 ? handleNextStep : handleConfirmPayment
                   }
                   disabled={!canProceed || state.isProcessingPayment}
                   className="w-full sm:w-auto ml-auto order-1 sm:order-2"
                 >
                   {getButtonText()}
                 </Button>
-
               </div>
             </Card>
           </div>
 
-
           <div className="lg:col-span-1">
             <BookingSummarySidebar state={state} />
           </div>
-
         </div>
-
 
         <Modal
           isOpen={state.errorState.show}
@@ -143,15 +133,10 @@ const Booking = () => {
           }
           title="Booking Error"
         >
-
           <div className="text-center">
-
-            <p className="text-gray-600 mb-6">
-              {state.errorState.message}
-            </p>
+            <p className="text-gray-600 mb-6">{state.errorState.message}</p>
 
             <div className="flex space-x-3 justify-center">
-
               <Button
                 variant="outline"
                 onClick={() =>
@@ -167,13 +152,9 @@ const Booking = () => {
               <Button onClick={() => navigate('/our-rooms')}>
                 View Other Rooms
               </Button>
-
             </div>
-
           </div>
-
         </Modal>
-
       </div>
     </div>
   );
