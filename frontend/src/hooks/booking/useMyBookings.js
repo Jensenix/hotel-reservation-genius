@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 
 export const useMyBookings = () => {
@@ -57,8 +57,8 @@ export const useMyBookings = () => {
         prevBookings.map((booking) =>
           booking.id === bookingId
             ? { ...booking, status: 'checked_in' }
-            : booking
-        )
+            : booking,
+        ),
       );
     } catch (error) {
       console.error('Error checking in:', error);
@@ -73,8 +73,8 @@ export const useMyBookings = () => {
         prevBookings.map((booking) =>
           booking.id === bookingId
             ? { ...booking, status: 'checked_out' }
-            : booking
-        )
+            : booking,
+        ),
       );
     } catch (error) {
       console.error('Error checking out:', error);

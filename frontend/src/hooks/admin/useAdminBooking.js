@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 
@@ -6,7 +6,6 @@ export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchInputRef = useRef(null);
 
-  // Core State
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({});
@@ -17,7 +16,6 @@ export const useAdminBooking = () => {
     limit: parseInt(searchParams.get('limit')) || 10,
   });
 
-  // Modal States
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
   const [actionType, setActionType] = useState('');
@@ -27,7 +25,6 @@ export const useAdminBooking = () => {
   const [bookingDetails, setBookingDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
-  // Sync URL Params with State
   useEffect(() => {
     const urlStatus = searchParams.get('status') || '';
     const urlSearch = searchParams.get('search') || '';
@@ -40,29 +37,18 @@ export const useAdminBooking = () => {
       urlPage !== filters.page ||
       urlLimit !== filters.limit
     ) {
-      setFilters({
-        status: urlStatus,
-        search: urlSearch,
-        page: urlPage,
-        limit: urlLimit,
-      });
+      setTimeout(() => {
+        setFilters({
+          status: urlStatus,
+          search: urlSearch,
+          page: urlPage,
+          limit: urlLimit,
+        });
+      }, 0);
     }
-  }, [searchParams]);
+  }, [searchParams, filters.status, filters.search, filters.page, filters.limit]);
 
-  // Debounced Fetching
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      fetchBookings();
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [filters.status, filters.search, filters.page, filters.limit]);
-
-  // Focus Management
-  useEffect(() => {
-    if (searchInputRef.current) searchInputRef.current.focus();
-  }, [loading]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
       const response = await apiService.bookings.getAdminBookings(filters);
@@ -75,7 +61,18 @@ export const useAdminBooking = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      fetchBookings();
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [fetchBookings]);
+
+  useEffect(() => {
+    if (searchInputRef.current) searchInputRef.current.focus();
+  }, [loading]);
 
   const updateURLParams = (newFilters) => {
     const params = new URLSearchParams();
@@ -89,10 +86,10 @@ export const useAdminBooking = () => {
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
-      if (key !== 'page') newFilters.page = 1;
-    
-      setFilters(newFilters);
-      updateURLParams(newFilters);
+    if (key !== 'page') newFilters.page = 1;
+  
+    setFilters(newFilters);
+    updateURLParams(newFilters);
   };
 
   const executeAction = async () => {

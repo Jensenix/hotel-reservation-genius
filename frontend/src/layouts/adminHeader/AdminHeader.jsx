@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/auth/useAuth';
 import {
   LayoutDashboard,
   DollarSign,
@@ -53,7 +53,6 @@ const AdminHeader = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 to-slate-800 shadow-lg border-b border-slate-700">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          
           {/* Logo Section */}
           <div className="flex items-center shrink-0">
             <Link to="/admin" className="flex items-center space-x-3">
@@ -61,8 +60,12 @@ const AdminHeader = () => {
                 <span className="text-white font-bold text-sm">AD</span>
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-white font-bold text-lg leading-tight">Admin Portal</h1>
-                <p className="text-slate-400 text-[10px] sm:text-xs whitespace-nowrap">Genius Society Hotel</p>
+                <h1 className="text-white font-bold text-lg leading-tight">
+                  Admin Portal
+                </h1>
+                <p className="text-slate-400 text-[10px] sm:text-xs whitespace-nowrap">
+                  Genius Society Hotel
+                </p>
               </div>
             </Link>
           </div>

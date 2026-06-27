@@ -7,7 +7,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { AuthProvider } from './context/AuthProvider';
+import { useAuth } from './hooks/auth/useAuth';
 import MainLayout from '@/layouts/MainLayout';
 import Loading from '@/components/ui/Loading';
 
