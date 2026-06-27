@@ -2,20 +2,20 @@ import express from 'express';
 import cors from 'cors';
 
 // Import routes
-import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import roomTypeRoutes from './routes/roomTypeRoutes.js';
-import facilityRoutes from './routes/facilityRoutes.js';
-import roomRoutes from './routes/roomRoutes.js';
-import bookingRoutes from './routes/bookingRoutes.js';
-import paymentRoutes from './routes/paymentRoutes.js';
-import reviewRoutes from './routes/reviewRoutes.js';
-import extraServiceRoutes from './routes/extraServiceRoutes.js';
-import paymentMethodRoutes from './routes/paymentMethodRoutes.js';
-import bookingExtraServiceRoutes from './routes/bookingExtraServiceRoutes.js';
-import revenueRoutes from './routes/revenueRoutes.js';
-import roomAvailabilityRoutes from './routes/roomAvailabilityRoutes.js';
-import guestRoutes from './routes/guestRoutes.js';
+import authRoutes from './routes/auth/authRoutes.js';
+import userRoutes from './routes/users/userRoutes.js';
+import roomTypeRoutes from './routes/room/roomTypeRoutes.js';
+import facilityRoutes from './routes/room/facilityRoutes.js';
+import roomRoutes from './routes/room/roomRoutes.js';
+import bookingRoutes from './routes/booking/bookingRoutes.js';
+import paymentRoutes from './routes/payment/paymentRoutes.js';
+import reviewRoutes from './routes/booking/reviewRoutes.js';
+import extraServiceRoutes from './routes/room/extraServiceRoutes.js';
+import paymentMethodRoutes from './routes/payment/paymentMethodRoutes.js';
+import bookingExtraServiceRoutes from './routes/booking/bookingExtraServiceRoutes.js';
+import revenueRoutes from './routes/payment/revenueRoutes.js';
+import roomAvailabilityRoutes from './routes/room/roomAvailabilityRoutes.js';
+import guestRoutes from './routes/users/guestRoutes.js';
 
 const app = express();
 
