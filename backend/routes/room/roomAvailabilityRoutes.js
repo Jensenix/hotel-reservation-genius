@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import RoomAvailabilityController from '../../controllers/room/roomAvailabilityController.js';
+import RoomAvailabilityController from '#controllers/room/roomAvailabilityController.js';
 
 // Get general room availability
 router.get('/', RoomAvailabilityController.getRoomAvailability);

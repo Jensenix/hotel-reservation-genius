@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import userController from '../../controllers/users/userController.js';
+import userController from '#controllers/users/userController.js';
 
 // CRUD Routes
 router.post('/', userController.createUser);

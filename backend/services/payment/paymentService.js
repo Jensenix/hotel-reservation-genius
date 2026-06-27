@@ -1,6 +1,6 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { Payment, Booking, PaymentMethod } = db;
-import pagination from '../../utils/pagination.js';
+import pagination from '#utils/pagination.js';
 import BaseService from '../base/baseService.js';
 
 class PaymentService extends BaseService {

@@ -1,4 +1,4 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { BookingExtraService, Booking, ExtraService } = db;
 import BaseService from '../base/baseService.js';
 

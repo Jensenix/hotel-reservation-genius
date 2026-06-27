@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import extraServiceController from '../../controllers/room/extraServiceController.js';
+import extraServiceController from '#controllers/room/extraServiceController.js';
 
 // CRUD Routes
 router.post('/', extraServiceController.createExtraService);

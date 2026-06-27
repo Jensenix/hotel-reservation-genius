@@ -1,5 +1,5 @@
 import express from 'express';
-import roomTypeController from '../../controllers/room/roomTypeController.js';
+import roomTypeController from '#controllers/room/roomTypeController.js';
 const router = express.Router();
 
 // CRUD Routes

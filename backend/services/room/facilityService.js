@@ -1,4 +1,4 @@
-import db from '../../models/index.js';
+import db from '#models/index.js';
 const { Facility, RoomType } = db;
 import BaseService from '../base/baseService.js';
 

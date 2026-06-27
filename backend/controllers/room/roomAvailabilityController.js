@@ -1,4 +1,4 @@
-import roomAvailabilityService from '../../services/room/roomAvailabilityService.js';
+import roomAvailabilityService from '#services/room/roomAvailabilityService.js';
 
 class RoomAvailabilityController {
   getRoomAvailability = async (req, res) => {
@@ -18,7 +18,7 @@ class RoomAvailabilityController {
         error: error.message,
       });
     }
-  }
+  };
 
   getRoomTypeAvailability = async (req, res) => {
     try {
@@ -37,7 +37,7 @@ class RoomAvailabilityController {
         message: error.message || 'Error fetching room type availability data',
       });
     }
-  }
+  };
 }
 
 export default new RoomAvailabilityController();

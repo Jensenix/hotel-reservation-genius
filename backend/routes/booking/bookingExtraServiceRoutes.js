@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import bookingExtraServiceController from '../../controllers/booking/bookingExtraServiceController.js';
+import bookingExtraServiceController from '#controllers/booking/bookingExtraServiceController.js';
 
 // Create booking extra service
 router.post('/', bookingExtraServiceController.createBookingExtraService);

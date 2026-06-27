@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import paymentMethodController from '../../controllers/payment/paymentMethodController.js';
+import paymentMethodController from '#controllers/payment/paymentMethodController.js';
 
 // CRUD Routes
 router.post('/', paymentMethodController.createPaymentMethod);

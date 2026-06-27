@@ -1,4 +1,5 @@
-import db from '../models/index.js';
+import db from '#models/index.js';
+import { Op } from 'sequelize'; // <--- Fixed: Native ESM Import for Sequelize Operators
 const { Booking, Room, RoomType } = db;
 
 class BookingUtils {
@@ -19,25 +20,19 @@ class BookingUtils {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
-    // Validate dates
     if (checkIn >= checkOut) {
       throw new Error('Check-in date must be before check-out date');
     }
 
-    // Check for overlapping bookings (excluding cancelled ones)
-    // Room is occupied if: checkInDate <= newCheckOut AND checkOutDate > newCheckIn
-    // This allows same-day check-in after checkout (checkout at 12 PM, check-in at 2 PM)
-    // If checkOutDate == newCheckIn, room is available
     const where = {
       roomId,
-      status: { [require('sequelize').Op.ne]: 'cancelled' },
-      checkInDate: { [require('sequelize').Op.lte]: checkOutDate },
-      checkOutDate: { [require('sequelize').Op.gt]: checkInDate },
+      status: { [Op.ne]: 'cancelled' }, // <--- Fixed
+      checkInDate: { [Op.lte]: checkOutDate }, // <--- Fixed
+      checkOutDate: { [Op.gt]: checkInDate }, // <--- Fixed
     };
 
-    // Exclude current booking if updating
     if (excludeBookingId) {
-      where.id = { [require('sequelize').Op.ne]: excludeBookingId };
+      where.id = { [Op.ne]: excludeBookingId }; // <--- Fixed
     }
 
     const overlappingBookings = await Booking.findAll({ where });
@@ -62,7 +57,6 @@ class BookingUtils {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
-    // Calculate duration in days
     const durationInMs = checkOut - checkIn;
     const durationInDays = Math.ceil(durationInMs / (1000 * 60 * 60 * 24));
 
@@ -70,7 +64,6 @@ class BookingUtils {
       throw new Error('Invalid date range');
     }
 
-    // Calculate total price
     const totalPrice = parseFloat(roomType.basePrice) * durationInDays;
 
     return totalPrice;
@@ -87,12 +80,10 @@ class BookingUtils {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
-    // Validate dates
     if (checkIn >= checkOut) {
       throw new Error('Check-in date must be before check-out date');
     }
 
-    // Get all rooms of this type that are available
     const rooms = await Room.findAll({
       where: {
         roomTypeId,
@@ -100,7 +91,6 @@ class BookingUtils {
       },
     });
 
-    // Check each room for availability
     for (const room of rooms) {
       const isAvailable = await this.checkRoomAvailability(
         room.id,
@@ -126,12 +116,10 @@ class BookingUtils {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
-    // Validate dates
     if (checkIn >= checkOut) {
       throw new Error('Check-in date must be before check-out date');
     }
 
-    // Get all rooms
     const where = { status: 'available' };
 
     if (roomTypeId) {
@@ -148,7 +136,6 @@ class BookingUtils {
       ],
     });
 
-    // Filter out rooms with overlapping bookings
     const availableRooms = [];
 
     for (const room of allRooms) {
