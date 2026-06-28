@@ -64,8 +64,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* 2. THE NAVIGATION (Perfectly Centered with Book Now button!) */}
-          <nav className="hidden xl:flex items-center space-x-6 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 shrink-0 z-10">
+          <nav className="hidden xl:flex items-center space-x-6 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 shrink-0 z-30">
             <Link
               to="/"
               className="hover:text-amber-200 transition-colors duration-200 font-medium"
@@ -97,12 +96,10 @@ const Header = () => {
               Reviews
             </Link>
 
-            {/* Book Now moved here, right next to the links */}
             <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-2 font-medium shadow-lg">
               Book Now
             </Button>
           </nav>
-
           {/* 3. THE RIGHT SIDE GROUP (User Profile only, Locked to the Right) */}
           <div className="flex-1 flex items-center justify-end space-x-4 shrink-0 z-20">
             <div className="flex items-center space-x-3 md:space-x-4 shrink-0">
