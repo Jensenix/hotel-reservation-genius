@@ -1,229 +1,91 @@
+import BaseController from '#controllers/base/base.controller.js';
 import bookingService from '#services/booking/booking.service.js';
 
-class BookingController {
-  createBooking = async (req, res) => {
-    try {
-      const booking = await bookingService.createBooking(req.body);
-      res.status(201).json({
-        success: true,
-        message: 'Booking created successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error creating booking',
-      });
-    }
-  };
+class BookingController extends BaseController {
+  createBooking = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.createBooking(req.body);
+    this.sendCreated(res, 'Booking created successfully', data);
+  });
 
-  getAllBookings = async (req, res) => {
-    try {
-      const data = await bookingService.getAllBookings(req.query);
-      res.status(200).json({
-        success: true,
-        message: 'Bookings retrieved successfully',
-        data: data.rows,
-        pagination: data.pagination,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error getting bookings',
-        error: error.message,
-      });
-    }
-  };
+  getAllBookings = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.getAllBookings(req.query);
+    this.sendPaginated(res, 'Bookings retrieved successfully', data.rows, data.pagination);
+  });
 
-  getBookingById = async (req, res) => {
-    try {
-      const booking = await bookingService.getBookingById(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Booking retrieved successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error getting booking',
-      });
-    }
-  };
+  getBookingById = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.getBookingById(req.params.id);
+    this.sendSuccess(res, 'Booking retrieved successfully', data);
+  });
 
-  updateBooking = async (req, res) => {
-    try {
-      const booking = await bookingService.updateBooking(
-        req.params.id,
-        req.body,
-      );
-      res.status(200).json({
-        success: true,
-        message: 'Booking updated successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error updating booking',
-      });
-    }
-  };
+  updateBooking = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.updateBooking(req.params.id, req.body);
+    this.sendSuccess(res, 'Booking updated successfully', data);
+  });
 
-  deleteBooking = async (req, res) => {
-    try {
-      await bookingService.deleteBooking(req.params.id);
-      res
-        .status(200)
-        .json({ success: true, message: 'Booking deleted successfully' });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error deleting booking',
-      });
-    }
-  };
+  deleteBooking = this.asyncHandler(async (req, res) => {
+    await bookingService.deleteBooking(req.params.id);
+    this.sendSuccess(res, 'Booking deleted successfully');
+  });
 
-  checkRoomAvailability = async (req, res) => {
-    try {
-      const { roomId, checkInDate, checkOutDate } = req.query;
-      const available = await bookingService.checkRoomAvailability(
-        roomId,
-        checkInDate,
-        checkOutDate,
-      );
-      res.status(200).json({
-        success: true,
-        message: 'Room availability checked successfully',
-        data: { roomId, checkInDate, checkOutDate, available },
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error checking room availability',
-      });
-    }
-  };
+  /**
+   * Preserves the original response shape where roomId, checkInDate,
+   * and checkOutDate are echoed back alongside the availability flag.
+   * The frontend likely renders all four fields from data.
+   */
+  checkRoomAvailability = this.asyncHandler(async (req, res) => {
+    const { roomId, checkInDate, checkOutDate } = req.query;
+    const available = await bookingService.checkRoomAvailability(
+      roomId,
+      checkInDate,
+      checkOutDate,
+    );
+    this.sendSuccess(res, 'Room availability checked successfully', {
+      roomId,
+      checkInDate,
+      checkOutDate,
+      available,
+    });
+  });
 
-  getAvailableRooms = async (req, res) => {
-    try {
-      const { checkInDate, checkOutDate, roomTypeId } = req.query;
-      const rooms = await bookingService.getAvailableRooms(
-        checkInDate,
-        checkOutDate,
-        roomTypeId,
-      );
-      res.status(200).json({
-        success: true,
-        message: 'Available rooms retrieved successfully',
-        data: rooms,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error getting available rooms',
-      });
-    }
-  };
+  getAvailableRooms = this.asyncHandler(async (req, res) => {
+    const { checkInDate, checkOutDate, roomTypeId } = req.query;
+    const data = await bookingService.getAvailableRooms(
+      checkInDate,
+      checkOutDate,
+      roomTypeId,
+    );
+    this.sendSuccess(res, 'Available rooms retrieved successfully', data);
+  });
 
-  confirmBooking = async (req, res) => {
-    try {
-      const booking = await bookingService.confirmBooking(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Booking confirmed successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error confirming booking',
-      });
-    }
-  };
+  confirmBooking = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.confirmBooking(req.params.id);
+    this.sendSuccess(res, 'Booking confirmed successfully', data);
+  });
 
-  checkInGuest = async (req, res) => {
-    try {
-      const booking = await bookingService.checkInGuest(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Guest checked in successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error checking in guest',
-      });
-    }
-  };
+  checkInGuest = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.checkInGuest(req.params.id);
+    this.sendSuccess(res, 'Guest checked in successfully', data);
+  });
 
-  checkOutGuest = async (req, res) => {
-    try {
-      const booking = await bookingService.checkOutGuest(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Guest checked out successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error checking out guest',
-      });
-    }
-  };
+  checkOutGuest = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.checkOutGuest(req.params.id);
+    this.sendSuccess(res, 'Guest checked out successfully', data);
+  });
 
-  cancelBooking = async (req, res) => {
-    try {
-      const booking = await bookingService.cancelBooking(
-        req.params.id,
-        req.body.reason,
-      );
-      res.status(200).json({
-        success: true,
-        message: 'Booking cancelled successfully',
-        data: booking,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error cancelling booking',
-      });
-    }
-  };
+  cancelBooking = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.cancelBooking(req.params.id, req.body.reason);
+    this.sendSuccess(res, 'Booking cancelled successfully', data);
+  });
 
-  getUserBookings = async (req, res) => {
-    try {
-      const bookings = await bookingService.getUserBookings(req.params.userId);
-      res.status(200).json({
-        success: true,
-        message: 'User bookings retrieved successfully',
-        data: bookings,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error getting user bookings',
-      });
-    }
-  };
+  getUserBookings = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.getUserBookings(req.params.userId);
+    this.sendSuccess(res, 'User bookings retrieved successfully', data);
+  });
 
-  getAllBookingsAdmin = async (req, res) => {
-    try {
-      const data = await bookingService.getAllBookingsAdmin(req.query);
-      res.status(200).json({
-        success: true,
-        message: 'Bookings retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error getting admin bookings',
-        error: error.message,
-      });
-    }
-  };
+  getAllBookingsAdmin = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.getAllBookingsAdmin(req.query);
+    this.sendSuccess(res, 'Bookings retrieved successfully', data);
+  });
 }
+
 export default new BookingController();

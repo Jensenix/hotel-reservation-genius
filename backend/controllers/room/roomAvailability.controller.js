@@ -1,43 +1,19 @@
+import BaseController from '#controllers/base/base.controller.js';
 import roomAvailabilityService from '#services/room/roomAvailability.service.js';
 
-class RoomAvailabilityController {
-  getRoomAvailability = async (req, res) => {
-    try {
-      const data = await roomAvailabilityService.getRoomAvailability(
-        req.query.date,
-      );
-      res.json({
-        success: true,
-        message: 'Room availability data retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error fetching room availability data',
-        error: error.message,
-      });
-    }
-  };
+class RoomAvailabilityController extends BaseController {
+  getRoomAvailability = this.asyncHandler(async (req, res) => {
+    const data = await roomAvailabilityService.getRoomAvailability(req.query.date);
+    this.sendSuccess(res, 'Room availability data retrieved successfully', data);
+  });
 
-  getRoomTypeAvailability = async (req, res) => {
-    try {
-      const data = await roomAvailabilityService.getRoomTypeAvailability(
-        req.params.roomTypeId,
-        req.query.date,
-      );
-      res.json({
-        success: true,
-        message: 'Room type availability data retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error fetching room type availability data',
-      });
-    }
-  };
+  getRoomTypeAvailability = this.asyncHandler(async (req, res) => {
+    const data = await roomAvailabilityService.getRoomTypeAvailability(
+      req.params.roomTypeId,
+      req.query.date,
+    );
+    this.sendSuccess(res, 'Room type availability data retrieved successfully', data);
+  });
 }
 
 export default new RoomAvailabilityController();

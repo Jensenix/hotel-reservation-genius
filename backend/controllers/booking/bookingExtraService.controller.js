@@ -1,49 +1,23 @@
+import BaseController from '#controllers/base/base.controller.js';
 import bookingExtraServiceService from '#services/booking/bookingExtraService.service.js';
 
-class BookingExtraServiceController {
-  createBookingExtraService = async (req, res) => {
-    try {
-      const data = await bookingExtraServiceService.createBookingExtraService(
-        req.body,
-      );
-      res.status(201).json({ success: true, data });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        message: error.message || 'Failed to create booking extra service',
-        error: error.message,
-      });
-    }
-  };
+class BookingExtraServiceController extends BaseController {
+  createBookingExtraService = this.asyncHandler(async (req, res) => {
+    const data = await bookingExtraServiceService.createBookingExtraService(req.body);
+    this.sendCreated(res, 'Booking extra service created successfully', data);
+  });
 
-  getBookingExtraServicesByBookingId = async (req, res) => {
-    try {
-      const data =
-        await bookingExtraServiceService.getBookingExtraServicesByBookingId(
-          req.params.bookingId,
-        );
-      res.status(200).json({ success: true, data });
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to fetch booking extra services',
-        error: error.message,
-      });
-    }
-  };
+  getBookingExtraServicesByBookingId = this.asyncHandler(async (req, res) => {
+    const data = await bookingExtraServiceService.getBookingExtraServicesByBookingId(
+      req.params.bookingId,
+    );
+    this.sendSuccess(res, 'Booking extra services retrieved successfully', data);
+  });
 
-  deleteBookingExtraService = async (req, res) => {
-    try {
-      await bookingExtraServiceService.deleteBookingExtraService(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Booking extra service deleted successfully',
-      });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        message: error.message || 'Failed to delete booking extra service',
-        error: error.message,
-      });
-    }
-  };
+  deleteBookingExtraService = this.asyncHandler(async (req, res) => {
+    await bookingExtraServiceService.deleteBookingExtraService(req.params.id);
+    this.sendSuccess(res, 'Booking extra service deleted successfully');
+  });
 }
 
 export default new BookingExtraServiceController();

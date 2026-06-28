@@ -1,30 +1,12 @@
+import BaseController from '#controllers/base/base.controller.js';
 import revenueService from '#services/payment/revenue.service.js';
 
-class RevenueController {
-  /**
-   * Handles requests for aggregated revenue statistics.
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @returns {Promise<Object>} JSON response with the calculated revenue statistics.
-   */
-  getRevenueStats = async (req, res) => {
-    try {
-      const { startDate, endDate } = req.query;
-      const stats = await revenueService.getRevenueStats(startDate, endDate);
-
-      return res.status(200).json({
-        success: true,
-        message: 'Revenue data retrieved successfully',
-        data: stats,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: 'Error fetching revenue data',
-        error: error.message,
-      });
-    }
-  };
+class RevenueController extends BaseController {
+  getRevenueStats = this.asyncHandler(async (req, res) => {
+    const { startDate, endDate } = req.query;
+    const data = await revenueService.getRevenueStats(startDate, endDate);
+    this.sendSuccess(res, 'Revenue data retrieved successfully', data);
+  });
 }
 
 export default new RevenueController();

@@ -1,92 +1,36 @@
+import BaseController from '#controllers/base/base.controller.js';
 import reviewService from '#services/users/review.service.js';
 
-class ReviewController {
-  createReview = async (req, res) => {
-    try {
-      const data = await reviewService.createReview(req.body);
-      res
-        .status(201)
-        .json({ success: true, message: 'Review created successfully', data });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+class ReviewController extends BaseController {
+  createReview = this.asyncHandler(async (req, res) => {
+    const data = await reviewService.createReview(req.body);
+    this.sendCreated(res, 'Review created successfully', data);
+  });
 
-  getAllReviews = async (req, res) => {
-    try {
-      const data = await reviewService.getAllReviews(req.query);
-      res.status(200).json({
-        success: true,
-        message: 'Reviews retrieved successfully',
-        data: data.rows,
-        pagination: data.pagination,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error getting reviews',
-        error: error.message,
-      });
-    }
-  };
+  getAllReviews = this.asyncHandler(async (req, res) => {
+    const data = await reviewService.getAllReviews(req.query);
+    this.sendPaginated(res, 'Reviews retrieved successfully', data.rows, data.pagination);
+  });
 
-  getUserReviews = async (req, res) => {
-    try {
-      const data = await reviewService.getUserReviews(req.query.userId);
-      res.status(200).json({
-        success: true,
-        message: 'User reviews retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  getUserReviews = this.asyncHandler(async (req, res) => {
+    const data = await reviewService.getUserReviews(req.query.userId);
+    this.sendSuccess(res, 'User reviews retrieved successfully', data);
+  });
 
-  getReviewById = async (req, res) => {
-    try {
-      const data = await reviewService.getReviewById(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Review retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  getReviewById = this.asyncHandler(async (req, res) => {
+    const data = await reviewService.getReviewById(req.params.id);
+    this.sendSuccess(res, 'Review retrieved successfully', data);
+  });
 
-  updateReview = async (req, res) => {
-    try {
-      const data = await reviewService.updateReview(req.params.id, req.body);
-      res
-        .status(200)
-        .json({ success: true, message: 'Review updated successfully', data });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  updateReview = this.asyncHandler(async (req, res) => {
+    const data = await reviewService.updateReview(req.params.id, req.body);
+    this.sendSuccess(res, 'Review updated successfully', data);
+  });
 
-  deleteReview = async (req, res) => {
-    try {
-      await reviewService.deleteReview(req.params.id);
-      res
-        .status(200)
-        .json({ success: true, message: 'Review deleted successfully' });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  deleteReview = this.asyncHandler(async (req, res) => {
+    await reviewService.deleteReview(req.params.id);
+    this.sendSuccess(res, 'Review deleted successfully');
+  });
 }
 
 export default new ReviewController();

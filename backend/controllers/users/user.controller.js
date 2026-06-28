@@ -1,75 +1,31 @@
+import BaseController from '#controllers/base/base.controller.js';
 import userService from '#services/users/user.service.js';
 
-class UserController {
-  createUser = async (req, res) => {
-    try {
-      const data = await userService.createUser(req.body);
-      res
-        .status(201)
-        .json({ success: true, message: 'User created successfully', data });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+class UserController extends BaseController {
+  createUser = this.asyncHandler(async (req, res) => {
+    const data = await userService.createUser(req.body);
+    this.sendCreated(res, 'User created successfully', data);
+  });
 
-  getAllUsers = async (req, res) => {
-    try {
-      const data = await userService.getAllUsers(req.query);
-      res.status(200).json({
-        success: true,
-        message: 'Users retrieved successfully',
-        data: data.rows,
-        pagination: data.pagination,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error getting users',
-        error: error.message,
-      });
-    }
-  };
+  getAllUsers = this.asyncHandler(async (req, res) => {
+    const data = await userService.getAllUsers(req.query);
+    this.sendPaginated(res, 'Users retrieved successfully', data.rows, data.pagination);
+  });
 
-  getUserById = async (req, res) => {
-    try {
-      const data = await userService.getUserById(req.params.id);
-      res
-        .status(200)
-        .json({ success: true, message: 'User retrieved successfully', data });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  getUserById = this.asyncHandler(async (req, res) => {
+    const data = await userService.getUserById(req.params.id);
+    this.sendSuccess(res, 'User retrieved successfully', data);
+  });
 
-  updateUser = async (req, res) => {
-    try {
-      const data = await userService.updateUser(req.params.id, req.body);
-      res
-        .status(200)
-        .json({ success: true, message: 'User updated successfully', data });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  updateUser = this.asyncHandler(async (req, res) => {
+    const data = await userService.updateUser(req.params.id, req.body);
+    this.sendSuccess(res, 'User updated successfully', data);
+  });
 
-  deleteUser = async (req, res) => {
-    try {
-      await userService.deleteUser(req.params.id);
-      res
-        .status(200)
-        .json({ success: true, message: 'User deleted successfully' });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  deleteUser = this.asyncHandler(async (req, res) => {
+    await userService.deleteUser(req.params.id);
+    this.sendSuccess(res, 'User deleted successfully');
+  });
 }
 
 export default new UserController();
