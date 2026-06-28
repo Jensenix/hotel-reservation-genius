@@ -1,44 +1,28 @@
 import guestService from '#services/users/guest.service.js';
+import { sendResponse } from '#utils/responseHandler.js';
 
 class GuestController {
-  /**
-   * Handles requests to fetch a paginated list of guests.
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @returns {Promise<void>} JSON response with guest data.
-   */
-  getGuests = async (req, res) => {
+  getGuests = async (req, res, next) => {
     try {
       const { page, limit, search, role } = req.query;
-      const guestData = await guestService.getGuests(page, limit, search, role);
-      res.status(200).json(guestData);
+      const data = await guestService.getGuests(page, limit, search, role);
+      
+      const records = data?.rows ? data.rows : (Array.isArray(data) ? data : []);
+      const pagination = data?.pagination || null;
+
+      return sendResponse(res, 200, 'Guests retrieved successfully', records, pagination);
     } catch (error) {
-      res.status(500).json({
-        message: 'Error fetching guests',
-        error: error.message,
-      });
+      next(error);
     }
   };
 
-  /**
-   * Handles requests to fetch detailed information for a specific guest.
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @returns {Promise<void>} JSON response with detailed guest data.
-   */
-  getGuestDetails = async (req, res) => {
+  getGuestDetails = async (req, res, next) => {
     try {
       const { id } = req.params;
       const guestDetails = await guestService.getGuestDetails(id);
-      res.status(200).json(guestDetails);
+      return sendResponse(res, 200, 'Guest details retrieved successfully', guestDetails);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-      res.status(statusCode).json({
-        message: error.statusCode
-          ? error.message
-          : 'Error fetching guest details',
-        error: error.message,
-      });
+      next(error);
     }
   };
 }

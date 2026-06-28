@@ -1,47 +1,28 @@
 import bookingExtraServiceService from '#services/booking/bookingExtraService.service.js';
+import BaseController from '../base/base.controller.js';
+import { sendResponse } from '#utils/responseHandler.js';
 
-class BookingExtraServiceController {
-  createBookingExtraService = async (req, res) => {
-    try {
-      const data = await bookingExtraServiceService.createBookingExtraService(
-        req.body,
-      );
-      res.status(201).json({ success: true, data });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        message: error.message || 'Failed to create booking extra service',
-        error: error.message,
-      });
-    }
-  };
+class BookingExtraServiceController extends BaseController {
+  constructor() {
+    super(bookingExtraServiceService, 'Booking extra service');
+  }
 
-  getBookingExtraServicesByBookingId = async (req, res) => {
-    try {
-      const data =
-        await bookingExtraServiceService.getBookingExtraServicesByBookingId(
-          req.params.bookingId,
-        );
-      res.status(200).json({ success: true, data });
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to fetch booking extra services',
-        error: error.message,
-      });
-    }
-  };
+  createBookingExtraService = this.create;
+  deleteBookingExtraService = this.delete;
 
-  deleteBookingExtraService = async (req, res) => {
+  /**
+   * Custom relation lookup to get all extra amenities tied to a particular reservation record.
+   */
+  getBookingExtraServicesByBookingId = async (req, res, next) => {
     try {
-      await bookingExtraServiceService.deleteBookingExtraService(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Booking extra service deleted successfully',
-      });
+      const data = await this.service.getBookingExtraServicesByBookingId(req.params.bookingId);
+      
+      const records = data?.rows ? data.rows : (Array.isArray(data) ? data : []);
+      const pagination = data?.pagination || null;
+
+      return sendResponse(res, 200, 'Booking extra services retrieved successfully', records, pagination);
     } catch (error) {
-      res.status(error.statusCode || 500).json({
-        message: error.message || 'Failed to delete booking extra service',
-        error: error.message,
-      });
+      next(error);
     }
   };
 }

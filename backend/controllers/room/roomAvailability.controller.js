@@ -1,41 +1,22 @@
 import roomAvailabilityService from '#services/room/roomAvailability.service.js';
+import { sendResponse } from '#utils/responseHandler.js';
 
 class RoomAvailabilityController {
-  getRoomAvailability = async (req, res) => {
+  getRoomAvailability = async (req, res, next) => {
     try {
-      const data = await roomAvailabilityService.getRoomAvailability(
-        req.query.date,
-      );
-      res.json({
-        success: true,
-        message: 'Room availability data retrieved successfully',
-        data,
-      });
+      const data = await roomAvailabilityService.getRoomAvailability(req.query.date);
+      return sendResponse(res, 200, 'Room availability data retrieved successfully', data);
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error fetching room availability data',
-        error: error.message,
-      });
+      next(error);
     }
   };
 
-  getRoomTypeAvailability = async (req, res) => {
+  getRoomTypeAvailability = async (req, res, next) => {
     try {
-      const data = await roomAvailabilityService.getRoomTypeAvailability(
-        req.params.roomTypeId,
-        req.query.date,
-      );
-      res.json({
-        success: true,
-        message: 'Room type availability data retrieved successfully',
-        data,
-      });
+      const data = await roomAvailabilityService.getRoomTypeAvailability(req.params.roomTypeId, req.query.date);
+      return sendResponse(res, 200, 'Room type availability data retrieved successfully', data);
     } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Error fetching room type availability data',
-      });
+      next(error);
     }
   };
 }

@@ -1,29 +1,21 @@
 import authService from '#services/users/auth.service.js';
+import { sendResponse } from '#utils/responseHandler.js';
 
 class AuthController {
   /**
    * Handles user authentication requests.
    * @param {Object} req - The Express request object.
    * @param {Object} res - The Express response object.
-   * @returns {Promise<Object>} JSON response with authentication status and user data.
+   * @param {Function} next - The next middleware handler.
    */
-  login = async (req, res) => {
+  login = async (req, res, next) => {
     try {
       const { email, password } = req.body;
       const userData = await authService.login(email, password);
 
-      return res.status(200).json({
-        success: true,
-        message: 'Login successful',
-        data: userData,
-      });
+      return sendResponse(res, 200, 'Login successful', userData);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({
-        success: false,
-        message: error.statusCode ? error.message : 'Error during login',
-        error: error.message,
-      });
+      next(error);
     }
   };
 
@@ -31,24 +23,15 @@ class AuthController {
    * Handles new user registration requests.
    * @param {Object} req - The Express request object.
    * @param {Object} res - The Express response object.
-   * @returns {Promise<Object>} JSON response with registration status and user data.
+   * @param {Function} next - The next middleware handler.
    */
-  register = async (req, res) => {
+  register = async (req, res, next) => {
     try {
       const userData = await authService.register(req.body);
 
-      return res.status(201).json({
-        success: true,
-        message: 'Registration successful',
-        data: userData,
-      });
+      return sendResponse(res, 201, 'Registration successful', userData);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({
-        success: false,
-        message: error.statusCode ? error.message : 'Error during registration',
-        error: error.message,
-      });
+      next(error);
     }
   };
 }

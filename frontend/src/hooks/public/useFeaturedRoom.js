@@ -13,8 +13,15 @@ export const useFeaturedRooms = (limit = 3) => {
       try {
         setLoading(true);
         const response = await apiService.roomTypes.getAll();
+        
         if (isMounted) {
-          setRooms(response.data.data.slice(0, limit));
+          const rawData = response.data?.data;
+          
+          const cleanArray = Array.isArray(rawData) 
+            ? rawData 
+            : (rawData?.rows || []);
+
+          setRooms(cleanArray.slice(0, limit));
         }
       } catch (err) {
         if (isMounted) setError(err);
