@@ -1,83 +1,31 @@
+import BaseController from '#controllers/base/base.controller.js';
 import ExtraServiceService from '#services/room/extraService.service.js';
 
-class ExtraServiceController {
-  createExtraService = async (req, res) => {
-    try {
-      const data = await ExtraServiceService.createExtraService(req.body);
-      res.status(201).json({
-        success: true,
-        message: 'Extra service created successfully',
-        data,
-      });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+class ExtraServiceController extends BaseController {
+  createExtraService = this.asyncHandler(async (req, res) => {
+    const data = await ExtraServiceService.createExtraService(req.body);
+    this.sendCreated(res, 'Extra service created successfully', data);
+  });
 
-  getAllExtraServices = async (req, res) => {
-    try {
-      const data = await ExtraServiceService.getAll();
-      res.status(200).json({
-        success: true,
-        message: 'Extra services retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error getting extra services',
-        error: error.message,
-      });
-    }
-  };
+  getAllExtraServices = this.asyncHandler(async (req, res) => {
+    const data = await ExtraServiceService.getAll();
+    this.sendSuccess(res, 'Extra services retrieved successfully', data);
+  });
 
-  getExtraServiceById = async (req, res) => {
-    try {
-      const data = await ExtraServiceService.getExtraServiceById(req.params.id);
-      res.status(200).json({
-        success: true,
-        message: 'Extra service retrieved successfully',
-        data,
-      });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  getExtraServiceById = this.asyncHandler(async (req, res) => {
+    const data = await ExtraServiceService.getExtraServiceById(req.params.id);
+    this.sendSuccess(res, 'Extra service retrieved successfully', data);
+  });
 
-  updateExtraService = async (req, res) => {
-    try {
-      const data = await ExtraServiceService.updateExtraService(
-        req.params.id,
-        req.body,
-      );
-      res.status(200).json({
-        success: true,
-        message: 'Extra service updated successfully',
-        data,
-      });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  updateExtraService = this.asyncHandler(async (req, res) => {
+    const data = await ExtraServiceService.updateExtraService(req.params.id, req.body);
+    this.sendSuccess(res, 'Extra service updated successfully', data);
+  });
 
-  deleteExtraService = async (req, res) => {
-    try {
-      await ExtraServiceService.deleteExtraService(req.params.id);
-      res
-        .status(200)
-        .json({ success: true, message: 'Extra service deleted successfully' });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  };
+  deleteExtraService = this.asyncHandler(async (req, res) => {
+    await ExtraServiceService.deleteExtraService(req.params.id);
+    this.sendSuccess(res, 'Extra service deleted successfully');
+  });
 }
 
 export default new ExtraServiceController();

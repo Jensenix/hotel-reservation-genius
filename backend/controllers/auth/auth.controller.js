@@ -1,56 +1,17 @@
+import BaseController from '#controllers/base/base.controller.js';
 import authService from '#services/users/auth.service.js';
 
-class AuthController {
-  /**
-   * Handles user authentication requests.
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @returns {Promise<Object>} JSON response with authentication status and user data.
-   */
-  login = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const userData = await authService.login(email, password);
+class AuthController extends BaseController {
+  login = this.asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const data = await authService.login(email, password);
+    this.sendSuccess(res, 'Login successful', data);
+  });
 
-      return res.status(200).json({
-        success: true,
-        message: 'Login successful',
-        data: userData,
-      });
-    } catch (error) {
-      const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({
-        success: false,
-        message: error.statusCode ? error.message : 'Error during login',
-        error: error.message,
-      });
-    }
-  };
-
-  /**
-   * Handles new user registration requests.
-   * @param {Object} req - The Express request object.
-   * @param {Object} res - The Express response object.
-   * @returns {Promise<Object>} JSON response with registration status and user data.
-   */
-  register = async (req, res) => {
-    try {
-      const userData = await authService.register(req.body);
-
-      return res.status(201).json({
-        success: true,
-        message: 'Registration successful',
-        data: userData,
-      });
-    } catch (error) {
-      const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({
-        success: false,
-        message: error.statusCode ? error.message : 'Error during registration',
-        error: error.message,
-      });
-    }
-  };
+  register = this.asyncHandler(async (req, res) => {
+    const data = await authService.register(req.body);
+    this.sendCreated(res, 'Registration successful', data);
+  });
 }
 
 export default new AuthController();

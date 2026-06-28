@@ -16,6 +16,7 @@ import bookingExtraServiceRoutes from './routes/booking/bookingExtraService.rout
 import revenueRoutes from './routes/payment/revenue.routes.js';
 import roomAvailabilityRoutes from './routes/room/roomAvailability.routes.js';
 import guestRoutes from './routes/users/guest.routes.js';
+import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -46,9 +47,6 @@ app.use('/api/room-availability', roomAvailabilityRoutes);
 app.use('/api/guests', guestRoutes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+app.use(errorHandler);
 
 export default app;
