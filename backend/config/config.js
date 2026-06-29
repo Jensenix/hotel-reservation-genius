@@ -24,3 +24,12 @@ export default {
     dialect: process.env.DB_DIALECT,
   },
 };
+
+export const jwtSecret = process.env.JWT_SECRET || 'JWT_SECRET_FAKE_KEY';
+
+export const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};

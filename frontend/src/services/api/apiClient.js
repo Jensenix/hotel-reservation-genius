@@ -2,10 +2,6 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-/**
- * The base Axios instance for all API calls.
- * Configured with default headers and interceptors for centralized error handling.
- */
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -13,17 +9,25 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor (no token logic added yet, but ready for future use)
 apiClient.interceptors.request.use(
   (config) => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const token = user.token || user.data?.token; 
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('Failed to parse user from local storage', error);
+      }
+    }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle global errors (e.g., unauthorized access)
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

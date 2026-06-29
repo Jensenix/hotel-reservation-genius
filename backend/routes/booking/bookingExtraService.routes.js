@@ -1,17 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import bookingExtraServiceController from '#controllers/booking/bookingExtraService.controller.js';
+import { authenticateToken } from '#middleware/auth.js';
 
-// Create booking extra service
-router.post('/', bookingExtraServiceController.createBookingExtraService);
-
-// Get booking extra services by booking ID
-router.get(
-  '/booking/:bookingId',
-  bookingExtraServiceController.getBookingExtraServicesByBookingId,
-);
-
-// Delete booking extra service
-router.delete('/:id', bookingExtraServiceController.deleteBookingExtraService);
+// All actions require standard authentication
+router.post('/', authenticateToken, bookingExtraServiceController.createBookingExtraService);
+router.get('/booking/:bookingId', authenticateToken, bookingExtraServiceController.getBookingExtraServicesByBookingId);
+router.delete('/:id', authenticateToken, bookingExtraServiceController.deleteBookingExtraService);
 
 export default router;

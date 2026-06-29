@@ -1,28 +1,25 @@
 import express from 'express';
 const router = express.Router();
 import bookingController from '#controllers/booking/booking.controller.js';
+import { authenticateToken, requireAdmin } from '#middleware/auth.js';
 
-// CRUD Routes
-router.post('/', bookingController.createBooking);
-router.get('/', bookingController.getAllBookings);
-
-// Business Logic Routes (must come before /:id)
+// Public Business Logic Routes
 router.get('/check-availability', bookingController.checkRoomAvailability);
 router.get('/available-rooms', bookingController.getAvailableRooms);
 
-// Admin Routes (must come before /:id)
-router.get('/admin/all', bookingController.getAllBookingsAdmin);
-router.put('/admin/:id/confirm', bookingController.confirmBooking);
-router.put('/admin/:id/check-in', bookingController.checkInGuest);
-router.put('/admin/:id/check-out', bookingController.checkOutGuest);
-router.put('/admin/:id/cancel', bookingController.cancelBooking);
+// User-specific routes (Must be logged in)
+router.post('/', authenticateToken, bookingController.createBooking);
+router.get('/user/:userId', authenticateToken, bookingController.getUserBookings);
+router.get('/:id', authenticateToken, bookingController.getBookingById);
+router.put('/:id', authenticateToken, bookingController.updateBooking);
 
-// User-specific routes (must come before /:id)
-router.get('/user/:userId', bookingController.getUserBookings);
-
-// CRUD Routes with ID (must come last)
-router.get('/:id', bookingController.getBookingById);
-router.put('/:id', bookingController.updateBooking);
-router.delete('/:id', bookingController.deleteBooking);
+// Admin Routes (Strictly protected)
+router.get('/', authenticateToken, requireAdmin, bookingController.getAllBookings);
+router.get('/admin/all', authenticateToken, requireAdmin, bookingController.getAllBookingsAdmin);
+router.put('/admin/:id/confirm', authenticateToken, requireAdmin, bookingController.confirmBooking);
+router.put('/admin/:id/check-in', authenticateToken, requireAdmin, bookingController.checkInGuest);
+router.put('/admin/:id/check-out', authenticateToken, requireAdmin, bookingController.checkOutGuest);
+router.put('/admin/:id/cancel', authenticateToken, requireAdmin, bookingController.cancelBooking);
+router.delete('/:id', authenticateToken, requireAdmin, bookingController.deleteBooking);
 
 export default router;

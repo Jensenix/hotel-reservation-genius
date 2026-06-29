@@ -1,16 +1,15 @@
 import express from 'express';
 import roomTypeController from '#controllers/room/roomType.controller.js';
+import { authenticateToken, requireAdmin } from '#middleware/auth.js';
+
 const router = express.Router();
 
-// CRUD Routes
-router.post('/', roomTypeController.createRoomType);
 router.get('/', roomTypeController.getAllRoomTypes);
-router.get(
-  '/with-facilities',
-  roomTypeController.getAllRoomTypesWithFacilities,
-);
+router.get('/with-facilities', roomTypeController.getAllRoomTypesWithFacilities);
 router.get('/:id', roomTypeController.getRoomTypeById);
-router.put('/:id', roomTypeController.updateRoomType);
-router.delete('/:id', roomTypeController.deleteRoomType);
+
+router.post('/', authenticateToken, requireAdmin, roomTypeController.createRoomType);
+router.put('/:id', authenticateToken, requireAdmin, roomTypeController.updateRoomType);
+router.delete('/:id', authenticateToken, requireAdmin, roomTypeController.deleteRoomType);
 
 export default router;

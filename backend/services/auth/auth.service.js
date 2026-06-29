@@ -1,14 +1,10 @@
 import db from '#models/index.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { jwtSecret } from '#config/config.js';
 const { User } = db;
 
 class AuthService {
-  /**
-   * Authenticates a user and retrieves their profile data.
-   * @param {string} email - User's email address.
-   * @param {string} password - User's password.
-   * @returns {Promise<Object>} The authenticated user's data.
-   * @throws {Error} If credentials are missing or invalid.
-   */
   async login(email, password) {
     if (!email || !password) {
       const error = new Error('Email and password are required');
@@ -17,12 +13,32 @@ class AuthService {
     }
 
     const user = await User.findOne({ where: { email } });
-
-    if (!user || user.password !== password) {
+    if (!user) {
       const error = new Error('Invalid email or password');
       error.statusCode = 401;
       throw error;
     }
+
+    let isMatch = false;
+
+    if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$')) {
+      isMatch = await bcrypt.compare(password, user.password);
+    } else {
+      isMatch = user.password === password;
+    }
+
+    if (!isMatch) {
+      const error = new Error('Invalid email or password');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const payload = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    };
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: '24h' });
 
     return {
       id: user.id,
@@ -30,20 +46,10 @@ class AuthService {
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
+      token,
     };
   }
 
-  /**
-   * Registers a new user into the system.
-   * @param {Object} userData - Data required to create a user.
-   * @param {string} userData.fullName - User's full name.
-   * @param {string} userData.email - User's email.
-   * @param {string} userData.password - User's password.
-   * @param {string} [userData.phoneNumber] - User's phone number.
-   * @param {string} [userData.role] - User's role.
-   * @returns {Promise<Object>} The newly registered user's data.
-   * @throws {Error} If validation fails or the user already exists.
-   */
   async register({ fullName, email, password, phoneNumber, role }) {
     if (!fullName || !email || !password) {
       const error = new Error('fullName, email, and password are required');
@@ -58,10 +64,13 @@ class AuthService {
       throw error;
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = await User.create({
       fullName,
       email,
-      password,
+      password: hashedPassword,
       phoneNumber,
       role: role || 'guest',
     });

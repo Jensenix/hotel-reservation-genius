@@ -1,12 +1,15 @@
 import express from 'express';
 const router = express.Router();
 import paymentController from '#controllers/payment/payment.controller.js';
+import { authenticateToken, requireAdmin } from '#middleware/auth.js';
 
-// CRUD Routes
-router.post('/', paymentController.createPayment);
-router.get('/', paymentController.getAllPayments);
-router.get('/:id', paymentController.getPaymentById);
-router.put('/:id', paymentController.updatePayment);
-router.delete('/:id', paymentController.deletePayment);
+// User accessible payment routes
+router.post('/', authenticateToken, paymentController.createPayment);
+router.get('/:id', authenticateToken, paymentController.getPaymentById);
+router.put('/:id', authenticateToken, paymentController.updatePayment);
+
+// Admin only routes
+router.get('/', authenticateToken, requireAdmin, paymentController.getAllPayments);
+router.delete('/:id', authenticateToken, requireAdmin, paymentController.deletePayment);
 
 export default router;

@@ -17,11 +17,12 @@ import revenueRoutes from './routes/payment/revenue.routes.js';
 import roomAvailabilityRoutes from './routes/room/roomAvailability.routes.js';
 import guestRoutes from './routes/users/guest.routes.js';
 import errorHandler from './middleware/errorHandler.js';
+import { corsOptions } from './config/config.js';
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

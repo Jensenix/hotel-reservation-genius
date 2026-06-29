@@ -1,5 +1,5 @@
 import BaseController from '#controllers/base/base.controller.js';
-import authService from '#services/users/auth.service.js';
+import authService from '#services/auth/auth.service.js';
 
 class AuthController extends BaseController {
   login = this.asyncHandler(async (req, res) => {

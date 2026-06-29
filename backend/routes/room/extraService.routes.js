@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
 import extraServiceController from '#controllers/room/extraService.controller.js';
+import { authenticateToken, requireAdmin } from '#middleware/auth.js';
 
-// CRUD Routes
-router.post('/', extraServiceController.createExtraService);
 router.get('/', extraServiceController.getAllExtraServices);
 router.get('/:id', extraServiceController.getExtraServiceById);
-router.put('/:id', extraServiceController.updateExtraService);
-router.delete('/:id', extraServiceController.deleteExtraService);
+router.post('/', authenticateToken, requireAdmin, extraServiceController.createExtraService);
+router.put('/:id', authenticateToken, requireAdmin, extraServiceController.updateExtraService);
+router.delete('/:id', authenticateToken, requireAdmin, extraServiceController.deleteExtraService);
 
 export default router;
