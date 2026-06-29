@@ -14,7 +14,6 @@ class ExtraServiceService extends BaseService {
     return super.getAll({ order: [['createdAt', 'DESC']] });
   }
 
-  // Alias methods for controller compatibility
   async createExtraService(data) {
     return this.create(data);
   }

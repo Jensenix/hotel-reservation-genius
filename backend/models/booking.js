@@ -1,10 +1,14 @@
 import { Model } from 'sequelize';
+
+/**
+ * @param {Object} sequelize - The Sequelize instance
+ * @param {Object} DataTypes - Sequelize data types
+ */
 export default (sequelize, DataTypes) => {
   class Booking extends Model {
     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * Defines associations for the Booking model.
+     * @param {Object} models - All loaded Sequelize models
      */
     static associate(models) {
       Booking.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });

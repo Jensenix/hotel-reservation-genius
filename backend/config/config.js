@@ -1,3 +1,15 @@
+/**
+ * Configuration Management Module
+ * 
+ * Loads environment variables from .env file and exports:
+ * - Database configurations for development, test, and production environments
+ * - JWT secret for authentication token signing
+ * - CORS options for cross-origin request handling
+ * 
+ * Environment Variables Required:
+ * DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_DIALECT, JWT_SECRET, CLIENT_URL
+ */
+
 import dotenv from 'dotenv';
 dotenv.config();
 

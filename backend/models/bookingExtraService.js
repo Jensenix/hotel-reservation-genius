@@ -1,10 +1,10 @@
 import { Model } from 'sequelize';
+
 export default (sequelize, DataTypes) => {
   class BookingExtraService extends Model {
     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * Defines associations for the BookingExtraService model.
+     * @param {Object} models - All loaded Sequelize models
      */
     static associate(models) {
       BookingExtraService.belongsTo(models.Booking, {
