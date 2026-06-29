@@ -2,6 +2,7 @@ import db from '#models/index.js';
 const { Room, RoomType, Booking } = db;
 import pagination from '#utils/pagination.js';
 import BaseService from '../base/base.service.js';
+import { publish, CHANNELS } from '../websocket/eventPublisher.js';
 
 class RoomService extends BaseService {
   constructor() {
@@ -10,13 +11,6 @@ class RoomService extends BaseService {
 
   /**
    * Creates a new room.
-   * @param {Object} data - Room details.
-   * @param {string} data.roomNumber - The room number.
-   * @param {string|number} data.roomTypeId - The ID of the associated room type.
-   * @param {number} data.floor - The floor number.
-   * @param {string} [data.status] - The initial status of the room (defaults to 'available').
-   * @returns {Promise<Object>} The created room.
-   * @throws {Error} If required fields are missing or the room number already exists.
    */
   async createRoom({ roomNumber, roomTypeId, floor, status }) {
     if (!roomNumber || !roomTypeId) {
@@ -42,13 +36,6 @@ class RoomService extends BaseService {
 
   /**
    * Retrieves all rooms with optional pagination and filtering.
-   * @param {Object} query - The query parameters.
-   * @param {number} [query.page=1] - The page number.
-   * @param {number} [query.limit] - The number of records per page.
-   * @param {string} [query.status] - Filter by room status.
-   * @param {string|number} [query.roomTypeId] - Filter by room type.
-   * @param {number} [query.floor] - Filter by floor.
-   * @returns {Promise<Object>} An object containing the rows and pagination details.
    */
   async getAllRooms({ page = 1, limit, status, roomTypeId, floor }) {
     const where = {};
@@ -97,9 +84,6 @@ class RoomService extends BaseService {
 
   /**
    * Retrieves a specific room by its ID.
-   * @param {string|number} id - The ID of the room.
-   * @returns {Promise<Object>} The room data with associated room type and bookings.
-   * @throws {Error} If the room is not found.
    */
   async getRoomById(id) {
     return super.getById(id, {
@@ -112,10 +96,6 @@ class RoomService extends BaseService {
 
   /**
    * Updates an existing room's details.
-   * @param {string|number} id - The ID of the room to update.
-   * @param {Object} data - The data to update.
-   * @returns {Promise<Object>} The updated room.
-   * @throws {Error} If the room is not found or the new room number already exists.
    */
   async updateRoom(id, data) {
     const room = await super.getById(id);
@@ -131,14 +111,23 @@ class RoomService extends BaseService {
       }
     }
 
-    return room.update(data);
+    const updatedRoom = await room.update(data);
+
+    if (data.status) {
+      try {
+        const payload = { roomId: updatedRoom.id, status: updatedRoom.status };
+        await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: payload, room: `room:${updatedRoom.id}` });
+        await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: payload, room: 'admin:dashboard' });
+      } catch (err) {
+        console.error('[RoomService] Failed to publish room_availability_changed event:', err.message);
+      }
+    }
+
+    return updatedRoom;
   }
 
   /**
    * Deletes a room by its ID.
-   * @param {string|number} id - The ID of the room.
-   * @returns {Promise<void>}
-   * @throws {Error} If the room is not found.
    */
   async deleteRoom(id) {
     return super.delete(id);
@@ -146,10 +135,6 @@ class RoomService extends BaseService {
 
   /**
    * Retrieves all rooms, including their associated room type data.
-   * @param {Object} query - The query parameters.
-   * @param {string} [query.status] - Optional status filter.
-   * @param {string|number} [query.roomTypeId] - Optional room type ID filter.
-   * @returns {Promise<Array>} List of rooms with basic room type info.
    */
   async getAllWithRoomType({ status, roomTypeId }) {
     const where = {};

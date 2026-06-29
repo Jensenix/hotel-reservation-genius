@@ -12,6 +12,7 @@ const {
 import { Op } from 'sequelize';
 import BookingUtils from '#utils/bookingUtils.js';
 import BaseService from '../base/base.service.js';
+import { publish, CHANNELS } from '../websocket/eventPublisher.js';
 
 class BookingService extends BaseService {
   constructor() {
@@ -20,15 +21,6 @@ class BookingService extends BaseService {
 
   /**
    * Creates a new booking with business logic for finding available rooms and calculating price.
-   * @param {Object} data - The booking data.
-   * @param {string|number} data.userId - The ID of the user making the booking.
-   * @param {string|number} data.roomTypeId - The requested room type ID.
-   * @param {string} data.checkInDate - The check-in date.
-   * @param {string} data.checkOutDate - The check-out date.
-   * @param {number} [data.totalPrice] - The total price (calculated automatically if not provided).
-   * @param {string} [data.status] - The booking status (defaults to 'pending').
-   * @returns {Promise<Object>} The created booking.
-   * @throws {Error} If required fields are missing or no rooms are available.
    */
   async createBooking({
     userId,
@@ -67,7 +59,7 @@ class BookingService extends BaseService {
         checkOutDate,
       ));
 
-    return super.create({
+    const booking = await super.create({
       userId,
       roomId: availableRoom.id,
       checkInDate,
@@ -75,17 +67,25 @@ class BookingService extends BaseService {
       totalPrice: calculatedPrice,
       status: status || 'pending',
     });
+
+    try {
+      const payload = {
+        bookingId: booking.id,
+        userId: booking.userId,
+        roomId: booking.roomId,
+        status: booking.status,
+      };
+      await publish(CHANNELS.BOOKING, { event: 'booking_created', data: payload, room: `user:${booking.userId}` });
+      await publish(CHANNELS.BOOKING, { event: 'booking_created', data: payload, room: 'admin:dashboard' });
+    } catch (err) {
+      console.error('[BookingService] Failed to publish booking_created event:', err.message);
+    }
+
+    return booking;
   }
 
   /**
    * Retrieves all bookings with pagination and filtering.
-   * @param {Object} query - The query parameters.
-   * @param {number} [query.page=1] - The page number.
-   * @param {number} [query.limit=10] - The number of records per page.
-   * @param {string} [query.status] - Filter by booking status.
-   * @param {string|number} [query.userId] - Filter by user ID.
-   * @param {string|number} [query.roomId] - Filter by room ID.
-   * @returns {Promise<Object>} An object containing the rows and pagination details.
    */
   async getAllBookings({ page = 1, limit = 10, status, userId, roomId }) {
     const where = {};
@@ -134,9 +134,6 @@ class BookingService extends BaseService {
 
   /**
    * Retrieves a specific booking by ID, including all deep relationships.
-   * @param {string|number} id - The ID of the booking to retrieve.
-   * @returns {Promise<Object>} The booking data with nested associations.
-   * @throws {Error} If the booking is not found.
    */
   async getBookingById(id) {
     return super.getById(id, {
@@ -170,9 +167,6 @@ class BookingService extends BaseService {
 
   /**
    * Confirms a pending booking.
-   * @param {string|number} id - The ID of the booking to confirm.
-   * @returns {Promise<Object>} The updated booking data.
-   * @throws {Error} If the booking is not found or not in 'pending' status.
    */
   async confirmBooking(id) {
     const booking = await super.getById(id, {
@@ -189,14 +183,21 @@ class BookingService extends BaseService {
       throw err;
     }
 
-    return booking.update({ status: 'confirmed' });
+    const updatedBooking = await booking.update({ status: 'confirmed' });
+
+    try {
+      const payload = { bookingId: updatedBooking.id, status: updatedBooking.status };
+      await publish(CHANNELS.BOOKING, { event: 'booking_confirmed', data: payload, room: `user:${updatedBooking.userId}` });
+      await publish(CHANNELS.BOOKING, { event: 'booking_confirmed', data: payload, room: 'admin:dashboard' });
+    } catch (err) {
+      console.error('[BookingService] Failed to publish booking_confirmed event:', err.message);
+    }
+
+    return updatedBooking;
   }
 
   /**
    * Checks in a guest and marks the room as occupied.
-   * @param {string|number} id - The ID of the booking.
-   * @returns {Promise<Object>} The updated booking data.
-   * @throws {Error} If the booking is not found or not in 'confirmed' status.
    */
   async checkInGuest(id) {
     const booking = await super.getById(id, {
@@ -214,14 +215,25 @@ class BookingService extends BaseService {
     }
 
     await booking.room.update({ status: 'occupied' });
-    return booking.update({ status: 'checked_in', actualCheckIn: new Date() });
+    const updatedBooking = await booking.update({ status: 'checked_in', actualCheckIn: new Date() });
+
+    try {
+      const bookingPayload = { bookingId: updatedBooking.id, status: updatedBooking.status };
+      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: `user:${updatedBooking.userId}` });
+      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: 'admin:dashboard' });
+
+      const roomPayload = { roomId: booking.room.id, status: 'occupied' };
+      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: `room:${booking.room.id}` });
+      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: 'admin:dashboard' });
+    } catch (err) {
+      console.error('[BookingService] Failed to publish check-in events:', err.message);
+    }
+
+    return updatedBooking;
   }
 
   /**
    * Checks out a guest and marks the room as available.
-   * @param {string|number} id - The ID of the booking.
-   * @returns {Promise<Object>} The updated booking data.
-   * @throws {Error} If the booking is not found or not in 'checked_in' status.
    */
   async checkOutGuest(id) {
     const booking = await super.getById(id, {
@@ -239,18 +251,28 @@ class BookingService extends BaseService {
     }
 
     await booking.room.update({ status: 'available' });
-    return booking.update({
+    const updatedBooking = await booking.update({
       status: 'checked_out',
       actualCheckOut: new Date(),
     });
+
+    try {
+      const bookingPayload = { bookingId: updatedBooking.id, status: updatedBooking.status };
+      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: `user:${updatedBooking.userId}` });
+      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: 'admin:dashboard' });
+
+      const roomPayload = { roomId: booking.room.id, status: 'available' };
+      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: `room:${booking.room.id}` });
+      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: 'admin:dashboard' });
+    } catch (err) {
+      console.error('[BookingService] Failed to publish check-out events:', err.message);
+    }
+
+    return updatedBooking;
   }
 
   /**
    * Cancels a booking, freeing up the room if it was occupied.
-   * @param {string|number} id - The ID of the booking to cancel.
-   * @param {string} [reason] - The reason for cancellation.
-   * @returns {Promise<Object>} The cancelled booking data.
-   * @throws {Error} If the booking is not found or is currently checked-in.
    */
   async cancelBooking(id, reason) {
     const booking = await super.getById(id, {
@@ -271,20 +293,25 @@ class BookingService extends BaseService {
       await booking.room.update({ status: 'available' });
     }
 
-    return booking.update({
+    const updatedBooking = await booking.update({
       status: 'cancelled',
       cancelReason: reason || 'Cancelled by admin',
       cancelledAt: new Date(),
     });
+
+    try {
+      const payload = { bookingId: updatedBooking.id, status: updatedBooking.status };
+      await publish(CHANNELS.BOOKING, { event: 'booking_cancelled', data: payload, room: `user:${updatedBooking.userId}` });
+      await publish(CHANNELS.BOOKING, { event: 'booking_cancelled', data: payload, room: 'admin:dashboard' });
+    } catch (err) {
+      console.error('[BookingService] Failed to publish booking_cancelled event:', err.message);
+    }
+
+    return updatedBooking;
   }
 
   /**
    * Checks if a specific room is available for a given date range.
-   * @param {string|number} roomId - The ID of the room.
-   * @param {string} checkInDate - The requested check-in date.
-   * @param {string} checkOutDate - The requested check-out date.
-   * @returns {Promise<boolean>} True if available, false otherwise.
-   * @throws {Error} If missing required parameters.
    */
   async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
     if (!roomId || !checkInDate || !checkOutDate) {
@@ -303,11 +330,6 @@ class BookingService extends BaseService {
 
   /**
    * Retrieves a list of available rooms for a given date range, optionally filtered by type.
-   * @param {string} checkInDate - The desired check-in date.
-   * @param {string} checkOutDate - The desired check-out date.
-   * @param {string|number} [roomTypeId] - Optional filter for specific room type.
-   * @returns {Promise<Array>} List of available rooms.
-   * @throws {Error} If missing required dates.
    */
   async getAvailableRooms(checkInDate, checkOutDate, roomTypeId) {
     if (!checkInDate || !checkOutDate) {
@@ -324,9 +346,6 @@ class BookingService extends BaseService {
 
   /**
    * Retrieves all bookings associated with a specific user.
-   * @param {string|number} userId - The ID of the user.
-   * @returns {Promise<Array>} Array of booking data for the user.
-   * @throws {Error} If the user ID is not provided.
    */
   async getUserBookings(userId) {
     if (!userId) {
@@ -372,15 +391,6 @@ class BookingService extends BaseService {
 
   /**
    * Retrieves all bookings with extended admin-level filters and mappings.
-   * @param {Object} query - The query parameters.
-   * @param {string} [query.status] - The status to filter by.
-   * @param {string} [query.search] - Search term matching user name or ID.
-   * @param {string} [query.checkInDate] - Filter by check-in date.
-   * @param {string} [query.checkOutDate] - Filter by check-out date.
-   * @param {string|number} [query.userId] - Filter by user ID.
-   * @param {number} [query.page=1] - The page number.
-   * @param {number} [query.limit=10] - Number of items per page.
-   * @returns {Promise<Object>} An object containing the mapped bookings and pagination details.
    */
   async getAllBookingsAdmin({
     status,
@@ -471,10 +481,6 @@ class BookingService extends BaseService {
 
   /**
    * Updates an existing booking.
-   * @param {string|number} id - The ID of the booking to update.
-   * @param {Object} data - The data to update.
-   * @returns {Promise<Object>} The updated booking.
-   * @throws {Error} If the booking is not found.
    */
   async updateBooking(id, data) {
     return this.update(id, data);
@@ -482,9 +488,6 @@ class BookingService extends BaseService {
 
   /**
    * Deletes a booking.
-   * @param {string|number} id - The ID of the booking to delete.
-   * @returns {Promise<Object>} The deleted booking.
-   * @throws {Error} If the booking is not found.
    */
   async deleteBooking(id) {
     return this.delete(id);
@@ -492,9 +495,6 @@ class BookingService extends BaseService {
 
   /**
    * Processes a user-initiated self check-in.
-   * @param {string|number} bookingId - The ID of the booking.
-   * @param {string|number} userId - The ID of the requesting user.
-   * @returns {Promise<Object>} The updated booking.
    */
   async selfCheckIn(bookingId, userId) {
     const booking = await this.model.findByPk(bookingId);
