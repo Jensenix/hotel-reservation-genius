@@ -13,7 +13,7 @@
  */
 
 import { useContext, useEffect, useRef } from 'react';
-import { WebSocketContext } from '@/context/WebSocketProvider';
+import { WebSocketContext } from '@/context/WebSocketContext';
 
 /**
  * Subscribes to a single Socket.IO event for the lifetime of the component.
