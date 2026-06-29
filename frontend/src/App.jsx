@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 
 import { AuthProvider } from './context/AuthProvider';
+import { WebSocketProvider } from './context/WebSocketProvider';
 import { useAuth } from './hooks/auth/useAuth';
 import MainLayout from '@/layouts/MainLayout';
 import Loading from '@/components/ui/Loading';
@@ -63,10 +64,12 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <AppRoutes />
-      </Router>
+      <WebSocketProvider>
+        <Router>
+          <ScrollToTop />
+          <AppRoutes />
+        </Router>
+      </WebSocketProvider>
     </AuthProvider>
   );
 }
