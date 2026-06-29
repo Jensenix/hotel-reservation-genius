@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,6 +26,9 @@ export const useAdminBooking = () => {
   const [bookingDetails, setBookingDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
+  // ---------------------------------------------------------------------------
+  // URL SYNC & FETCHING LOGIC (Must be declared before WebSockets)
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const urlStatus = searchParams.get('status') || '';
     const urlSearch = searchParams.get('search') || '';
@@ -56,11 +60,11 @@ export const useAdminBooking = () => {
         setBookings(response.data.data.bookings);
         setPagination(response.data.data.pagination);
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching admin bookings:', error);
     } finally {
       setLoading(false);
-    }
+  }
   }, [filters]);
 
   useEffect(() => {
@@ -74,13 +78,46 @@ export const useAdminBooking = () => {
     if (searchInputRef.current) searchInputRef.current.focus();
   }, [loading]);
 
+  // ---------------------------------------------------------------------------
+  // REAL-TIME EVENT SUBSCRIPTIONS
+  // ---------------------------------------------------------------------------
+  useWebSocket('booking:status_changed', (payload) => {
+    if (!payload || !payload.bookingId || !payload.status) return;
+
+    // Instantly update the booking in the main table list
+    setBookings((prevBookings) =>
+      prevBookings.map((b) =>
+        String(b.id) === String(payload.bookingId) 
+          ? { ...b, status: payload.status } 
+          : b
+      )
+    );
+
+    // Instantly update the detail modal if the admin is currently viewing it
+    setBookingDetails((prevDetails) => {
+      if (prevDetails && String(prevDetails.id) === String(payload.bookingId)) {
+        return { ...prevDetails, status: payload.status };
+      }
+      return prevDetails;
+    });
+  });
+
+  useWebSocket('booking:created', () => {
+    // If we are on page 1 and no specific filters are applied, auto-refresh to show it
+    if (filters.page === 1 && !filters.search && !filters.status) {
+      fetchBookings();
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // UI ACTIONS
+  // ---------------------------------------------------------------------------
   const updateURLParams = (newFilters) => {
     const params = new URLSearchParams();
     if (newFilters.status) params.set('status', newFilters.status);
     if (newFilters.search) params.set('search', newFilters.search);
     if (newFilters.page > 1) params.set('page', newFilters.page.toString());
-    if (newFilters.limit !== 10)
-      params.set('limit', newFilters.limit.toString());
+    if (newFilters.limit !== 10) params.set('limit', newFilters.limit.toString());
     setSearchParams(params);
   };
 
@@ -120,7 +157,7 @@ export const useAdminBooking = () => {
         setShowActionModal(false);
         setSelectedBooking(null);
         setCancelReason('');
-        fetchBookings();
+        // Handled instantly via websocket, no need to manually fetchBookings
       }
     } catch (error) {
       console.error('Error executing action:', error);
