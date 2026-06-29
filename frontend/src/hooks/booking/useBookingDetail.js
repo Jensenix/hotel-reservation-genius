@@ -2,12 +2,29 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
+import { useWebSocket } from '@/hooks/useWebSocket'; // ADD THIS
 
 export const useBookingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // ---------------------------------------------------------------------------
+  // REAL-TIME EVENT SUBSCRIPTION
+  // ---------------------------------------------------------------------------
+  useWebSocket('booking:status_changed', (payload) => {
+    if (!payload || !payload.bookingId || !payload.status) return;
+
+    // Instantly update UI if the admin changes the status of THIS booking
+    setBooking((prevBooking) => {
+      if (prevBooking && String(prevBooking.id) === String(payload.bookingId)) {
+        return { ...prevBooking, status: payload.status };
+      }
+      return prevBooking;
+    });
+  });
+  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     let isMounted = true;
@@ -43,11 +60,7 @@ export const useBookingDetail = () => {
   const handleCheckIn = async () => {
     try {
       await apiService.bookings.selfCheckIn(id);
-
-      setBooking((prev) => ({
-        ...prev,
-        status: 'checked_in',
-      }));
+      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
       console.error('Error checking in:', error);
       alert(error.response?.data?.message || 'Failed to check in');
@@ -65,11 +78,7 @@ export const useBookingDetail = () => {
 
     try {
       await apiService.bookings.selfCheckOut(id);
-
-      setBooking((prev) => ({
-        ...prev,
-        status: 'checked_out',
-      }));
+      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
       console.error('Error checking out:', error);
       alert(error.response?.data?.message || 'Failed to check out');
@@ -81,11 +90,7 @@ export const useBookingDetail = () => {
       await apiService.bookings.cancelBooking(bookingId, { 
         reason: 'Cancelled by user via dashboard' 
       });
-
-      setBooking((prev) => ({
-        ...prev,
-        status: 'cancelled',
-      }));
+      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
       console.error('Cancel failed:', error);
       alert(error.response?.data?.message || 'Failed to cancel booking');

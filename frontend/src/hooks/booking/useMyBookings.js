@@ -130,7 +130,20 @@ export const useMyBookings = () => {
       ];
     });
   });
-  
+
+  useWebSocket('booking:status_changed', (data) => {
+    if (!data || !data.bookingId || !data.status) return;
+
+    // Update the main bookings array instantly
+    setBookings((prevBookings) =>
+      prevBookings.map((b) =>
+        String(b.id) === String(data.bookingId)
+          ? { ...b, status: data.status }
+          : b,
+      ),
+    );
+  });
+
   return {
     loading,
     filter,
