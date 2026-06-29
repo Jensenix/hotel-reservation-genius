@@ -13,6 +13,8 @@ export const useOurRooms = () => {
       priceRange: searchParams.get('priceRange') || '',
       sortBy: searchParams.get('sortBy') || 'name',
       search: searchParams.get('search') || '',
+      checkIn: searchParams.get('checkIn') || '',
+      checkOut: searchParams.get('checkOut') || '',
     }),
     [searchParams],
   );
@@ -45,28 +47,24 @@ export const useOurRooms = () => {
     let isMounted = true;
 
     const loadRooms = async () => {
+      setLoading(true); // Moved inside the async function to avoid synchronous effect renders
       try {
-        const response = await apiService.roomTypes.getAllWithFacilities();
+        const queryParams = {
+          search: filters.search,
+          checkIn: filters.checkIn,
+          checkOut: filters.checkOut,
+        };
+        
+        const response = await apiService.roomTypes.getAll(queryParams);
+        
         if (isMounted) {
           setRooms(response.data.data);
         }
       } catch (error) {
-        console.error('Error fetching room types with facilities:', error);
-        try {
-          const fallbackResponse = await apiService.roomTypes.getAll();
-          if (isMounted) {
-            setRooms(fallbackResponse.data.data);
-          }
-        } catch (fallbackError) {
-          console.error('Fallback also failed:', fallbackError);
-          if (isMounted) {
-            setRooms([]);
-          }
-        }
+        console.error('Error fetching room types:', error);
+        if (isMounted) setRooms([]);
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     };
 
@@ -75,7 +73,7 @@ export const useOurRooms = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [filters.checkIn, filters.checkOut, filters.search]);
 
   const filteredRooms = useMemo(() => {
     return rooms
@@ -92,14 +90,7 @@ export const useOurRooms = () => {
         if (filters.priceRange === 'luxury')
           matchesPrice = room.basePrice > 200;
 
-        const matchesSearch =
-          !filters.search ||
-          room.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-          room.description
-            ?.toLowerCase()
-            .includes(filters.search.toLowerCase());
-
-        return matchesCapacity && matchesPrice && matchesSearch;
+        return matchesCapacity && matchesPrice;
       })
       .sort((a, b) => {
         switch (filters.sortBy) {

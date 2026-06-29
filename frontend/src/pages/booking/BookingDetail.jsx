@@ -4,7 +4,8 @@ import BookingRoomInfo from '@/components/booking/detail/BookingRoomInfo';
 import BookingSidebar from '@/components/booking/detail/BookingSidebar';
 
 const BookingDetail = () => {
-  const { booking, loading, goBack, goToModify, handleCheckOut } = useBookingDetail();
+  // ADDED handleCheckIn to the destructured properties from the hook
+  const { booking, loading, goBack, goToModify, handleCheckOut, handleCheckIn } = useBookingDetail();
 
   if (loading) {
     return (
@@ -50,6 +51,7 @@ const BookingDetail = () => {
           <BookingSidebar 
             booking={booking} 
             onModify={goToModify}
+            onCheckIn={handleCheckIn} 
             onCheckOut={handleCheckOut}
           />
         </div>
