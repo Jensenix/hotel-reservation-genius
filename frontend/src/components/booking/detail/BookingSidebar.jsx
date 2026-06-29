@@ -6,7 +6,7 @@ import {
   isCheckOutAllowed as checkOutAllowed,
 } from '@/utils/bookingActionUtils';
 
-const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
+const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) => {
   const isCheckInAllowed = checkInAllowed(booking);
   const isCheckOutAllowed = checkOutAllowed(booking);
 
@@ -93,13 +93,24 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
             </button>
           )}
 
+          {booking.status === 'pending' && (
+            <button
+              onClick={() => onCancel?.(booking.id)}
+              className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+            >
+              Cancel Booking
+            </button>
+          )}
+
           {booking.status === 'confirmed' && (
             <button
               onClick={() => {
                 if (isCheckInAllowed) {
                   onCheckIn?.(booking.id);
                 } else {
-                  alert('You can only check in on or after your scheduled check-in date.');
+                  alert(
+                    'You can only check in on or after your scheduled check-in date.',
+                  );
                 }
               }}
               className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
@@ -118,7 +129,9 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
                 if (isCheckOutAllowed) {
                   onCheckOut?.(booking.id);
                 } else {
-                  alert('You can only check out on or after your scheduled check-out date.');
+                  alert(
+                    'You can only check out on or after your scheduled check-out date.',
+                  );
                 }
               }}
               className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
@@ -161,6 +174,7 @@ BookingSidebar.propTypes = {
   onModify: PropTypes.func,
   onCheckIn: PropTypes.func,
   onCheckOut: PropTypes.func,
+  onCancel: PropTypes.func,
 };
 
 export default BookingSidebar;

@@ -4,8 +4,6 @@ import bookingService from '#services/booking/booking.service.js';
 class BookingController extends BaseController {
   /**
    * Creates a new booking.
-   * @param {Object} req - Request object containing booking body
-   * @param {Object} res - Response object
    */
   createBooking = this.asyncHandler(async (req, res) => {
     const data = await bookingService.createBooking(req.body);
@@ -14,8 +12,6 @@ class BookingController extends BaseController {
 
   /**
    * Retrieves all bookings with pagination support.
-   * @param {Object} req - Request object with query params
-   * @param {Object} res - Response object
    */
   getAllBookings = this.asyncHandler(async (req, res) => {
     const data = await bookingService.getAllBookings(req.query);
@@ -107,14 +103,17 @@ class BookingController extends BaseController {
   });
 
   /**
-   * Cancels a booking.
+   * Cancels a booking (Admin version without ownership check).
    */
   cancelBooking = this.asyncHandler(async (req, res) => {
-    const data = await bookingService.cancelBooking(
+    // FIX: Safely access req.body to prevent 500 error crashes
+    const reason = req.body?.reason || 'Cancelled by admin';
+    
+    const data = await bookingService.cancelBookingByAdmin(
       req.params.id,
-      req.body.reason,
+      reason,
     );
-    this.sendSuccess(res, 'Booking cancelled successfully', data);
+    this.sendSuccess(res, 'Booking cancelled successfully by admin', data);
   });
 
   /**
@@ -147,6 +146,22 @@ class BookingController extends BaseController {
   selfCheckOut = this.asyncHandler(async (req, res) => {
     const data = await bookingService.selfCheckOut(req.params.id, req.user.id);
     this.sendSuccess(res, 'Checked out successfully', data);
+  });
+
+  /**
+   * Allows user to cancel their own booking (Validates ownership).
+   */
+  selfCancelBooking = this.asyncHandler(async (req, res) => {
+    // FIX: Safely access req.body and cast req.user.id to a Number 
+    // to prevent strict inequality (1 !== '1') throwing a 403 error.
+    const reason = req.body?.reason || 'Cancelled by user';
+    
+    const data = await bookingService.cancelBookingByUser(
+      req.params.id,
+      reason,
+      Number(req.user.id),
+    );
+    this.sendSuccess(res, 'Booking cancelled successfully', data);
   });
 }
 

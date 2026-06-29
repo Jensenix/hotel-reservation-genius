@@ -76,12 +76,29 @@ export const useBookingDetail = () => {
     }
   };
 
-  return { 
-    booking, 
-    loading, 
-    goBack, 
-    goToModify, 
+  const handleCancel = async (bookingId) => {
+    try {
+      await apiService.bookings.cancelBooking(bookingId, { 
+        reason: 'Cancelled by user via dashboard' 
+      });
+
+      setBooking((prev) => ({
+        ...prev,
+        status: 'cancelled',
+      }));
+    } catch (error) {
+      console.error('Cancel failed:', error);
+      alert(error.response?.data?.message || 'Failed to cancel booking');
+    }
+  };
+
+  return {
+    booking,
+    loading,
+    goBack,
+    goToModify,
     handleCheckIn,
-    handleCheckOut 
+    handleCheckOut,
+    handleCancel,
   };
 };

@@ -108,7 +108,7 @@ export const useAdminBooking = () => {
           response = await apiService.bookings.checkOutGuest(bookingId);
           break;
         case 'cancel':
-          response = await apiService.bookings.cancelBooking(bookingId, {
+          response = await apiService.bookings.adminCancelBooking(bookingId, {
             reason: cancelReason,
           });
           break;
@@ -124,6 +124,7 @@ export const useAdminBooking = () => {
       }
     } catch (error) {
       console.error('Error executing action:', error);
+      alert(error.response?.data?.message || 'Failed to execute action');
     }
   };
 

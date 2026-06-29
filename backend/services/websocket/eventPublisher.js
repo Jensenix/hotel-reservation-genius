@@ -1,19 +1,9 @@
-/**
- * eventPublisher.js
- *
- * PostgreSQL LISTEN/NOTIFY bridge for Socket.IO realtime events.
- */
-
 import pg from 'pg';
 import db from '#models/index.js';
 import { broadcast } from './socketManager.js';
 
 const { Client } = pg;
 const { sequelize } = db;
-
-// ---------------------------------------------------------------------------
-// Channel registry
-// ---------------------------------------------------------------------------
 
 export const CHANNELS = {
   BOOKING: 'booking_events',
@@ -30,10 +20,6 @@ let listenClient = null;
 let reconnectAttempts = 0;
 let isShuttingDown = false;
 let reconnectTimer = null;
-
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
 
 function buildClientConfig() {
   const sq = sequelize.config || {};
@@ -60,7 +46,6 @@ function handleNotification(msg) {
   try {
     const envelope = JSON.parse(msg.payload);
     
-    // Extract routing instructions (not sent to clients)
     const { _routing, event } = envelope;
 
     if (!event || !_routing || !_routing.rooms || _routing.rooms.length === 0) {
@@ -68,12 +53,8 @@ function handleNotification(msg) {
       return;
     }
 
-    // Clean the envelope for the client by removing backend routing data
     delete envelope._routing;
-
-    console.log(`[eventPublisher] Routing '${event}' to ${JSON.stringify(_routing.rooms)}`);
     
-    // Broadcast standard envelope to all target rooms simultaneously
     broadcast(_routing.rooms, event, envelope);
   } catch (err) {
     console.error('[eventPublisher] Failed to parse notification payload:', err.message);
@@ -101,10 +82,6 @@ function scheduleReconnect() {
     }
   }, delay);
 }
-
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
 
 async function initializeEventListener() {
   if (listenClient) {
@@ -137,33 +114,23 @@ async function initializeEventListener() {
   console.log(`[eventPublisher] Listening on: ${LISTEN_CHANNELS.join(', ')}`);
 }
 
-/**
- * Standardized Publish Method
- * @param {string} channel - The pg_notify channel
- * @param {Object} payload - The event config
- * @param {string} payload.event - From RealtimeEvents contract
- * @param {Object} payload.data - The actual mutated data (IDs and deltas only)
- * @param {Object} [payload.meta] - Optional metadata (actor, reason)
- * @param {string[]} [payload.rooms] - Array of target Socket.IO rooms
- * @param {string} [payload.room] - (Legacy) fallback for a single room string
- */
-async function publish(channel, { event, data, meta, rooms, room }) {
+async function publish(channel, { event, data, meta, rooms }) {
   try {
-    // Fallback for older single-room calls
-    const targetRooms = rooms || (room ? [room] : []);
+    if (!rooms || !Array.isArray(rooms) || rooms.length === 0) {
+      console.warn(`[eventPublisher] Dropped event '${event}' — missing or invalid 'rooms' array.`);
+      return;
+    }
 
-    // Create the Standard Envelope
     const envelope = {
       event,
       timestamp: new Date().toISOString(),
       data: data || {},
       meta: meta || {},
-      _routing: { rooms: targetRooms } // Stripped before sending to frontend
+      _routing: { rooms }
     };
 
     const json = JSON.stringify(envelope);
     
-    // Safety limit check (PostgreSQL pg_notify limit is ~8000 bytes)
     if (Buffer.byteLength(json, 'utf8') > 7500) {
       console.error(`[eventPublisher] Payload for ${event} exceeds safe size limit. Sent partial.`);
     }
