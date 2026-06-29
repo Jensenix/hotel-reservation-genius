@@ -4,6 +4,10 @@ import Button from '@/components/ui/Button';
 import { Calendar, Users, Star } from 'lucide-react';
 import { getStatusColor, getStatusText } from '@/utils/bookingStatusUtils';
 import { formatLongDate } from '@/utils/dateUtils';
+import {
+  isCheckInAllowed as checkInAllowed,
+  isCheckOutAllowed as checkOutAllowed,
+} from '@/utils/bookingActionUtils';
 
 const BookingCard = ({
   booking,
@@ -16,17 +20,8 @@ const BookingCard = ({
   const roomInitial = booking.room?.roomType?.name?.charAt(0) || 'R';
   const maxCapacity = booking.room?.roomType?.maxCapacity;
 
-  // --- Decoupled Business Logic (Permissions) ---
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const checkInDate = new Date(booking.checkInDate);
-  checkInDate.setHours(0, 0, 0, 0);
-  const isCheckInAllowed = today >= checkInDate;
-
-  const checkOutDate = new Date(booking.checkOutDate);
-  checkOutDate.setHours(0, 0, 0, 0);
-  const isCheckOutAllowed = today >= checkOutDate;
+  const isCheckInAllowed = checkInAllowed(booking);
+  const isCheckOutAllowed = checkOutAllowed(booking);
 
   return (
     <Card

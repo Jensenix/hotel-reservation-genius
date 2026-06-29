@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
+import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
 
 export const useBookingDetail = () => {
   const { id } = useParams();
@@ -56,23 +57,9 @@ export const useBookingDetail = () => {
   const handleCheckOut = async () => {
     if (!booking) return;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const checkOutDate = new Date(booking.checkOutDate);
-    checkOutDate.setHours(0, 0, 0, 0);
-
-    if (today < checkOutDate) {
-      alert(
-        'You need to wait until your checkout date, or please ask the admin to assist you with an early checkout.',
-      );
-      return;
-    }
-
-    if (checkOutDate < today) {
-      alert(
-        'Your checkout date has passed. Please contact the admin to assist you with the checkout process.',
-      );
+    const blockedReason = getCheckOutBlockedReason(booking);
+    if (blockedReason) {
+      alert(blockedReason);
       return;
     }
 
