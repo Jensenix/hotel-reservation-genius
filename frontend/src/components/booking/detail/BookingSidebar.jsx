@@ -1,18 +1,14 @@
 import PropTypes from 'prop-types';
 import { Users, CreditCard } from 'lucide-react';
 import { getStatusText } from '@/utils/bookingStatusUtils';
+import {
+  isCheckInAllowed as checkInAllowed,
+  isCheckOutAllowed as checkOutAllowed,
+} from '@/utils/bookingActionUtils';
 
 const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const checkInDate = new Date(booking.checkInDate);
-  checkInDate.setHours(0, 0, 0, 0);
-  const isCheckInAllowed = today >= checkInDate;
-
-  const checkOutDate = new Date(booking.checkOutDate);
-  checkOutDate.setHours(0, 0, 0, 0);
-  const isCheckOutAllowed = today >= checkOutDate;
+  const isCheckInAllowed = checkInAllowed(booking);
+  const isCheckOutAllowed = checkOutAllowed(booking);
 
   return (
     <div className="space-y-6">
