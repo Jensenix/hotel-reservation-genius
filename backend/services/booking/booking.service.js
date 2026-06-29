@@ -20,9 +20,6 @@ class BookingService extends BaseService {
     super(Booking, 'Booking');
   }
 
-  /**
-   * Creates a new booking with business logic for finding available rooms and calculating price.
-   */
   async createBooking({
     userId,
     roomTypeId,
@@ -90,9 +87,6 @@ class BookingService extends BaseService {
     return booking;
   }
 
-  /**
-   * Retrieves all bookings with pagination and filtering.
-   */
   async getAllBookings({ page = 1, limit = 10, status, userId, roomId }) {
     const where = {};
     if (status) where.status = status;
@@ -138,9 +132,6 @@ class BookingService extends BaseService {
     };
   }
 
-  /**
-   * Retrieves a specific booking by ID, including all deep relationships.
-   */
   async getBookingById(id) {
     return super.getById(id, {
       include: [
@@ -171,9 +162,6 @@ class BookingService extends BaseService {
     });
   }
 
-  /**
-   * Confirms a pending booking.
-   */
   async confirmBooking(id) {
     const booking = await super.getById(id, {
       include: [
@@ -210,9 +198,6 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  /**
-   * Checks in a guest and marks the room as occupied.
-   */
   async checkInGuest(id) {
     const booking = await super.getById(id, {
       include: [
@@ -259,9 +244,6 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  /**
-   * Checks out a guest and marks the room as available.
-   */
   async checkOutGuest(id) {
     const booking = await super.getById(id, {
       include: [
@@ -308,10 +290,10 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  /**
-   * Cancels a booking, freeing up the room if it was occupied.
-   */
-  async cancelBooking(id, reason) {
+  // -----------------------------------------------------------------
+  // ADMIN CANCELLATION LOGIC
+  // -----------------------------------------------------------------
+  async cancelBookingByAdmin(id, reason) {
     const booking = await super.getById(id, {
       include: [
         'user',
@@ -326,7 +308,9 @@ class BookingService extends BaseService {
       throw err;
     }
 
-    if (booking.room.status === 'occupied') {
+    const wasOccupied = booking.room && booking.room.status === 'occupied';
+    
+    if (wasOccupied) {
       await booking.room.update({ status: 'available' });
     }
 
@@ -345,9 +329,17 @@ class BookingService extends BaseService {
         },
         rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
       });
+
+      if (wasOccupied) {
+        await publish(CHANNELS.ROOM, {
+          event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+          data: { roomId: booking.room.id, status: 'available' },
+          rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+        });
+      }
     } catch (err) {
       console.error(
-        '[BookingService] Failed to publish booking_cancelled event:',
+        '[BookingService] Failed to publish admin cancel event:',
         err.message,
       );
     }
@@ -355,9 +347,69 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  /**
-   * Checks if a specific room is available for a given date range.
-   */
+  // -----------------------------------------------------------------
+  // USER CANCELLATION LOGIC (WITH OWNERSHIP CHECK)
+  // -----------------------------------------------------------------
+  async cancelBookingByUser(id, reason, userId) {
+    const booking = await super.getById(id, {
+      include: [
+        'user',
+        { model: Room, as: 'room', include: ['roomType'] },
+        'payment',
+      ],
+    });
+
+    if (booking.userId !== userId) {
+      const err = new Error('Unauthorized: You cannot cancel this booking');
+      err.statusCode = 403;
+      throw err;
+    }
+
+    if (booking.status === 'checked_in') {
+      const err = new Error('Cannot cancel checked-in booking');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const wasOccupied = booking.room && booking.room.status === 'occupied';
+
+    if (wasOccupied) {
+      await booking.room.update({ status: 'available' });
+    }
+
+    const updatedBooking = await booking.update({
+      status: 'cancelled',
+      cancelReason: reason || 'Cancelled by user',
+      cancelledAt: new Date(),
+    });
+
+    try {
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
+
+      if (wasOccupied) {
+        await publish(CHANNELS.ROOM, {
+          event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+          data: { roomId: booking.room.id, status: 'available' },
+          rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+        });
+      }
+    } catch (err) {
+      console.error(
+        '[BookingService] Failed to publish user cancel event:',
+        err.message,
+      );
+    }
+
+    return updatedBooking;
+  }
+
   async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
     if (!roomId || !checkInDate || !checkOutDate) {
       const err = new Error(
@@ -373,9 +425,6 @@ class BookingService extends BaseService {
     );
   }
 
-  /**
-   * Retrieves a list of available rooms for a given date range, optionally filtered by type.
-   */
   async getAvailableRooms(checkInDate, checkOutDate, roomTypeId) {
     if (!checkInDate || !checkOutDate) {
       const err = new Error('checkInDate and checkOutDate are required');
@@ -389,9 +438,6 @@ class BookingService extends BaseService {
     );
   }
 
-  /**
-   * Retrieves all bookings associated with a specific user.
-   */
   async getUserBookings(userId) {
     if (!userId) {
       const err = new Error('User ID is required');
@@ -434,9 +480,6 @@ class BookingService extends BaseService {
     });
   }
 
-  /**
-   * Retrieves all bookings with extended admin-level filters and mappings.
-   */
   async getAllBookingsAdmin({
     status,
     search,
@@ -524,23 +567,14 @@ class BookingService extends BaseService {
     };
   }
 
-  /**
-   * Updates an existing booking.
-   */
   async updateBooking(id, data) {
     return this.update(id, data);
   }
 
-  /**
-   * Deletes a booking.
-   */
   async deleteBooking(id) {
     return this.delete(id);
   }
 
-  /**
-   * Processes a user-initiated self check-in.
-   */
   async selfCheckIn(bookingId, userId) {
     const booking = await this.model.findByPk(bookingId);
 
@@ -567,12 +601,29 @@ class BookingService extends BaseService {
       throw new Error('Cannot check in before your scheduled check-in date');
     }
 
-    return await this.update(bookingId, { status: 'checked_in' });
+    const updatedBooking = await this.update(bookingId, {
+      status: 'checked_in',
+    });
+
+    try {
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
+    } catch (err) {
+      console.error(
+        '[BookingService] Failed to publish self check-in event:',
+        err.message,
+      );
+    }
+
+    return updatedBooking;
   }
 
-  /**
-   * Processes a user-initiated self check-out.
-   */
   async selfCheckOut(bookingId, userId) {
     const booking = await this.model.findByPk(bookingId, {
       include: [{ model: Room, as: 'room' }],
@@ -612,10 +663,37 @@ class BookingService extends BaseService {
     if (booking.room) {
       await booking.room.update({ status: 'available' });
     }
-    return await this.update(bookingId, {
+
+    const updatedBooking = await this.update(bookingId, {
       status: 'checked_out',
       actualCheckOut: new Date(),
     });
+
+    try {
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
+
+      if (booking.room) {
+        await publish(CHANNELS.ROOM, {
+          event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+          data: { roomId: booking.room.id, status: 'available' },
+          rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+        });
+      }
+    } catch (err) {
+      console.error(
+        '[BookingService] Failed to publish self check-out events:',
+        err.message,
+      );
+    }
+
+    return updatedBooking;
   }
 
   async processAutomatedCheckouts() {

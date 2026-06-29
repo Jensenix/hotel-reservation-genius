@@ -12,6 +12,9 @@ router.post('/', authenticateToken, bookingController.createBooking);
 router.get('/user/:userId', authenticateToken, bookingController.getUserBookings);
 router.get('/:id', authenticateToken, bookingController.getBookingById);
 router.put('/:id', authenticateToken, bookingController.updateBooking);
+
+// User explicit actions (These map to endpoints correctly aligned with frontend)
+router.put('/:id/cancel', authenticateToken, bookingController.selfCancelBooking);
 router.put('/:id/self-check-in', authenticateToken, bookingController.selfCheckIn);
 router.put('/:id/self-check-out', authenticateToken, bookingController.selfCheckOut);
 

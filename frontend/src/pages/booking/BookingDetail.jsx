@@ -5,7 +5,7 @@ import BookingSidebar from '@/components/booking/detail/BookingSidebar';
 
 const BookingDetail = () => {
   // ADDED handleCheckIn to the destructured properties from the hook
-  const { booking, loading, goBack, goToModify, handleCheckOut, handleCheckIn } = useBookingDetail();
+  const { booking, loading, goBack, goToModify, handleCheckOut, handleCheckIn, handleCancel } = useBookingDetail();
 
   if (loading) {
     return (
@@ -53,6 +53,7 @@ const BookingDetail = () => {
             onModify={goToModify}
             onCheckIn={handleCheckIn} 
             onCheckOut={handleCheckOut}
+            onCancel={handleCancel}
           />
         </div>
       </div>
