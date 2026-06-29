@@ -1,3 +1,4 @@
+
 import db from '#models/index.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -5,6 +6,11 @@ import { jwtSecret } from '#config/config.js';
 const { User } = db;
 
 class AuthService {
+  /**
+   * Authenticates user and returns user info + JWT.
+   * @param {string} email
+   * @param {string} password
+   */
   async login(email, password) {
     if (!email || !password) {
       const error = new Error('Email and password are required');
@@ -49,7 +55,11 @@ class AuthService {
       token,
     };
   }
-
+  /**
+   * Registers a new user with a hashed password.
+   * @param {Object} userData
+   * @returns {Promise<Object>} - The created user object
+   */
   async register({ fullName, email, password, phoneNumber, role }) {
     if (!fullName || !email || !password) {
       const error = new Error('fullName, email, and password are required');

@@ -2,9 +2,8 @@ import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
   class User extends Model {
     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * Defines associations for the User model.
+     * @param {Object} models - All loaded Sequelize models
      */
     static associate(models) {
       User.hasMany(models.Booking, { foreignKey: 'userId', as: 'bookings' });
