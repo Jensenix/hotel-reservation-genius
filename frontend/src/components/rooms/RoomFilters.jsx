@@ -2,18 +2,31 @@ import { Search, Users, DollarSign, Calendar } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
+const MAX_STAY_DAYS = 14;
+
 const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
   const handleCheckInChange = (e) => {
     const newCheckIn = e.target.value;
     const updates = { checkIn: newCheckIn };
-    // Auto-clear checkout if it violates timeline rules
-    if (filters.checkOut && filters.checkOut <= newCheckIn) {
-      updates.checkOut = ''; 
+    
+    if (filters.checkOut) {
+      const checkInDate = new Date(newCheckIn);
+      const checkOutDate = new Date(filters.checkOut);
+      const diffTime = checkOutDate - checkInDate;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0 || diffDays > MAX_STAY_DAYS) {
+        updates.checkOut = ''; 
+      }
     }
     updateFilters(updates);
   };
 
   const todayStr = new Date().toISOString().split('T')[0];
+  
+  const maxCheckOutStr = filters.checkIn 
+    ? new Date(new Date(filters.checkIn).getTime() + (MAX_STAY_DAYS * 86400000)).toISOString().split('T')[0]
+    : undefined;
 
   return (
     <section className="py-8 bg-white border-y border-amber-100">
@@ -58,10 +71,12 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
                 type="date"
                 disabled={!filters.checkIn}
                 min={filters.checkIn ? new Date(new Date(filters.checkIn).getTime() + 86400000).toISOString().split('T')[0] : todayStr}
+                max={maxCheckOutStr}
                 value={filters.checkOut}
                 onChange={(e) => updateFilters({ checkOut: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-gray-50"
               />
+              {filters.checkIn && <p className="text-[10px] text-gray-500 mt-1 absolute">Max stay: {MAX_STAY_DAYS} nights</p>}
             </div>
 
             <div className="md:col-span-2">
