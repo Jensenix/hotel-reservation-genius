@@ -13,6 +13,7 @@ import { Op } from 'sequelize';
 import BookingUtils from '#utils/bookingUtils.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
+import { RealtimeEvents } from '../../shared/eventContract.js';
 
 class BookingService extends BaseService {
   constructor() {
@@ -69,16 +70,21 @@ class BookingService extends BaseService {
     });
 
     try {
-      const payload = {
-        bookingId: booking.id,
-        userId: booking.userId,
-        roomId: booking.roomId,
-        status: booking.status,
-      };
-      await publish(CHANNELS.BOOKING, { event: 'booking_created', data: payload, room: `user:${booking.userId}` });
-      await publish(CHANNELS.BOOKING, { event: 'booking_created', data: payload, room: 'admin:dashboard' });
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.CREATED,
+        data: {
+          bookingId: booking.id,
+          userId: booking.userId,
+          roomId: booking.roomId,
+          status: booking.status,
+        },
+        rooms: [`user:${booking.userId}`, 'admin:dashboard'],
+      });
     } catch (err) {
-      console.error('[BookingService] Failed to publish booking_created event:', err.message);
+      console.error(
+        '[BookingService] Failed to publish booking_created event:',
+        err.message,
+      );
     }
 
     return booking;
@@ -186,11 +192,19 @@ class BookingService extends BaseService {
     const updatedBooking = await booking.update({ status: 'confirmed' });
 
     try {
-      const payload = { bookingId: updatedBooking.id, status: updatedBooking.status };
-      await publish(CHANNELS.BOOKING, { event: 'booking_confirmed', data: payload, room: `user:${updatedBooking.userId}` });
-      await publish(CHANNELS.BOOKING, { event: 'booking_confirmed', data: payload, room: 'admin:dashboard' });
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
     } catch (err) {
-      console.error('[BookingService] Failed to publish booking_confirmed event:', err.message);
+      console.error(
+        '[BookingService] Failed to publish booking_confirmed event:',
+        err.message,
+      );
     }
 
     return updatedBooking;
@@ -215,18 +229,31 @@ class BookingService extends BaseService {
     }
 
     await booking.room.update({ status: 'occupied' });
-    const updatedBooking = await booking.update({ status: 'checked_in', actualCheckIn: new Date() });
+    const updatedBooking = await booking.update({
+      status: 'checked_in',
+      actualCheckIn: new Date(),
+    });
 
     try {
-      const bookingPayload = { bookingId: updatedBooking.id, status: updatedBooking.status };
-      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: `user:${updatedBooking.userId}` });
-      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: 'admin:dashboard' });
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
 
-      const roomPayload = { roomId: booking.room.id, status: 'occupied' };
-      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: `room:${booking.room.id}` });
-      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: 'admin:dashboard' });
+      await publish(CHANNELS.ROOM, {
+        event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+        data: { roomId: booking.room.id, status: 'occupied' },
+        rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+      });
     } catch (err) {
-      console.error('[BookingService] Failed to publish check-in events:', err.message);
+      console.error(
+        '[BookingService] Failed to publish check-in events:',
+        err.message,
+      );
     }
 
     return updatedBooking;
@@ -257,15 +284,25 @@ class BookingService extends BaseService {
     });
 
     try {
-      const bookingPayload = { bookingId: updatedBooking.id, status: updatedBooking.status };
-      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: `user:${updatedBooking.userId}` });
-      await publish(CHANNELS.BOOKING, { event: 'booking_status_changed', data: bookingPayload, room: 'admin:dashboard' });
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
 
-      const roomPayload = { roomId: booking.room.id, status: 'available' };
-      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: `room:${booking.room.id}` });
-      await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: roomPayload, room: 'admin:dashboard' });
+      await publish(CHANNELS.ROOM, {
+        event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+        data: { roomId: booking.room.id, status: 'available' },
+        rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+      });
     } catch (err) {
-      console.error('[BookingService] Failed to publish check-out events:', err.message);
+      console.error(
+        '[BookingService] Failed to publish check-out events:',
+        err.message,
+      );
     }
 
     return updatedBooking;
@@ -300,11 +337,19 @@ class BookingService extends BaseService {
     });
 
     try {
-      const payload = { bookingId: updatedBooking.id, status: updatedBooking.status };
-      await publish(CHANNELS.BOOKING, { event: 'booking_cancelled', data: payload, room: `user:${updatedBooking.userId}` });
-      await publish(CHANNELS.BOOKING, { event: 'booking_cancelled', data: payload, room: 'admin:dashboard' });
+      await publish(CHANNELS.BOOKING, {
+        event: RealtimeEvents.BOOKING.STATUS_CHANGED,
+        data: {
+          bookingId: updatedBooking.id,
+          status: updatedBooking.status,
+        },
+        rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
+      });
     } catch (err) {
-      console.error('[BookingService] Failed to publish booking_cancelled event:', err.message);
+      console.error(
+        '[BookingService] Failed to publish booking_cancelled event:',
+        err.message,
+      );
     }
 
     return updatedBooking;

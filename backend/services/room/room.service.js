@@ -3,6 +3,7 @@ const { Room, RoomType, Booking } = db;
 import pagination from '#utils/pagination.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
+import { RealtimeEvents } from '../../shared/eventContract.js';
 
 class RoomService extends BaseService {
   constructor() {
@@ -115,11 +116,16 @@ class RoomService extends BaseService {
 
     if (data.status) {
       try {
-        const payload = { roomId: updatedRoom.id, status: updatedRoom.status };
-        await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: payload, room: `room:${updatedRoom.id}` });
-        await publish(CHANNELS.ROOM, { event: 'room_availability_changed', data: payload, room: 'admin:dashboard' });
+        await publish(CHANNELS.ROOM, {
+          event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+          data: { roomId: updatedRoom.id, status: updatedRoom.status },
+          rooms: [`room:${updatedRoom.id}`, 'admin:dashboard'],
+        });
       } catch (err) {
-        console.error('[RoomService] Failed to publish room_availability_changed event:', err.message);
+        console.error(
+          '[RoomService] Failed to publish room_availability_changed event:',
+          err.message,
+        );
       }
     }
 
