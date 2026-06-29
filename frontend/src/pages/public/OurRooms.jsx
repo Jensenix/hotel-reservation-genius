@@ -6,6 +6,7 @@ import RoomList from '@/components/rooms/RoomList';
 import RoomSkeleton from '@/components/rooms/RoomSkeleton';
 import Button from '@/components/ui/Button';
 import { Calendar, Search, Map } from 'lucide-react';
+import { MaxStayDays } from '@/config';
 
 const OurRooms = () => {
   const { loading, filters, updateFilters, clearFilters, filteredRooms } = useOurRooms();
@@ -27,9 +28,14 @@ const OurRooms = () => {
   };
 
   const todayStr = new Date().toISOString().split('T')[0];
+  
   const minCheckOutStr = tempCheckIn 
     ? new Date(new Date(tempCheckIn).getTime() + 86400000).toISOString().split('T')[0] 
     : todayStr;
+
+  const maxCheckOutStr = tempCheckIn 
+    ? new Date(new Date(tempCheckIn).getTime() + (MaxStayDays * 86400000)).toISOString().split('T')[0]
+    : undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white relative">
@@ -46,7 +52,7 @@ const OurRooms = () => {
               <p className="text-gray-500 mt-2">Enter your dates to see real-time room availability and exact pricing.</p>
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-4 mb-6 relative">
               <div>
                 <label htmlFor="tempCheckIn" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
                 <input
@@ -55,19 +61,33 @@ const OurRooms = () => {
                   min={todayStr}
                   value={tempCheckIn}
                   onChange={(e) => {
-                    setTempCheckIn(e.target.value);
-                    if (tempCheckOut && tempCheckOut <= e.target.value) setTempCheckOut('');
+                    const newCheckIn = e.target.value;
+                    setTempCheckIn(newCheckIn);
+                    
+                    if (tempCheckOut) {
+                      const checkInDate = new Date(newCheckIn);
+                      const checkOutDate = new Date(tempCheckOut);
+                      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                      
+                      if (diffDays <= 0 || diffDays > MaxStayDays) {
+                        setTempCheckOut('');
+                      }
+                    }
                   }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="tempCheckOut" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
+                <div className="flex justify-between items-end mb-1">
+                  <label htmlFor="tempCheckOut" className="block text-sm font-medium text-gray-700">Check-out Date</label>
+                  {tempCheckIn && <span className="text-[10px] text-gray-500">Max stay: {MaxStayDays} nights</span>}
+                </div>
                 <input
                   id="tempCheckOut"
                   type="date"
                   disabled={!tempCheckIn}
                   min={minCheckOutStr}
+                  max={maxCheckOutStr}
                   value={tempCheckOut}
                   onChange={(e) => setTempCheckOut(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"

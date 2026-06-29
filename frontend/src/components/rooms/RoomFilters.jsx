@@ -1,8 +1,7 @@
 import { Search, Users, DollarSign, Calendar } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
-
-const MAX_STAY_DAYS = 14;
+import { MaxStayDays } from '@/config';
 
 const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
   const handleCheckInChange = (e) => {
@@ -15,7 +14,7 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
       const diffTime = checkOutDate - checkInDate;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      if (diffDays <= 0 || diffDays > MAX_STAY_DAYS) {
+      if (diffDays <= 0 || diffDays > MaxStayDays) {
         updates.checkOut = ''; 
       }
     }
@@ -25,7 +24,7 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
   const todayStr = new Date().toISOString().split('T')[0];
   
   const maxCheckOutStr = filters.checkIn 
-    ? new Date(new Date(filters.checkIn).getTime() + (MAX_STAY_DAYS * 86400000)).toISOString().split('T')[0]
+    ? new Date(new Date(filters.checkIn).getTime() + (MaxStayDays * 86400000)).toISOString().split('T')[0]
     : undefined;
 
   return (
@@ -76,7 +75,7 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
                 onChange={(e) => updateFilters({ checkOut: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-gray-50"
               />
-              {filters.checkIn && <p className="text-[10px] text-gray-500 mt-1 absolute">Max stay: {MAX_STAY_DAYS} nights</p>}
+              {filters.checkIn && <p className="text-[10px] text-gray-500 mt-1 absolute">Max stay: {MaxStayDays} nights</p>}
             </div>
 
             <div className="md:col-span-2">
