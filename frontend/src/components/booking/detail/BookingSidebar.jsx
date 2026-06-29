@@ -1,34 +1,21 @@
 import PropTypes from 'prop-types';
 import { Users, CreditCard } from 'lucide-react';
+import { getStatusText } from '@/utils/bookingStatusUtils';
 
 const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'pending':
-        return 'Pending';
-      case 'confirmed':
-        return 'Confirmed';
-      case 'checked_in':
-        return 'Checked In';
-      case 'checked_out':
-        return 'Checked Out';
-      case 'cancelled':
-        return 'Cancelled';
-      default:
-        return status;
-    }
-  };
-
-  // Prevent checking out before the check-out date
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const checkInDate = new Date(booking.checkInDate);
+  checkInDate.setHours(0, 0, 0, 0);
+  const isCheckInAllowed = today >= checkInDate;
+
   const checkOutDate = new Date(booking.checkOutDate);
   checkOutDate.setHours(0, 0, 0, 0);
   const isCheckOutAllowed = today >= checkOutDate;
 
   return (
     <div className="space-y-6">
-      {/* Guest Information */}
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-100">
         <h2 className="text-xl font-bold text-gray-900 mb-4">
           Guest Information
@@ -112,8 +99,18 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
 
           {booking.status === 'confirmed' && (
             <button
-              onClick={() => onCheckIn?.(booking.id)}
-              className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              onClick={() => {
+                if (isCheckInAllowed) {
+                  onCheckIn?.(booking.id);
+                } else {
+                  alert('You can only check in on or after your scheduled check-in date.');
+                }
+              }}
+              className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
+                isCheckInAllowed
+                  ? 'bg-amber-600 hover:bg-amber-700'
+                  : 'bg-gray-400 cursor-not-allowed'
+              }`}
             >
               Check In
             </button>
@@ -125,9 +122,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
                 if (isCheckOutAllowed) {
                   onCheckOut?.(booking.id);
                 } else {
-                  alert(
-                    'You can only check out on or after your scheduled check-out date.',
-                  );
+                  alert('You can only check out on or after your scheduled check-out date.');
                 }
               }}
               className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
@@ -149,6 +144,7 @@ BookingSidebar.propTypes = {
   booking: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     status: PropTypes.string,
+    checkInDate: PropTypes.string,
     checkOutDate: PropTypes.string,
     totalPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     room: PropTypes.shape({

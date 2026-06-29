@@ -16,9 +16,14 @@ const BookingCard = ({
   const roomInitial = booking.room?.roomType?.name?.charAt(0) || 'R';
   const maxCapacity = booking.room?.roomType?.maxCapacity;
 
-  // --- NEW: Calculate if check-out is allowed (Today >= CheckOutDate) ---
+  // --- Decoupled Business Logic (Permissions) ---
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const checkInDate = new Date(booking.checkInDate);
+  checkInDate.setHours(0, 0, 0, 0);
+  const isCheckInAllowed = today >= checkInDate;
+
   const checkOutDate = new Date(booking.checkOutDate);
   checkOutDate.setHours(0, 0, 0, 0);
   const isCheckOutAllowed = today >= checkOutDate;
@@ -36,7 +41,6 @@ const BookingCard = ({
             <div className="text-white text-4xl font-bold mb-1">
               {roomInitial}
             </div>
-
             <div className="text-white/90 text-xs">
               {maxCapacity ? `${maxCapacity} Guests` : 'N/A'}
             </div>
@@ -60,7 +64,6 @@ const BookingCard = ({
             <h3 className="text-xl font-bold text-gray-900">
               {booking.room?.roomType?.name || 'Room'}
             </h3>
-
             <span className="text-sm font-medium text-gray-500">
               #{booking.id}
             </span>
@@ -69,7 +72,6 @@ const BookingCard = ({
           <div className="space-y-3 text-sm">
             <div className="flex items-center space-x-2 text-gray-600">
               <Calendar className="w-4 h-4" />
-
               <span>
                 {formatLongDate(booking.checkInDate)} -{' '}
                 {formatLongDate(booking.checkOutDate)}
@@ -78,7 +80,6 @@ const BookingCard = ({
 
             <div className="flex items-center space-x-2 text-gray-600">
               <Users className="w-4 h-4" />
-
               <span>Max {maxCapacity ? `${maxCapacity} guests` : 'N/A'}</span>
             </div>
 
@@ -87,7 +88,6 @@ const BookingCard = ({
                 <span className="font-medium text-gray-700">
                   Special Requests:
                 </span>
-
                 <p className="text-gray-600 mt-1 text-xs">
                   {booking.specialRequests}
                 </p>
@@ -102,72 +102,21 @@ const BookingCard = ({
               <div className="text-2xl font-bold text-amber-600">
                 ${booking.totalPrice}
               </div>
-
               <div className="text-xs text-gray-500">Total Price</div>
             </div>
           </div>
 
           <div className="flex space-x-2">
-            {booking.status === 'pending' && (
-              <Button
-                size="sm"
-                className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onContinuePayment(booking.room?.roomTypeId, booking.id);
-                }}
-              >
-                Continue Payment
-              </Button>
-            )}
-
-            {booking.status === 'confirmed' && (
-              <Button
-                size="sm"
-                className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCheckIn(booking.id);
-                }}
-              >
-                Check In
-              </Button>
-            )}
-
-            {booking.status === 'checked_in' && (
-              <Button
-                size="sm"
-                className={`flex-1 border-0 ${
-                  isCheckOutAllowed 
-                    ? 'bg-slate-600 hover:bg-slate-700 text-white' 
-                    : 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (isCheckOutAllowed) {
-                    onCheckOut(booking.id);
-                  } else {
-                    alert('You can only check out on or after your scheduled check-out date.');
-                  }
-                }}
-              >
-                Check Out
-              </Button>
-            )}
-
-            {booking.status === 'checked_out' && (
-              <Button
-                size="sm"
-                className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onWriteReview(booking.id);
-                }}
-              >
-                <Star className="w-4 h-4" />
-                <p className="relative -top-2">Write Review</p>
-              </Button>
-            )}
+            <ActionButtons
+              booking={booking}
+              permissions={{ isCheckInAllowed, isCheckOutAllowed }}
+              handlers={{
+                onContinuePayment,
+                onCheckIn,
+                onCheckOut,
+                onWriteReview,
+              }}
+            />
           </div>
         </div>
       </div>
@@ -175,16 +124,105 @@ const BookingCard = ({
   );
 };
 
+const ActionButtons = ({ booking, permissions, handlers }) => {
+  const stopPropagation = (e, callback) => {
+    e.stopPropagation();
+    callback();
+  };
+
+  if (booking.status === 'pending') {
+    return (
+      <Button
+        size="sm"
+        className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
+        onClick={(e) =>
+          stopPropagation(e, () =>
+            handlers.onContinuePayment(booking.room?.roomTypeId, booking.id),
+          )
+        }
+      >
+        Continue Payment
+      </Button>
+    );
+  }
+
+  if (booking.status === 'confirmed') {
+    return (
+      <Button
+        size="sm"
+        className={`flex-1 text-white border-0 ${
+          permissions.isCheckInAllowed
+            ? 'bg-amber-600 hover:bg-amber-700'
+            : 'bg-gray-400 cursor-not-allowed'
+        }`}
+        onClick={(e) =>
+          stopPropagation(e, () => {
+            if (permissions.isCheckInAllowed) handlers.onCheckIn(booking.id);
+          })
+        }
+      >
+        Check In
+      </Button>
+    );
+  }
+
+  if (booking.status === 'checked_in') {
+    return (
+      <Button
+        size="sm"
+        className={`flex-1 border-0 ${
+          permissions.isCheckOutAllowed
+            ? 'bg-slate-600 hover:bg-slate-700 text-white'
+            : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+        }`}
+        onClick={(e) =>
+          stopPropagation(e, () => {
+            if (permissions.isCheckOutAllowed) handlers.onCheckOut(booking.id);
+            else
+              alert(
+                'You can only check out on or after your scheduled check-out date.',
+              );
+          })
+        }
+      >
+        Check Out
+      </Button>
+    );
+  }
+
+  if (booking.status === 'checked_out') {
+    return (
+      <Button
+        size="sm"
+        className="flex-1 bg-slate-600 hover:bg-slate-700 text-white border-0"
+        onClick={(e) =>
+          stopPropagation(e, () => handlers.onWriteReview(booking.id))
+        }
+      >
+        <Star className="w-4 h-4" />
+        <p className="relative -top-2">Write Review</p>
+      </Button>
+    );
+  }
+
+  return null;
+};
+
 BookingCard.propTypes = {
   booking: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     status: PropTypes.string.isRequired,
+
     checkInDate: PropTypes.string,
     checkOutDate: PropTypes.string,
+
     specialRequests: PropTypes.string,
+
     totalPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
     room: PropTypes.shape({
       roomTypeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
       roomType: PropTypes.shape({
         name: PropTypes.string,
         maxCapacity: PropTypes.number,
@@ -197,6 +235,30 @@ BookingCard.propTypes = {
   onWriteReview: PropTypes.func.isRequired,
   onCheckIn: PropTypes.func.isRequired,
   onCheckOut: PropTypes.func.isRequired,
+};
+
+ActionButtons.propTypes = {
+  booking: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+
+    status: PropTypes.string.isRequired,
+
+    room: PropTypes.shape({
+      roomTypeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+  }).isRequired,
+
+  permissions: PropTypes.shape({
+    isCheckInAllowed: PropTypes.bool.isRequired,
+    isCheckOutAllowed: PropTypes.bool.isRequired,
+  }).isRequired,
+
+  handlers: PropTypes.shape({
+    onContinuePayment: PropTypes.func.isRequired,
+    onCheckIn: PropTypes.func.isRequired,
+    onCheckOut: PropTypes.func.isRequired,
+    onWriteReview: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default BookingCard;

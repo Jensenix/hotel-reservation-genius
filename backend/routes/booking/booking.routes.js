@@ -12,6 +12,8 @@ router.post('/', authenticateToken, bookingController.createBooking);
 router.get('/user/:userId', authenticateToken, bookingController.getUserBookings);
 router.get('/:id', authenticateToken, bookingController.getBookingById);
 router.put('/:id', authenticateToken, bookingController.updateBooking);
+router.put('/:id/self-check-in', authenticateToken, bookingController.selfCheckIn);
+router.put('/:id/self-check-out', authenticateToken, bookingController.selfCheckOut);
 
 // Admin Routes (Strictly protected)
 router.get('/', authenticateToken, requireAdmin, bookingController.getAllBookings);
