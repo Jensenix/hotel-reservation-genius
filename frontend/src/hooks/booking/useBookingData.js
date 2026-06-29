@@ -1,15 +1,32 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 
+const parseLocalDate = (dateStr) => {
+  if (!dateStr) return null;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return new Date(
+      parseInt(parts[0], 10),
+      parseInt(parts[1], 10) - 1,
+      parseInt(parts[2], 10)
+    );
+  }
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? null : d;
+};
+
 export const useBookingData = (roomId, initialBookingId) => {
+  const [searchParams] = useSearchParams();
+  
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [extraServices, setExtraServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [bookingData, setBookingData] = useState({
-    checkInDate: null,
-    checkOutDate: null,
+    checkInDate: parseLocalDate(searchParams.get('checkIn')),
+    checkOutDate: parseLocalDate(searchParams.get('checkOut')),
     guestCount: 1,
     specialRequests: '',
     paymentMethodId: '',
@@ -39,8 +56,8 @@ export const useBookingData = (roomId, initialBookingId) => {
             const existing = bRes.data.data;
             setBookingData((prev) => ({
               ...prev,
-              checkInDate: existing.checkInDate ? new Date(existing.checkInDate) : null,
-              checkOutDate: existing.checkOutDate ? new Date(existing.checkOutDate) : null,
+              checkInDate: existing.checkInDate ? new Date(existing.checkInDate) : prev.checkInDate,
+              checkOutDate: existing.checkOutDate ? new Date(existing.checkOutDate) : prev.checkOutDate,
               guestCount: existing.room?.maxCapacity || prev.guestCount,
               specialRequests: existing.specialRequests || '',
             }));
@@ -58,7 +75,7 @@ export const useBookingData = (roomId, initialBookingId) => {
     return () => {
       isMounted = false;
     };
-  }, [roomId, initialBookingId]);
+  }, [roomId, initialBookingId]); 
 
   return {
     room,

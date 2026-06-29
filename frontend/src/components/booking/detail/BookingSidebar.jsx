@@ -4,12 +4,18 @@ import { Users, CreditCard } from 'lucide-react';
 const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
   const getStatusText = (status) => {
     switch (status) {
-      case 'pending': return 'Pending';
-      case 'confirmed': return 'Confirmed';
-      case 'checked_in': return 'Checked In';
-      case 'checked_out': return 'Checked Out';
-      case 'cancelled': return 'Cancelled';
-      default: return status;
+      case 'pending':
+        return 'Pending';
+      case 'confirmed':
+        return 'Confirmed';
+      case 'checked_in':
+        return 'Checked In';
+      case 'checked_out':
+        return 'Checked Out';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return status;
     }
   };
 
@@ -24,7 +30,9 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
     <div className="space-y-6">
       {/* Guest Information */}
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-100">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Guest Information</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">
+          Guest Information
+        </h2>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
@@ -95,7 +103,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
         <div className="space-y-3">
           {booking.status === 'pending' && (
             <button
-              onClick={() => onModify(booking.room?.roomTypeId)}
+              onClick={() => onModify?.(booking.room?.roomTypeId)}
               className="w-full py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
             >
               Modify Booking
@@ -103,8 +111,8 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
           )}
 
           {booking.status === 'confirmed' && (
-            <button 
-              onClick={() => onCheckIn(booking.id)}
+            <button
+              onClick={() => onCheckIn?.(booking.id)}
               className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
             >
               Check In
@@ -112,17 +120,19 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut }) => {
           )}
 
           {booking.status === 'checked_in' && (
-            <button 
+            <button
               onClick={() => {
                 if (isCheckOutAllowed) {
-                  onCheckOut(booking.id);
+                  onCheckOut?.(booking.id);
                 } else {
-                  alert('You can only check out on or after your scheduled check-out date.');
+                  alert(
+                    'You can only check out on or after your scheduled check-out date.',
+                  );
                 }
               }}
               className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
-                isCheckOutAllowed 
-                  ? 'bg-blue-600 hover:bg-blue-700' 
+                isCheckOutAllowed
+                  ? 'bg-blue-600 hover:bg-blue-700'
                   : 'bg-gray-400 cursor-not-allowed'
               }`}
             >
@@ -156,9 +166,9 @@ BookingSidebar.propTypes = {
       }),
     }),
   }).isRequired,
-  onModify: PropTypes.func.isRequired,
-  onCheckIn: PropTypes.func.isRequired,
-  onCheckOut: PropTypes.func.isRequired,
+  onModify: PropTypes.func,
+  onCheckIn: PropTypes.func,
+  onCheckOut: PropTypes.func,
 };
 
 export default BookingSidebar;

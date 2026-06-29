@@ -39,18 +39,40 @@ export const useBookingDetail = () => {
 
   const goToModify = (roomId) => navigate(`/booking/${roomId}`);
 
+  const handleCheckIn = async () => {
+    try {
+      await apiService.bookings.checkInGuest(id);
+      
+      setBooking((prev) => ({
+        ...prev,
+        status: 'checked_in',
+      }));
+    } catch (error) {
+      console.error('Error checking in:', error);
+      alert(error.response?.data?.message || 'Failed to check in');
+    }
+  };
+
   const handleCheckOut = async () => {
     try {
       await apiService.bookings.checkOutGuest(id);
       
       setBooking((prev) => ({
         ...prev,
-        status: 'checked_out'
+        status: 'checked_out',
       }));
     } catch (error) {
       console.error('Error checking out:', error);
+      alert(error.response?.data?.message || 'Failed to check out');
     }
   };
 
-  return { booking, loading, goBack, goToModify, id, handleCheckOut };
+  return { 
+    booking, 
+    loading, 
+    goBack, 
+    goToModify, 
+    handleCheckIn,
+    handleCheckOut 
+  };
 };

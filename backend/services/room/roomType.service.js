@@ -1,5 +1,5 @@
 import db from '#models/index.js';
-const { RoomType, Room, Facility } = db;
+const { RoomType, Room, Facility, Booking } = db;
 import { Op } from 'sequelize';
 import BaseService from '../base/base.service.js';
 
@@ -8,16 +8,6 @@ class RoomTypeService extends BaseService {
     super(RoomType, 'Room type');
   }
 
-  /**
-   * Creates a new room type.
-   * @param {Object} data - Room type details.
-   * @param {string} data.name - Name of the room type.
-   * @param {string} [data.description] - Description of the room type.
-   * @param {number} data.basePrice - Base price for the room type.
-   * @param {number} data.maxCapacity - Maximum capacity of the room.
-   * @returns {Promise<Object>} The newly created room type.
-   * @throws {Error} If required fields are missing.
-   */
   async createRoomType({ name, description, basePrice, maxCapacity }) {
     if (!name || !basePrice || !maxCapacity) {
       const err = new Error('name, basePrice, and maxCapacity are required');
@@ -28,14 +18,9 @@ class RoomTypeService extends BaseService {
   }
 
   /**
-   * Retrieves all room types with optional filtering for price and search terms.
-   * @param {Object} query - The query parameters.
-   * @param {number} [query.minPrice] - Minimum base price filter.
-   * @param {number} [query.maxPrice] - Maximum base price filter.
-   * @param {string} [query.search] - Search term for room type names.
-   * @returns {Promise<Array>} List of matching room types.
+   * Retrieves all room types with filtering for price, search terms, and active date ranges.
    */
-  async getAllRoomTypes({ minPrice, maxPrice, search }) {
+  async getAllRoomTypes({ minPrice, maxPrice, search, checkIn, checkOut }) {
     const where = {};
     if (minPrice || maxPrice) {
       where.basePrice = {};
@@ -44,20 +29,59 @@ class RoomTypeService extends BaseService {
     }
     if (search) where.name = { [Op.like]: `%${search}%` };
 
-    return super.getAll({
+    const roomIncludeCondition = {
+      model: Room,
+      as: 'rooms',
+      where: { status: 'available' },
+      required: true, // Only return RoomTypes that possess physically available inventory
+    };
+
+    // If explicit vacation dates are queried from the frontend
+    if (checkIn && checkOut) {
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+
+      if (checkInDate < checkOutDate) {
+        roomIncludeCondition.include = [
+          {
+            model: Booking,
+            as: 'bookings',
+            required: false, // Left Join bookings
+            where: {
+              status: { [Op.ne]: 'cancelled' },
+              checkInDate: { [Op.lt]: checkOutDate },
+              checkOutDate: { [Op.gt]: checkInDate },
+            },
+          },
+        ];
+      }
+    }
+
+    const roomTypes = await super.getAll({
       where,
-      order: [['createdAt', 'DESC']],
+      distinct: true, // Required to fix Sequelize Count mapping when using Includes
+      order: [['basePrice', 'ASC']],
       include: [
-        { model: Facility, as: 'facilities' },
-        { model: Room, as: 'rooms' },
+        { model: Facility, as: 'facilities', through: { attributes: [] } },
+        roomIncludeCondition,
       ],
     });
+
+    // If dates are provided, post-filter out rooms that have overlapping bookings 
+    // This ensures only RoomTypes that actually have an empty room for those dates display
+    if (checkIn && checkOut) {
+      return roomTypes.filter((type) => {
+        // A room is truly available if it has NO overlapping bookings returned by the subquery
+        const availablePhysicalRooms = type.rooms?.filter(
+          (room) => !room.bookings || room.bookings.length === 0
+        );
+        return availablePhysicalRooms && availablePhysicalRooms.length > 0;
+      });
+    }
+
+    return roomTypes;
   }
 
-  /**
-   * Retrieves all room types along with their associated facilities.
-   * @returns {Promise<Array>} List of room types and their facilities.
-   */
   async getAllRoomTypesWithFacilities() {
     return super.getAll({
       include: [
@@ -67,12 +91,6 @@ class RoomTypeService extends BaseService {
     });
   }
 
-  /**
-   * Retrieves a specific room type by its ID.
-   * @param {string|number} id - The ID of the room type.
-   * @returns {Promise<Object>} The room type details with facilities and rooms.
-   * @throws {Error} If the room type is not found.
-   */
   async getRoomTypeById(id) {
     return super.getById(id, {
       include: [
@@ -82,23 +100,10 @@ class RoomTypeService extends BaseService {
     });
   }
 
-  /**
-   * Updates an existing room type.
-   * @param {string|number} id - The ID of the room type.
-   * @param {Object} data - The room type attributes to update.
-   * @returns {Promise<Object>} The updated room type.
-   * @throws {Error} If the room type is not found.
-   */
   async updateRoomType(id, data) {
     return super.update(id, data);
   }
 
-  /**
-   * Deletes a room type by its ID.
-   * @param {string|number} id - The ID of the room type.
-   * @returns {Promise<void>}
-   * @throws {Error} If the room type is not found.
-   */
   async deleteRoomType(id) {
     return super.delete(id);
   }
