@@ -3,11 +3,11 @@
  * Global Socket.IO connection manager for the frontend.
  *
  * Responsibilities:
- *   - Create exactly one socket instance per authenticated session
- *   - Pass JWT during Socket.IO handshake
- *   - Handle custom reconnect backoff
- *   - Expose socket through WebSocketContext
- *   - Cleanup on logout/unmount
+ * - Create exactly one socket instance per authenticated session
+ * - Pass JWT during Socket.IO handshake
+ * - Handle custom reconnect backoff
+ * - Expose socket through WebSocketContext
+ * - Cleanup on logout/unmount
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -21,7 +21,6 @@ const RETRY_DELAYS = [1000, 2000, 5000, 10000];
 
 export function WebSocketProvider({ children }) {
   const { user, isAuthenticated } = useAuth();
-
   const [socket, setSocket] = useState(null);
 
   const socketRef = useRef(null);
@@ -57,9 +56,7 @@ export function WebSocketProvider({ children }) {
       cancelRetry();
 
       const delay =
-        RETRY_DELAYS[
-          Math.min(retryIndexRef.current, RETRY_DELAYS.length - 1)
-        ];
+        RETRY_DELAYS[Math.min(retryIndexRef.current, RETRY_DELAYS.length - 1)];
 
       retryIndexRef.current++;
 
@@ -90,8 +87,9 @@ export function WebSocketProvider({ children }) {
     (token) => {
       if (socketRef.current) return;
 
-      const SERVER_URL =
-        import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const rawApiUrl =
+        import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      const SERVER_URL = rawApiUrl.replace(/\/api\/?$/, '');
 
       const newSocket = io(SERVER_URL, {
         reconnection: false,
@@ -105,6 +103,7 @@ export function WebSocketProvider({ children }) {
         cancelRetry();
 
         console.log('[WebSocket] Connected:', newSocket.id);
+        console.log('[WS CONNECTED FRONTEND]', newSocket.id);
       });
 
       newSocket.on('disconnect', (reason) => {
@@ -121,7 +120,6 @@ export function WebSocketProvider({ children }) {
 
       newSocket.on('connect_error', (error) => {
         console.warn('[WebSocket] Connection error:', error.message);
-
         scheduleRetry(token);
       });
 
@@ -136,9 +134,19 @@ export function WebSocketProvider({ children }) {
   }, [createSocket]);
 
   useEffect(() => {
+    if (!socket) return;
+
+    socket.onAny((event, ...args) => {
+      console.log('[SOCKET RAW EVENT]', event, args);
+    });
+
+    return () => socket.offAny();
+  }, [socket]);
+
+  useEffect(() => {
     isUnmountedRef.current = false;
 
-    const token = user?.token;
+    const token = user?.token || user?.data?.token;
 
     if (isAuthenticated && token) {
       retryIndexRef.current = 0;
@@ -149,12 +157,7 @@ export function WebSocketProvider({ children }) {
       isUnmountedRef.current = true;
       destroySocket();
     };
-  }, [
-    isAuthenticated,
-    user?.token,
-    createSocket,
-    destroySocket,
-  ]);
+  }, [isAuthenticated, user, createSocket, destroySocket]);
 
   return (
     <WebSocketContext.Provider value={socket}>

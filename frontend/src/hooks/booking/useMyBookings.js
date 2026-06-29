@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 export const useMyBookings = () => {
   const { user } = useAuth();
@@ -111,6 +112,25 @@ export const useMyBookings = () => {
     });
   }, [bookings, filter, search]);
 
+  useWebSocket('booking_created', (data) => {
+    if (data.userId !== userId) return;
+
+    setBookings((prev) => {
+      const exists = prev.some((b) => b.id === data.bookingId);
+      if (exists) return prev;
+
+      return [
+        {
+          id: data.bookingId,
+          userId: data.userId,
+          roomId: data.roomId,
+          status: data.status,
+        },
+        ...prev,
+      ];
+    });
+  });
+  
   return {
     loading,
     filter,

@@ -3,6 +3,7 @@ const { Payment, Booking, PaymentMethod } = db;
 import pagination from '#utils/pagination.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
+import { RealtimeEvents } from '../../shared/eventContract.js';
 
 class PaymentService extends BaseService {
   constructor() {
@@ -49,11 +50,16 @@ class PaymentService extends BaseService {
     const updatedBooking = await Booking.findByPk(bookingId);
 
     try {
-      const payload = { bookingId, paymentId: payment.id, status: 'paid' };
+      const targetRooms = ['admin:dashboard'];
       if (updatedBooking && updatedBooking.userId) {
-        await publish(CHANNELS.PAYMENT, { event: 'payment_updated', data: payload, room: `user:${updatedBooking.userId}` });
+        targetRooms.push(`user:${updatedBooking.userId}`);
       }
-      await publish(CHANNELS.PAYMENT, { event: 'payment_updated', data: payload, room: 'admin:dashboard' });
+
+      await publish(CHANNELS.PAYMENT, {
+        event: RealtimeEvents.PAYMENT.UPDATED,
+        data: { bookingId, paymentId: payment.id, status: 'paid' },
+        rooms: targetRooms,
+      });
     } catch (err) {
       console.error('[PaymentService] Failed to publish payment_updated event:', err.message);
     }
