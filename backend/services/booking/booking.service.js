@@ -489,6 +489,103 @@ class BookingService extends BaseService {
   async deleteBooking(id) {
     return this.delete(id);
   }
+
+  /**
+   * Processes a user-initiated self check-in.
+   * @param {string|number} bookingId - The ID of the booking.
+   * @param {string|number} userId - The ID of the requesting user.
+   * @returns {Promise<Object>} The updated booking.
+   */
+  async selfCheckIn(bookingId, userId) {
+    const booking = await this.model.findByPk(bookingId);
+
+    if (!booking) {
+      throw new Error('Booking not found');
+    }
+
+    if (booking.userId !== userId) {
+      throw new Error(
+        'Unauthorized: You do not have permission to modify this booking',
+      );
+    }
+
+    if (booking.status !== 'confirmed') {
+      throw new Error('Booking must be confirmed before check-in');
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkInDate = new Date(booking.checkInDate);
+    checkInDate.setHours(0, 0, 0, 0);
+
+    if (today < checkInDate) {
+      throw new Error('Cannot check in before your scheduled check-in date');
+    }
+
+    return await this.update(bookingId, { status: 'checked_in' });
+  }
+
+  /**
+   * Processes a user-initiated self check-out.
+   */
+  async selfCheckOut(bookingId, userId) {
+    const booking = await this.model.findByPk(bookingId, {
+      include: [{ model: Room, as: 'room' }],
+    });
+
+    if (!booking) throw new Error('Booking not found');
+
+    if (booking.userId !== userId) {
+      throw new Error('Unauthorized: You cannot check out this booking');
+    }
+
+    if (booking.status !== 'checked_in') {
+      throw new Error('Booking must be currently checked in to check out');
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkOutDate = new Date(booking.checkOutDate);
+    checkOutDate.setHours(0, 0, 0, 0);
+
+    if (today < checkOutDate) {
+      const err = new Error(
+        'Cannot check out before your scheduled check-out date',
+      );
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (checkOutDate < today) {
+      const err = new Error(
+        'Your checkout date has passed. Please contact the admin to assist you with the checkout process.',
+      );
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (booking.room) {
+      await booking.room.update({ status: 'available' });
+    }
+    return await this.update(bookingId, {
+      status: 'checked_out',
+      actualCheckOut: new Date(),
+    });
+  }
+
+  async processAutomatedCheckouts() {
+    const expiredBookings = await this.model.findAll({
+      where: {
+        status: 'checked_in',
+        checkOutDate: { [Op.lt]: new Date() },
+      },
+    });
+
+    for (const booking of expiredBookings) {
+      await this.checkOutGuest(booking.id);
+      console.log(`Auto-checkout performed for booking ${booking.id}`);
+    }
+  }
 }
 
 export default new BookingService();

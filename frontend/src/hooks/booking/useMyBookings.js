@@ -51,7 +51,7 @@ export const useMyBookings = () => {
 
   const handleCheckIn = async (bookingId) => {
     try {
-      await apiService.bookings.checkInGuest(bookingId);
+      await apiService.bookings.selfCheckIn(bookingId);
 
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
@@ -66,18 +66,45 @@ export const useMyBookings = () => {
   };
 
   const handleCheckOut = async (bookingId) => {
+    const booking = bookings.find((b) => b.id === bookingId);
+
+    if (!booking) {
+      console.error('Could not find booking to check out:', bookingId);
+      alert('Something went wrong. Please refresh and try again.');
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const checkOutDate = new Date(booking.checkOutDate);
+    checkOutDate.setHours(0, 0, 0, 0);
+
+    if (today < checkOutDate) {
+      alert(
+        'You need to wait until your checkout date, or please ask the admin to assist you with an early checkout.',
+      );
+      return;
+    }
+
+    if (checkOutDate < today) {
+      alert(
+        'Your checkout date has passed. Please contact the admin to assist you with the checkout process.',
+      );
+      return;
+    }
+
     try {
-      await apiService.bookings.checkOutGuest(bookingId);
+      await apiService.bookings.selfCheckOut(bookingId);
 
       setBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking.id === bookingId
-            ? { ...booking, status: 'checked_out' }
-            : booking,
+        prevBookings.map((b) =>
+          b.id === bookingId ? { ...b, status: 'checked_out' } : b,
         ),
       );
     } catch (error) {
       console.error('Error checking out:', error);
+      alert('Failed to process checkout. Please try again or contact support.');
     }
   };
 

@@ -41,8 +41,8 @@ export const useBookingDetail = () => {
 
   const handleCheckIn = async () => {
     try {
-      await apiService.bookings.checkInGuest(id);
-      
+      await apiService.bookings.selfCheckIn(id);
+
       setBooking((prev) => ({
         ...prev,
         status: 'checked_in',
@@ -54,9 +54,31 @@ export const useBookingDetail = () => {
   };
 
   const handleCheckOut = async () => {
+    if (!booking) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const checkOutDate = new Date(booking.checkOutDate);
+    checkOutDate.setHours(0, 0, 0, 0);
+
+    if (today < checkOutDate) {
+      alert(
+        'You need to wait until your checkout date, or please ask the admin to assist you with an early checkout.',
+      );
+      return;
+    }
+
+    if (checkOutDate < today) {
+      alert(
+        'Your checkout date has passed. Please contact the admin to assist you with the checkout process.',
+      );
+      return;
+    }
+
     try {
-      await apiService.bookings.checkOutGuest(id);
-      
+      await apiService.bookings.selfCheckOut(id);
+
       setBooking((prev) => ({
         ...prev,
         status: 'checked_out',

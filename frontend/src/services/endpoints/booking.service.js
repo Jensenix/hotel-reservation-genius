@@ -26,6 +26,8 @@ export const bookingAPI = {
     apiClient.put(`/bookings/admin/${bookingId}/check-out`),
   cancelBooking: (bookingId, data) =>
     apiClient.put(`/bookings/admin/${bookingId}/cancel`, data),
+  selfCheckIn: (id) => apiClient.put(`/bookings/${id}/self-check-in`),
+  selfCheckOut: (id) => apiClient.put(`/bookings/${id}/self-check-out`),
 };
 
 /**

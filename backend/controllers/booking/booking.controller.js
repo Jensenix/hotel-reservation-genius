@@ -19,7 +19,12 @@ class BookingController extends BaseController {
    */
   getAllBookings = this.asyncHandler(async (req, res) => {
     const data = await bookingService.getAllBookings(req.query);
-    this.sendPaginated(res, 'Bookings retrieved successfully', data.rows, data.pagination);
+    this.sendPaginated(
+      res,
+      'Bookings retrieved successfully',
+      data.rows,
+      data.pagination,
+    );
   });
 
   /**
@@ -105,7 +110,10 @@ class BookingController extends BaseController {
    * Cancels a booking.
    */
   cancelBooking = this.asyncHandler(async (req, res) => {
-    const data = await bookingService.cancelBooking(req.params.id, req.body.reason);
+    const data = await bookingService.cancelBooking(
+      req.params.id,
+      req.body.reason,
+    );
     this.sendSuccess(res, 'Booking cancelled successfully', data);
   });
 
@@ -123,6 +131,22 @@ class BookingController extends BaseController {
   getAllBookingsAdmin = this.asyncHandler(async (req, res) => {
     const data = await bookingService.getAllBookingsAdmin(req.query);
     this.sendSuccess(res, 'Bookings retrieved successfully', data);
+  });
+
+  /**
+   * Allows a user to check themselves into their own booking.
+   */
+  selfCheckIn = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.selfCheckIn(req.params.id, req.user.id);
+    this.sendSuccess(res, 'Successfully checked in', data);
+  });
+
+  /**
+   * Allows a user to check themselves out of their own booking.
+   */
+  selfCheckOut = this.asyncHandler(async (req, res) => {
+    const data = await bookingService.selfCheckOut(req.params.id, req.user.id);
+    this.sendSuccess(res, 'Checked out successfully', data);
   });
 }
 
