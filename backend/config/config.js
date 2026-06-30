@@ -1,11 +1,11 @@
 /**
  * Configuration Management Module
- * 
+ *
  * Loads environment variables from .env file and exports:
  * - Database configurations for development, test, and production environments
  * - JWT secret for authentication token signing
  * - CORS options for cross-origin request handling
- * 
+ *
  * Environment Variables Required:
  * DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_DIALECT, JWT_SECRET, CLIENT_URL
  */
@@ -20,7 +20,7 @@ export default {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: true, 
+    logging: false,
   },
   test: {
     username: process.env.DB_USER,
@@ -28,7 +28,7 @@ export default {
     database: process.env.DB_NAME + '_test',
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: true,
+    logging: false,
   },
   production: {
     username: process.env.DB_USER,
@@ -36,7 +36,7 @@ export default {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: true,
+    logging: false,
   },
 };
 
@@ -48,3 +48,6 @@ export const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
+export const MaxStayDays = 14;
+export const OneDayInMs = 1000 * 60 * 60 * 24;
