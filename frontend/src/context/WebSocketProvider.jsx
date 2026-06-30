@@ -16,6 +16,8 @@ import { io } from 'socket.io-client';
 
 import { useAuth } from '@/hooks/auth/useAuth';
 import { WebSocketContext } from './WebSocketContext';
+import { ApiUrl } from '@/config';
+import { logger } from '@/config';
 
 const RETRY_DELAYS = [1000, 2000, 5000, 10000];
 
@@ -60,7 +62,8 @@ export function WebSocketProvider({ children }) {
 
       retryIndexRef.current++;
 
-      console.log(
+      
+      logger.log(
         `[WebSocket] Retry in ${delay}ms (attempt ${retryIndexRef.current})`,
       );
 
@@ -87,8 +90,7 @@ export function WebSocketProvider({ children }) {
     (token) => {
       if (socketRef.current) return;
 
-      const rawApiUrl =
-        import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      const rawApiUrl = ApiUrl;
       const SERVER_URL = rawApiUrl.replace(/\/api\/?$/, '');
 
       const newSocket = io(SERVER_URL, {
@@ -102,12 +104,12 @@ export function WebSocketProvider({ children }) {
         retryIndexRef.current = 0;
         cancelRetry();
 
-        console.log('[WebSocket] Connected:', newSocket.id);
-        console.log('[WS CONNECTED FRONTEND]', newSocket.id);
+        logger.log('[WebSocket] Connected:', newSocket.id);
+        logger.log('[WS CONNECTED FRONTEND]', newSocket.id);
       });
 
       newSocket.on('disconnect', (reason) => {
-        console.log('[WebSocket] Disconnected:', reason);
+        logger.log('[WebSocket] Disconnected:', reason);
 
         if (reason === 'io server disconnect') {
           socketRef.current = null;
@@ -119,7 +121,7 @@ export function WebSocketProvider({ children }) {
       });
 
       newSocket.on('connect_error', (error) => {
-        console.warn('[WebSocket] Connection error:', error.message);
+        logger.warn('[WebSocket] Connection error:', error.message);
         scheduleRetry(token);
       });
 
@@ -137,7 +139,7 @@ export function WebSocketProvider({ children }) {
     if (!socket) return;
 
     socket.onAny((event, ...args) => {
-      console.log('[SOCKET RAW EVENT]', event, args);
+      logger.log('[SOCKET RAW EVENT]', event, args);
     });
 
     return () => socket.offAny();

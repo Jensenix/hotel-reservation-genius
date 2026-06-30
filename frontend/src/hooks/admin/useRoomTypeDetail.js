@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useRoomTypeDetail = () => {
   const { roomTypeId } = useParams();
@@ -24,7 +25,7 @@ export const useRoomTypeDetail = () => {
       const response = await apiService.roomTypes.getById(roomTypeId);
       setRoomType(response.data.data);
     } catch (error) {
-      console.error('Error fetching room type:', error);
+      logger.error('Error fetching room type:', error);
     }
   }, [roomTypeId]);
 
@@ -39,7 +40,7 @@ export const useRoomTypeDetail = () => {
       );
       setRooms(typeRooms);
     } catch (error) {
-      console.error('Error fetching rooms:', error);
+      logger.error('Error fetching rooms:', error);
       setRooms([]);
     } finally {
       setLoading(false);
@@ -104,7 +105,7 @@ export const useRoomTypeDetail = () => {
       handleCloseRoomModal();
       fetchRooms();
     } catch (error) {
-      console.error('Error saving room:', error);
+      logger.error('Error saving room:', error);
       alert(
         'Error saving room: ' +
           (error.response?.data?.message || error.message),
@@ -119,7 +120,7 @@ export const useRoomTypeDetail = () => {
       setDeletingRoom(null);
       fetchRooms();
     } catch (error) {
-      console.error('Error deleting room:', error);
+      logger.error('Error deleting room:', error);
       alert(
         'Error deleting room: ' +
           (error.response?.data?.message || error.message),

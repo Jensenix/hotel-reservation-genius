@@ -4,6 +4,7 @@ import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
+import { logger } from '@/config';
 
 export const useBookingDetail = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ export const useBookingDetail = () => {
           setBooking(response.data.data);
         }
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -61,7 +62,7 @@ export const useBookingDetail = () => {
     try {
       await apiService.bookings.selfCheckIn(id);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert(error.response?.data?.message || 'Failed to check in');
     }
   };
@@ -78,7 +79,7 @@ export const useBookingDetail = () => {
     try {
       await apiService.bookings.selfCheckOut(id);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert(error.response?.data?.message || 'Failed to check out');
     }
   };
@@ -89,7 +90,7 @@ export const useBookingDetail = () => {
         reason: 'Cancelled by user via dashboard',
       });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert(error.response?.data?.message || 'Failed to cancel booking');
     }
   };

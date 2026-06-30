@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useReviews = () => {
   const { user } = useAuth();
@@ -70,7 +71,7 @@ export const useReviews = () => {
           setMyReviews(myResponse.data.data || []);
         }
       } catch (error) {
-        if (!ignore) console.error('Error fetching reviews:', error);
+        if (!ignore) logger.error('Error fetching reviews:', error);
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -95,7 +96,7 @@ export const useReviews = () => {
       setAllReviews(allResponse.data.data || []);
       setMyReviews(myResponse.data.data || []);
     } catch (error) {
-      console.error('Error refetching reviews:', error);
+      logger.error('Error refetching reviews:', error);
     } finally {
       setLoading(false);
     }
@@ -141,7 +142,7 @@ export const useReviews = () => {
       handleCloseReviewModal();
       refetchReviews();
     } catch (error) {
-      console.error('Error saving review:', error);
+      logger.error('Error saving review:', error);
       alert(
         'Error saving review: ' +
           (error.response?.data?.message || error.message),
@@ -155,7 +156,7 @@ export const useReviews = () => {
         await apiService.reviews.delete(reviewId);
         refetchReviews();
       } catch (error) {
-        console.error('Error deleting review:', error);
+        logger.error('Error deleting review:', error);
         alert(
           'Error deleting review: ' +
             (error.response?.data?.message || error.message),

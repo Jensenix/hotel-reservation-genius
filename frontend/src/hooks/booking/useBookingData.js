@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 const parseLocalDate = (dateStr) => {
   if (!dateStr) return null;
@@ -9,18 +10,13 @@ const parseLocalDate = (dateStr) => {
     return new Date(
       parseInt(parts[0], 10),
       parseInt(parts[1], 10) - 1,
-      parseInt(parts[2], 10)
+      parseInt(parts[2], 10),
     );
   }
   const d = new Date(dateStr);
   return isNaN(d.getTime()) ? null : d;
 };
 
-// FIX (v2): the backend now returns an explicit, flat
-// `booking.selectedExtraServices` array — [{ id, quantity, subtotal }] —
-// sourced directly from the join table (see
-// booking.service.js#getBookingById), so there's no need to guess at
-// Sequelize's through-association pivot key naming on the client anymore.
 const extractSelectedExtraServices = (booking) => {
   if (!booking || !Array.isArray(booking.selectedExtraServices)) return {};
 
@@ -34,7 +30,7 @@ const extractSelectedExtraServices = (booking) => {
 
 export const useBookingData = (roomId, initialBookingId) => {
   const [searchParams] = useSearchParams();
-  
+
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [extraServices, setExtraServices] = useState([]);
@@ -61,7 +57,9 @@ export const useBookingData = (roomId, initialBookingId) => {
         const [pmRes, esRes, roomRes] = await Promise.all([
           apiService.paymentMethods.getAll(),
           apiService.extraServices.getAll(),
-          roomId ? apiService.roomTypes.getById(roomId) : Promise.resolve({ data: { data: null } }),
+          roomId
+            ? apiService.roomTypes.getById(roomId)
+            : Promise.resolve({ data: { data: null } }),
         ]);
 
         if (isMounted) {
@@ -76,19 +74,21 @@ export const useBookingData = (roomId, initialBookingId) => {
             const existing = bRes.data.data;
             setBookingData((prev) => ({
               ...prev,
-              checkInDate: existing.checkInDate ? new Date(existing.checkInDate) : prev.checkInDate,
-              checkOutDate: existing.checkOutDate ? new Date(existing.checkOutDate) : prev.checkOutDate,
+              checkInDate: existing.checkInDate
+                ? new Date(existing.checkInDate)
+                : prev.checkInDate,
+              checkOutDate: existing.checkOutDate
+                ? new Date(existing.checkOutDate)
+                : prev.checkOutDate,
               guestCount: existing.room?.maxCapacity || prev.guestCount,
               specialRequests: existing.specialRequests || '',
             }));
 
-            // FIX (root cause): restore previously selected extra services
-            // for this pending booking, so resuming it doesn't lose them.
             setExistingExtraServices(extractSelectedExtraServices(existing));
           }
         }
       } catch (err) {
-        console.error('Error fetching booking requirements:', err);
+        logger.error('Error fetching booking requirements:', err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -99,7 +99,7 @@ export const useBookingData = (roomId, initialBookingId) => {
     return () => {
       isMounted = false;
     };
-  }, [roomId, initialBookingId]); 
+  }, [roomId, initialBookingId]);
 
   return {
     room,

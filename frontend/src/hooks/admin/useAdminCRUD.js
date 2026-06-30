@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 /**
  * A generic CRUD hook for Admin Management pages.
@@ -46,7 +47,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
       })
       .catch((err) => {
         if (cancelled) return;
-        console.error(`Error fetching ${endpoint}:`, err);
+        logger.error(`Error fetching ${endpoint}:`, err);
         setError(err);
       })
       .finally(() => {
@@ -113,7 +114,7 @@ export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
         item.methodName?.toLowerCase().includes(searchStr) ||
         item.facilityName?.toLowerCase().includes(searchStr) ||
         item.extraServiceName?.toLowerCase().includes(searchStr) ||
-        item.serviceName?.toLowerCase().includes(searchStr) || 
+        item.serviceName?.toLowerCase().includes(searchStr) ||
         item.description?.toLowerCase().includes(searchStr),
     );
   }, [data, searchTerm]);

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useRoomTypes = () => {
   const [roomTypes, setRoomTypes] = useState([]);
@@ -28,7 +29,7 @@ export const useRoomTypes = () => {
           setRoomTypes(response.data.data || []);
         }
       } catch (error) {
-        if (!ignore) console.error('Error fetching room types:', error);
+        if (!ignore) logger.error('Error fetching room types:', error);
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -47,7 +48,7 @@ export const useRoomTypes = () => {
       const response = await apiService.roomTypes.getAll();
       setRoomTypes(response.data.data || []);
     } catch (error) {
-      console.error('Error refetching room types:', error);
+      logger.error('Error refetching room types:', error);
     } finally {
       setLoading(false);
     }
@@ -96,7 +97,7 @@ export const useRoomTypes = () => {
       handleCloseRoomTypeModal();
       refetchRoomTypes();
     } catch (error) {
-      console.error('Error saving room type:', error);
+      logger.error('Error saving room type:', error);
       alert(
         'Error saving room type: ' +
           (error.response?.data?.message || error.message),
@@ -111,7 +112,7 @@ export const useRoomTypes = () => {
       setDeleteTarget(null);
       refetchRoomTypes();
     } catch (error) {
-      console.error('Error deleting room type:', error);
+      logger.error('Error deleting room type:', error);
       alert(
         'Error deleting room type: ' +
           (error.response?.data?.message || error.message),

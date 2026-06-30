@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ export const useRegister = () => {
       setRegisteredUser(response.data.data);
       setSuccess(true);
     } catch (err) {
-      console.error('Registration error:', err);
+      logger.error('Registration error:', err);
       setError(
         err.response?.data?.message || 'Registration failed. Please try again.',
       );

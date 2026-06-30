@@ -1,5 +1,6 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { BaseUrl, ApiUrl } from './config.js';
 
 const options = {
   definition: {
@@ -13,7 +14,7 @@ const options = {
 
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: BaseUrl,
         description: 'Development server',
       },
     ],
@@ -47,6 +48,6 @@ export const setupSwagger = (app) => {
   );
 
   console.log(
-    '[Swagger] Docs available at http://localhost:3000/api-docs'
+    `[Swagger] Docs available at ${ApiUrl}/api-docs`
   );
 };

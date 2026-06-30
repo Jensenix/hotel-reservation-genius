@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { AuthContext } from './AuthContext'; 
+import { logger } from '@/config';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -9,7 +10,7 @@ export const AuthProvider = ({ children }) => {
       try {
         return JSON.parse(storedUser);
       } catch (error) {
-        console.error('Error parsing stored user:', error);
+        logger.error('Error parsing stored user:', error);
         return null;
       }
     }

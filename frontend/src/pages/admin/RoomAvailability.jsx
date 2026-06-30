@@ -4,6 +4,7 @@ import { useRoomAvailability } from '@/hooks/admin/useRoomAvailability';
 import AvailabilityHeader from '@/components/admin/rooms/roomAvailability/AvailabilityHeader';
 import AvailabilityStats from '@/components/admin/rooms/roomAvailability/AvailabilityStats';
 import RoomTypeAccordion from '@/components/admin/rooms/roomAvailability/RoomTypeAccordion';
+import { logger } from '@/config';
 
 const RoomAvailability = () => {
   const {
@@ -25,7 +26,7 @@ const RoomAvailability = () => {
       </AdminLayout>
     );
   }
-  console.log("Availability Data:", availabilityData);
+  logger.log('Availability Data:', availabilityData);
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
@@ -48,7 +49,5 @@ const RoomAvailability = () => {
     </AdminLayout>
   );
 };
-
-
 
 export default RoomAvailability;

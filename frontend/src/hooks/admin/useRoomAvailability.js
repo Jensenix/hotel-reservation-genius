@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import apiService from '@/services/api/apiService';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
+import { logger } from '@/config';
 
 export const useRoomAvailability = () => {
   const [availabilityData, setAvailabilityData] = useState(null);
@@ -25,10 +26,10 @@ export const useRoomAvailability = () => {
       if (response.data.success) {
         setAvailabilityData(response.data.data);
       } else {
-        console.error(response.data.message);
+        logger.error(response.data.message);
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     } finally {
       setLoading(false);
     }
@@ -113,7 +114,10 @@ export const useRoomAvailability = () => {
     setAvailabilityData((prev) => computeNewAvailabilityState(prev, payload));
   };
 
-  useWebSocket(RealtimeEvents.ROOM.AVAILABILITY_CHANGED, handleAvailabilityChanged);
+  useWebSocket(
+    RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+    handleAvailabilityChanged,
+  );
 
   const toggleRoomTypeDetails = useCallback((roomTypeId) => {
     setExpandedRoomType((prev) => (prev === roomTypeId ? null : roomTypeId));

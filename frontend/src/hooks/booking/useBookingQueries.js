@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useBookingQueries = (roomId, initialBookingId) => {
   const [room, setRoom] = useState(null);
@@ -33,7 +34,7 @@ export const useBookingQueries = (roomId, initialBookingId) => {
           if (bookingRes) setExistingBooking(bookingRes.data.data);
         }
       } catch (error) {
-        console.error('Error fetching booking initialization data:', error);
+        logger.error('Error fetching booking initialization data:', error);
       } finally {
         if (isMounted) setLoading(false);
       }

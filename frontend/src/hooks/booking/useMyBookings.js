@@ -5,6 +5,7 @@ import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
+import { logger } from '@/config';
 
 export const useMyBookings = () => {
   const { user } = useAuth();
@@ -28,7 +29,7 @@ export const useMyBookings = () => {
           setBookings(userBookings);
         }
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -64,7 +65,7 @@ export const useMyBookings = () => {
         ),
       );
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
@@ -91,7 +92,7 @@ export const useMyBookings = () => {
         ),
       );
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert('Failed to process checkout. Please try again or contact support.');
     }
   };
