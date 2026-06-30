@@ -34,7 +34,6 @@ class ReviewController extends BaseController {
   getReviewById = this.asyncHandler(async (req, res) => {
     const id = req.params.id;
 
-    // FIX: Prevent Postgres 500 crash if a string (like "user") falls into this route
     if (isNaN(parseInt(id))) {
       const err = new Error('Invalid review ID format');
       err.statusCode = 400;

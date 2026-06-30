@@ -25,7 +25,6 @@ if (config.use_env_variable) {
   );
 }
 
-// Dynamically import models
 const files = fs.readdirSync(__dirname).filter((file) => {
   return (
     file.indexOf('.') !== 0 &&
@@ -43,7 +42,6 @@ for (const file of files) {
   db[model.name] = model;
 }
 
-// Initialize associations
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);

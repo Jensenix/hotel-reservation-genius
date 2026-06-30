@@ -152,8 +152,6 @@ class BookingController extends BaseController {
    * Allows user to cancel their own booking (Validates ownership).
    */
   selfCancelBooking = this.asyncHandler(async (req, res) => {
-    // FIX: Safely access req.body and cast req.user.id to a Number 
-    // to prevent strict inequality (1 !== '1') throwing a 403 error.
     const reason = req.body?.reason || 'Cancelled by user';
     
     const data = await bookingService.cancelBookingByUser(
