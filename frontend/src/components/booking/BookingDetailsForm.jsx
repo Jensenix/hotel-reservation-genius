@@ -1,7 +1,6 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/styles/datepicker.css';
-import Button from '@/components/ui/Button';
 import ExtraServicesSelect from './ExtraServicesSelect';
 import PropTypes from 'prop-types';
 
@@ -15,9 +14,6 @@ import PropTypes from 'prop-types';
  * @param {Array} props.extraServices - List of available extra services fetched from API.
  * @param {Object} props.selectedExtraServices - Current state of selected extra services and their quantities.
  * @param {Function} props.setSelectedExtraServices - State setter to update selected extra services.
- * @param {string|null} props.bookingId - If a booking is already pending, this will be the booking ID to continue payment.
- * @param {Function} props.onContinue - Function to call when user clicks "Continue to Payment" for an existing booking.
- * @param {boolean} props.isProcessingPayment - Flag to indicate if payment processing is underway, to disable continue button.
  */
 export default function BookingDetailsForm({
   bookingData,
@@ -26,32 +22,11 @@ export default function BookingDetailsForm({
   extraServices,
   selectedExtraServices,
   setSelectedExtraServices,
-  bookingId,
-  onContinue,
-  isProcessingPayment,
 }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBookingData((prev) => ({ ...prev, [name]: value }));
   };
-
-  // If a booking is already pending, just show the continue prompt
-  if (bookingId) {
-    return (
-      <div className="text-center py-12 space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Continue Payment
-        </h2>
-        <p className="text-gray-600 mb-6">
-          You have a pending booking. Click &quot;Continue to Payment&quot; to proceed
-          with payment.
-        </p>
-        <Button onClick={onContinue} disabled={isProcessingPayment}>
-          {isProcessingPayment ? 'Processing...' : 'Continue to Payment'}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -59,7 +34,10 @@ export default function BookingDetailsForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="checkInDate" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="checkInDate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Check-in Date
           </label>
           <div className="relative w-full">
@@ -79,7 +57,10 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label htmlFor="checkOutDate" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="checkOutDate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Check-out Date
           </label>
           <div className="relative w-full">
@@ -99,7 +80,10 @@ export default function BookingDetailsForm({
         </div>
 
         <div>
-          <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="guestCount"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Number of Guests
           </label>
           <div className="flex items-center space-x-4">
@@ -179,7 +163,4 @@ BookingDetailsForm.propTypes = {
   extraServices: PropTypes.array.isRequired,
   selectedExtraServices: PropTypes.object.isRequired,
   setSelectedExtraServices: PropTypes.func.isRequired,
-  bookingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onContinue: PropTypes.func.isRequired,
-  isProcessingPayment: PropTypes.bool.isRequired,
 };

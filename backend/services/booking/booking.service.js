@@ -8,6 +8,11 @@ const {
   ExtraService,
   RoomType,
   PaymentMethod,
+  // FIX: needed to persist/sync a booking's selected extra services.
+  // NOTE: verify this matches the actual model name registered in
+  // #models/index.js for the booking_extra_services join table — rename
+  // here if it differs (e.g. BookingExtraServices).
+  BookingExtraService,
 } = db;
 import { Op } from 'sequelize';
 import BookingUtils from '#utils/bookingUtils.js';
@@ -20,6 +25,60 @@ class BookingService extends BaseService {
     super(Booking, 'Booking');
   }
 
+  /**
+   * FIX (financial bug): persists a booking's selected extra services and
+   * keeps totalPrice in sync, server-side.
+   *
+   * Why "destroy then bulkCreate": this makes the operation idempotent /
+   * replace-all, so calling it again (e.g. user goes back to Step 1, changes
+   * their selection, and continues to payment again) can never create
+   * duplicate bookingExtraServices rows for the same booking.
+   *
+   * Why prices are re-looked-up from ExtraService instead of trusting the
+   * caller's subtotal: never trust client-supplied amounts for what gets
+   * charged — the same principle applied to payment.service.js below.
+   */
+  async _applyExtraServices(booking, extraServicesPayload, baseTotal) {
+    const items = (extraServicesPayload || []).filter(
+      (item) => item && item.extraServiceId && Number(item.quantity) > 0,
+    );
+
+    const catalog = items.length
+      ? await ExtraService.findAll({
+          where: { id: items.map((item) => item.extraServiceId) },
+        })
+      : [];
+    const priceById = new Map(catalog.map((s) => [s.id, Number(s.price)]));
+
+    await BookingExtraService.destroy({ where: { bookingId: booking.id } });
+
+    let extrasTotal = 0;
+    const rows = [];
+    for (const item of items) {
+      const unitPrice = priceById.get(item.extraServiceId);
+      if (unitPrice == null) continue; // unknown/deleted extra service — skip
+      const subtotal = unitPrice * Number(item.quantity);
+      extrasTotal += subtotal;
+      rows.push({
+        bookingId: booking.id,
+        extraServiceId: item.extraServiceId,
+        quantity: item.quantity,
+        subtotal,
+      });
+    }
+
+    if (rows.length > 0) {
+      await BookingExtraService.bulkCreate(rows);
+    }
+
+    const newTotal = Number(baseTotal) + extrasTotal;
+    if (Number(booking.totalPrice) !== newTotal) {
+      await booking.update({ totalPrice: newTotal });
+    }
+
+    return newTotal;
+  }
+
   async createBooking({
     userId,
     roomTypeId,
@@ -27,6 +86,7 @@ class BookingService extends BaseService {
     checkOutDate,
     totalPrice,
     status,
+    extraServices, // FIX: optional [{ extraServiceId, quantity, subtotal }]
   }) {
     if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
       const err = new Error(
@@ -65,6 +125,13 @@ class BookingService extends BaseService {
       totalPrice: calculatedPrice,
       status: status || 'pending',
     });
+
+    // FIX (root cause): persist extras immediately so a PENDING booking
+    // remembers them even if the user leaves before paying. Previously
+    // these only existed in React state and were created at payment time.
+    if (Array.isArray(extraServices) && extraServices.length > 0) {
+      await this._applyExtraServices(booking, extraServices, calculatedPrice);
+    }
 
     try {
       await publish(CHANNELS.BOOKING, {
@@ -133,7 +200,7 @@ class BookingService extends BaseService {
   }
 
   async getBookingById(id) {
-    return super.getById(id, {
+    const booking = await super.getById(id, {
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
         {
@@ -154,12 +221,42 @@ class BookingService extends BaseService {
         },
         { model: Review, as: 'reviews' },
         {
+          // NOTE: left exactly as it was before my changes — anything else
+          // already consuming this association's shape keeps working as-is.
           model: ExtraService,
           as: 'extraServices',
           through: { attributes: ['quantity', 'subtotal'] },
         },
       ],
     });
+
+    if (!booking) return booking;
+
+    // FIX: don't make the frontend guess Sequelize's pivot-key naming for
+    // the `extraServices` association above (that's what caused the resume
+    // flow to silently restore nothing, and then wipe real data on sync).
+    // Source an unambiguous, flat list directly from the join table instead.
+    let extraServiceRows = [];
+    try {
+      extraServiceRows = await BookingExtraService.findAll({
+        where: { bookingId: booking.id },
+      });
+    } catch (err) {
+      console.error(
+        '[BookingService] Failed to load selectedExtraServices for booking',
+        booking.id,
+        err.message,
+      );
+    }
+
+    const plainBooking = booking.toJSON();
+    plainBooking.selectedExtraServices = extraServiceRows.map((row) => ({
+      id: row.extraServiceId,
+      quantity: row.quantity,
+      subtotal: row.subtotal,
+    }));
+
+    return plainBooking;
   }
 
   async confirmBooking(id) {
@@ -568,7 +665,22 @@ class BookingService extends BaseService {
   }
 
   async updateBooking(id, data) {
-    return this.update(id, data);
+    const { extraServices, ...rest } = data || {};
+
+    const updatedBooking = await this.update(id, rest);
+
+    // FIX (root cause): this is the path hit when a user resumes a PENDING
+    // booking from "My Bookings" and continues to Step 2 again. Previously
+    // updateBooking was a pure passthrough and never touched extras, so a
+    // resumed booking's totalPrice never included them. Replace-all sync
+    // means this is safe even if the user edits and re-confirms Step 1
+    // multiple times — no duplicate bookingExtraServices rows.
+    if (Array.isArray(extraServices)) {
+      const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
+      await this._applyExtraServices(updatedBooking, extraServices, baseTotal);
+    }
+
+    return updatedBooking;
   }
 
   async deleteBooking(id) {

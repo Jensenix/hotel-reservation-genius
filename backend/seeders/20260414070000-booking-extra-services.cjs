@@ -1,68 +1,122 @@
 'use strict';
 
+const TARGET_BOOKINGS = [
+  {
+    userIndex: 0,
+    roomIndex: 0,
+    checkInDate: '2026-04-15',
+    checkOutDate: '2026-04-17',
+    extras: [{ serviceIndex: 0, quantity: 1 }], // Airport Transfer
+  },
+  {
+    userIndex: 0,
+    roomIndex: 5,
+    checkInDate: '2026-05-01',
+    checkOutDate: '2026-05-03',
+    extras: [
+      { serviceIndex: 1, quantity: 2 }, // Spa Package
+    ],
+  },
+  {
+    userIndex: 1,
+    roomIndex: 9,
+    checkInDate: '2026-05-10',
+    checkOutDate: '2026-05-12',
+    extras: [
+      { serviceIndex: 0, quantity: 1 }, // Airport Transfer
+      { serviceIndex: 2, quantity: 1 }, // Romantic Dinner
+    ],
+  },
+];
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    // Get existing bookings and extra services
-    const bookings = await queryInterface.sequelize.query(
-      `SELECT b.id, r."roomNumber" FROM "Bookings" b JOIN "Rooms" r ON b."roomId" = r.id WHERE b.status IN ('confirmed', 'checked_in', 'checked_out') LIMIT 5`,
-      { type: Sequelize.QueryTypes.SELECT },
+  async up(queryInterface, Sequelize) {
+    // 1. Fetch Relational Data
+    const users = await queryInterface.sequelize.query(
+      `SELECT id FROM "Users" ORDER BY id`,
+      { type: Sequelize.QueryTypes.SELECT }
     );
-
+    const rooms = await queryInterface.sequelize.query(
+      `SELECT id FROM "Rooms" ORDER BY id`,
+      { type: Sequelize.QueryTypes.SELECT }
+    );
     const extraServices = await queryInterface.sequelize.query(
-      `SELECT id, "serviceName", "price" FROM "ExtraServices" LIMIT 6`,
-      { type: Sequelize.QueryTypes.SELECT },
+      `SELECT id, price FROM "ExtraServices" ORDER BY id`,
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const bookings = await queryInterface.sequelize.query(
+      `SELECT id, "userId", "roomId", "checkInDate", "checkOutDate", "totalPrice" FROM "Bookings"`,
+      { type: Sequelize.QueryTypes.SELECT }
     );
 
-    if (bookings.length === 0 || extraServices.length === 0) {
-      console.log(
-        'No bookings or extra services found, skipping booking extra services seeder',
-      );
+    if (!users.length || !rooms.length || !extraServices.length || !bookings.length) {
+      console.warn('[booking-extra-services] Missing foundational data. Skipping.');
       return;
     }
 
-    console.log('Found bookings:', bookings.length);
-    console.log('Found extra services:', extraServices.length);
+    const extraServiceRows = [];
 
-    // Create booking extra services - not for every booking
-    const bookingExtraServices = [];
+    // 2. Attach Extras and Calculate New Totals
+    for (const target of TARGET_BOOKINGS) {
+      const user = users[target.userIndex];
+      const room = rooms[target.roomIndex];
+      if (!user || !room) continue;
 
-    // Only add extra services to some bookings (70% chance)
-    bookings.forEach((booking, index) => {
-      if (Math.random() > 0.3) {
-        // 70% chance to have extra services
-        // Add 1-3 extra services per booking
-        const numServices = Math.floor(Math.random() * 3) + 1;
+      // Find the specific booking injected by the previous seeder safely handling JS dates
+      const booking = bookings.find(b => 
+        b.userId === user.id &&
+        b.roomId === room.id &&
+        new Date(b.checkInDate).toISOString().startsWith(target.checkInDate) &&
+        new Date(b.checkOutDate).toISOString().startsWith(target.checkOutDate)
+      );
 
-        for (let i = 0; i < numServices; i++) {
-          const serviceIndex = Math.floor(Math.random() * extraServices.length);
-          const service = extraServices[serviceIndex];
+      if (!booking) continue;
 
-          bookingExtraServices.push({
-            bookingId: booking.id,
-            extraServiceId: service.id,
-            quantity: Math.floor(Math.random() * 3) + 1, // 1-3 quantity
-            subtotal: service.price,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-        }
+      let additionalTotal = 0;
+
+      // Process Extras
+      for (const extra of target.extras) {
+        const service = extraServices[extra.serviceIndex];
+        if (!service) continue;
+
+        const subtotal = parseFloat(service.price) * extra.quantity;
+        additionalTotal += subtotal;
+
+        extraServiceRows.push({
+          bookingId: booking.id,
+          extraServiceId: service.id,
+          quantity: extra.quantity,
+          subtotal: subtotal,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
       }
-    });
 
-    if (bookingExtraServices.length > 0) {
-      console.log(
-        `Inserting ${bookingExtraServices.length} booking extra services`,
-      );
-      await queryInterface.bulkInsert(
-        'BookingExtraServices',
-        bookingExtraServices,
-      );
-    } else {
-      console.log('No booking extra services created');
+      // 3. Update the Parent Booking's totalPrice
+      if (additionalTotal > 0) {
+        const newTotal = parseFloat(booking.totalPrice) + additionalTotal;
+
+        await queryInterface.sequelize.query(
+          `UPDATE "Bookings" SET "totalPrice" = :newTotal, "updatedAt" = NOW() WHERE id = :bookingId`,
+          {
+            replacements: {
+              newTotal: newTotal,
+              bookingId: booking.id,
+            },
+            type: Sequelize.QueryTypes.UPDATE,
+          }
+        );
+      }
+    }
+
+    if (extraServiceRows.length > 0) {
+      await queryInterface.bulkInsert('BookingExtraServices', extraServiceRows);
+      console.log(`[booking-extra-services] Inserted ${extraServiceRows.length} rows and updated Booking totals.`);
     }
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('BookingExtraServices', null, {});
   },
 };

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { useWebSocket } from '@/hooks/useWebSocket';
-import { RealtimeEvents } from '@/shared/eventContract.js';
+import { RealtimeEvents } from '@/shared/eventContract';
 
 export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,7 +48,13 @@ export const useAdminBooking = () => {
         });
       }, 0);
     }
-  }, [searchParams, filters.status, filters.search, filters.page, filters.limit]);
+  }, [
+    searchParams,
+    filters.status,
+    filters.search,
+    filters.page,
+    filters.limit,
+  ]);
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -81,10 +87,10 @@ export const useAdminBooking = () => {
 
     setBookings((prevBookings) =>
       prevBookings.map((b) =>
-        String(b.id) === String(payload.bookingId) 
-          ? { ...b, status: payload.status } 
-          : b
-      )
+        String(b.id) === String(payload.bookingId)
+          ? { ...b, status: payload.status }
+          : b,
+      ),
     );
 
     setBookingDetails((prevDetails) => {
@@ -106,14 +112,15 @@ export const useAdminBooking = () => {
     if (newFilters.status) params.set('status', newFilters.status);
     if (newFilters.search) params.set('search', newFilters.search);
     if (newFilters.page > 1) params.set('page', newFilters.page.toString());
-    if (newFilters.limit !== 10) params.set('limit', newFilters.limit.toString());
+    if (newFilters.limit !== 10)
+      params.set('limit', newFilters.limit.toString());
     setSearchParams(params);
   };
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
     if (key !== 'page') newFilters.page = 1;
-  
+
     setFilters(newFilters);
     updateURLParams(newFilters);
   };

@@ -53,6 +53,10 @@ export const useBookingDetail = () => {
 
   const goToModify = (roomId) => navigate(`/booking/${roomId}`);
 
+  const handleContinuePayment = (roomTypeId, bookingId) => {
+    navigate(`/booking/${roomTypeId}`, { state: { bookingId } });
+  };
+
   const handleCheckIn = async () => {
     try {
       await apiService.bookings.selfCheckIn(id);
@@ -95,6 +99,7 @@ export const useBookingDetail = () => {
     loading,
     goBack,
     goToModify,
+    handleContinuePayment,
     handleCheckIn,
     handleCheckOut,
     handleCancel,

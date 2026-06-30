@@ -1,302 +1,112 @@
 'use strict';
 
+const SAMPLE_BOOKINGS = [
+  {
+    userIndex: 0,
+    roomIndex: 0,
+    checkInDate: '2026-04-15',
+    checkOutDate: '2026-04-17',
+    status: 'pending',
+    createdAt: new Date('2026-04-10T10:00:00Z'),
+  },
+  {
+    userIndex: 0,
+    roomIndex: 5,
+    checkInDate: '2026-05-01',
+    checkOutDate: '2026-05-03',
+    status: 'pending',
+    createdAt: new Date('2026-04-28T10:00:00Z'),
+  },
+  {
+    userIndex: 1,
+    roomIndex: 9,
+    checkInDate: '2026-05-10',
+    checkOutDate: '2026-05-12',
+    status: 'pending',
+    createdAt: new Date('2026-05-01T10:00:00Z'),
+  },
+  {
+    userIndex: 1,
+    roomIndex: 8,
+    checkInDate: '2026-05-20',
+    checkOutDate: '2026-05-22',
+    status: 'confirmed',
+    createdAt: new Date('2026-05-05T10:00:00Z'),
+  }
+];
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    const bookings = [];
+  async up(queryInterface, Sequelize) {
+    // 1. Fetch Users, Rooms, and RoomTypes
     const users = await queryInterface.sequelize.query(
-      `SELECT id FROM "Users"`,
-      { type: Sequelize.QueryTypes.SELECT },
+      `SELECT id FROM "Users" ORDER BY id`,
+      { type: Sequelize.QueryTypes.SELECT }
     );
     const rooms = await queryInterface.sequelize.query(
-      `SELECT id, "roomTypeId" FROM "Rooms"`,
-      { type: Sequelize.QueryTypes.SELECT },
+      `SELECT id, "roomTypeId" FROM "Rooms" ORDER BY id`,
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const roomTypes = await queryInterface.sequelize.query(
+      `SELECT id, "basePrice" FROM "RoomTypes"`,
+      { type: Sequelize.QueryTypes.SELECT }
     );
 
-    if (users.length === 0 || rooms.length === 0) {
-      console.log('No users or rooms found, skipping booking seeder');
+    if (!users.length || !rooms.length || !roomTypes.length) {
+      console.warn('[bookings seeder] Missing required relational data. Skipping.');
       return;
     }
 
-    // Create sample bookings
-    const sampleBookings = [
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[0]?.id || 1,
-        checkInDate: new Date('2026-04-15'),
-        checkOutDate: new Date('2026-04-17'),
-        totalPrice: 200.0,
-        status: 'pending',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[1]?.id || 2,
-        checkInDate: new Date('2026-04-20'),
-        checkOutDate: new Date('2026-04-22'),
-        totalPrice: 300.0,
-        status: 'confirmed',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[2]?.id || 3,
-        checkInDate: new Date('2026-04-10'),
-        checkOutDate: new Date('2026-04-12'),
-        totalPrice: 250.0,
-        status: 'checked_in',
-        actualCheckIn: new Date('2026-04-10'),
-        createdAt: new Date('2026-04-05'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[3]?.id || 4,
-        checkInDate: new Date('2026-04-08'),
-        checkOutDate: new Date('2026-04-10'),
-        totalPrice: 180.0,
-        status: 'checked_out',
-        actualCheckIn: new Date('2026-04-08'),
-        actualCheckOut: new Date('2026-04-10'),
-        createdAt: new Date('2026-04-01'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[4]?.id || 5,
-        checkInDate: new Date('2026-04-25'),
-        checkOutDate: new Date('2026-04-27'),
-        totalPrice: 220.0,
-        status: 'cancelled',
-        cancelReason: 'Guest requested cancellation',
-        cancelledAt: new Date('2026-04-20'),
-        createdAt: new Date('2026-04-15'),
-        updatedAt: new Date(),
-      },
-      // Additional 20 dummy bookings
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[5]?.id || 6,
-        checkInDate: new Date('2026-05-01'),
-        checkOutDate: new Date('2026-05-03'),
-        totalPrice: 280.0,
-        status: 'pending',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[6]?.id || 7,
-        checkInDate: new Date('2026-05-05'),
-        checkOutDate: new Date('2026-05-07'),
-        totalPrice: 320.0,
-        status: 'confirmed',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[7]?.id || 8,
-        checkInDate: new Date('2026-04-28'),
-        checkOutDate: new Date('2026-04-30'),
-        totalPrice: 260.0,
-        status: 'checked_in',
-        actualCheckIn: new Date('2026-04-28'),
-        createdAt: new Date('2026-04-25'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[8]?.id || 9,
-        checkInDate: new Date('2026-04-26'),
-        checkOutDate: new Date('2026-04-28'),
-        totalPrice: 240.0,
-        status: 'checked_out',
-        actualCheckIn: new Date('2026-04-26'),
-        actualCheckOut: new Date('2026-04-28'),
-        createdAt: new Date('2026-04-20'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[9]?.id || 10,
-        checkInDate: new Date('2026-05-10'),
-        checkOutDate: new Date('2026-05-12'),
-        totalPrice: 350.0,
-        status: 'pending',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[0]?.id || 1,
-        checkInDate: new Date('2026-05-08'),
-        checkOutDate: new Date('2026-05-10'),
-        totalPrice: 200.0,
-        status: 'confirmed',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[1]?.id || 2,
-        checkInDate: new Date('2026-04-29'),
-        checkOutDate: new Date('2026-05-01'),
-        totalPrice: 300.0,
-        status: 'checked_in',
-        actualCheckIn: new Date('2026-04-29'),
-        createdAt: new Date('2026-04-27'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[2]?.id || 3,
-        checkInDate: new Date('2026-04-27'),
-        checkOutDate: new Date('2026-04-29'),
-        totalPrice: 250.0,
-        status: 'checked_out',
-        actualCheckIn: new Date('2026-04-27'),
-        actualCheckOut: new Date('2026-04-29'),
-        createdAt: new Date('2026-04-25'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[3]?.id || 4,
-        checkInDate: new Date('2026-05-15'),
-        checkOutDate: new Date('2026-05-17'),
-        totalPrice: 180.0,
-        status: 'cancelled',
-        cancelReason: 'Emergency cancellation',
-        cancelledAt: new Date('2026-04-28'),
-        createdAt: new Date('2026-04-20'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[4]?.id || 5,
-        checkInDate: new Date('2026-05-12'),
-        checkOutDate: new Date('2026-05-14'),
-        totalPrice: 220.0,
-        status: 'pending',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[5]?.id || 6,
-        checkInDate: new Date('2026-05-18'),
-        checkOutDate: new Date('2026-05-20'),
-        totalPrice: 280.0,
-        status: 'confirmed',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[6]?.id || 7,
-        checkInDate: new Date('2026-04-30'),
-        checkOutDate: new Date('2026-05-02'),
-        totalPrice: 320.0,
-        status: 'checked_in',
-        actualCheckIn: new Date('2026-04-30'),
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[7]?.id || 8,
-        checkInDate: new Date('2026-04-28'),
-        checkOutDate: new Date('2026-04-30'),
-        totalPrice: 260.0,
-        status: 'checked_out',
-        actualCheckIn: new Date('2026-04-28'),
-        actualCheckOut: new Date('2026-04-30'),
-        createdAt: new Date('2026-04-26'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[8]?.id || 9,
-        checkInDate: new Date('2026-05-20'),
-        checkOutDate: new Date('2026-05-22'),
-        totalPrice: 240.0,
-        status: 'pending',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[9]?.id || 10,
-        checkInDate: new Date('2026-05-25'),
-        checkOutDate: new Date('2026-05-27'),
-        totalPrice: 350.0,
-        status: 'confirmed',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[0]?.id || 1,
-        checkInDate: new Date('2026-05-02'),
-        checkOutDate: new Date('2026-05-04'),
-        totalPrice: 200.0,
-        status: 'checked_in',
-        actualCheckIn: new Date('2026-05-02'),
-        createdAt: new Date('2026-04-30'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[1]?.id || 2,
-        checkInDate: new Date('2026-05-01'),
-        checkOutDate: new Date('2026-05-03'),
-        totalPrice: 300.0,
-        status: 'checked_out',
-        actualCheckIn: new Date('2026-05-01'),
-        actualCheckOut: new Date('2026-05-03'),
-        createdAt: new Date('2026-04-29'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[2]?.id || 2,
-        roomId: rooms[2]?.id || 3,
-        checkInDate: new Date('2026-05-28'),
-        checkOutDate: new Date('2026-05-30'),
-        totalPrice: 250.0,
-        status: 'cancelled',
-        cancelReason: 'Payment issue',
-        cancelledAt: new Date('2026-04-28'),
-        createdAt: new Date('2026-04-25'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[0]?.id || 1,
-        roomId: rooms[3]?.id || 4,
-        checkInDate: new Date('2026-05-30'),
-        checkOutDate: new Date('2026-06-01'),
-        totalPrice: 180.0,
-        status: 'pending',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-      {
-        userId: users[1]?.id || 2,
-        roomId: rooms[4]?.id || 5,
-        checkInDate: new Date('2026-06-02'),
-        checkOutDate: new Date('2026-06-04'),
-        totalPrice: 220.0,
-        status: 'confirmed',
-        createdAt: new Date('2026-04-28'),
-        updatedAt: new Date(),
-      },
-    ];
+    // 2. Map Base Prices
+    const roomTypePrices = {};
+    for (const rt of roomTypes) {
+      roomTypePrices[rt.id] = parseFloat(rt.basePrice);
+    }
 
-    await queryInterface.bulkInsert('Bookings', sampleBookings);
+    const rows = [];
+    let skipped = 0;
+
+    // 3. Create Deterministic Bookings
+    for (const b of SAMPLE_BOOKINGS) {
+      const user = users[b.userIndex];
+      const room = rooms[b.roomIndex];
+
+      if (!user || !room) {
+        skipped++;
+        continue;
+      }
+
+      // Calculate room price: basePrice × nights
+      const ci = new Date(b.checkInDate);
+      const co = new Date(b.checkOutDate);
+      const nights = Math.round((co.getTime() - ci.getTime()) / (1000 * 60 * 60 * 24));
+      
+      const basePrice = roomTypePrices[room.roomTypeId];
+      const roomTotal = basePrice * nights;
+
+      rows.push({
+        userId: user.id,
+        roomId: room.id,
+        checkInDate: ci,
+        checkOutDate: co,
+        totalPrice: roomTotal, // Room Only. Extras added in the next seeder.
+        status: b.status,
+        createdAt: b.createdAt,
+        updatedAt: new Date(),
+      });
+    }
+
+    if (skipped > 0) {
+      console.log(`[bookings seeder] Skipped ${skipped} sample booking(s).`);
+    }
+
+    if (rows.length > 0) {
+      await queryInterface.bulkInsert('Bookings', rows);
+      console.log(`[bookings seeder] Inserted ${rows.length} booking(s) with base room prices.`);
+    }
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Bookings', null, {});
   },
 };

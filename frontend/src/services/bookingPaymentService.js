@@ -2,7 +2,10 @@ import apiService from '@/services/api/apiService';
 
 export const bookingPaymentService = {
   /**
-   * Initializes the base booking record.
+   * Initializes the base booking record. `payload.extraServices`, if
+   * present, is forwarded as-is and persisted server-side immediately
+   * (see booking.service.js#createBooking) so a pending booking remembers
+   * its extras even if the user leaves before paying.
    */
   async createBooking(payload) {
     const res = await apiService.bookings.create(payload);
@@ -15,35 +18,23 @@ export const bookingPaymentService = {
   },
 
   /**
-   * Processes extra services and confirms final payment in sequence.
+   * Confirms payment for an already-fully-persisted booking.
+   *
+   * FIX (root cause): this used to also create bookingExtraServices rows
+   * from `selectedExtraServices` and overwrite booking.totalPrice from
+   * client state. That's exactly what caused resumed bookings to lose
+   * their extras: after a reload, selectedExtraServices was empty, so this
+   * call created no extras and wrote a room-only total. Extras are now
+   * persisted earlier, in useBookingProcess's handleNextStep, exactly once
+   * — doing it again here would also risk duplicate
+   * bookingExtraServices rows. The server is the source of truth for the
+   * amount actually charged (see payment.service.js#createPayment).
    */
-  async processPayment({ bookingId, paymentMethodId, grandTotal, selectedExtraServices, extraServices }) {
-    const servicePromises = Object.entries(selectedExtraServices)
-      .filter(([_, quantity]) => quantity > 0)
-      .map(([serviceId, quantity]) => {
-        const service = extraServices.find((s) => String(s.id) === String(serviceId));
-        
-        if (service) {
-          return apiService.bookingExtraServices.create({
-            bookingId,
-            extraServiceId: parseInt(serviceId, 10),
-            quantity,
-            subtotal: Number(service.price) * quantity, 
-          });
-        }
-        return Promise.resolve();
-      });
-
-    await Promise.all(servicePromises);
-
-    await apiService.bookings.update(bookingId, { 
-      totalPrice: grandTotal 
-    });
-
+  async processPayment({ bookingId, paymentMethodId, grandTotal }) {
     const paymentRes = await apiService.payments.create({
       bookingId,
       paymentMethodId: parseInt(paymentMethodId, 10),
-      amount: grandTotal,
+      amount: grandTotal, // advisory only — server charges booking.totalPrice
       paymentStatus: 'paid',
       transactionTime: new Date().toISOString(),
     });
@@ -52,14 +43,6 @@ export const bookingPaymentService = {
       throw new Error('Payment processing failed');
     }
 
-    const finalBookingReceipt = {
-      ...paymentRes.data.data.booking,
-      totalPrice: grandTotal
-    };
-
-    return { 
-      ...paymentRes.data.data, 
-      booking: finalBookingReceipt 
-    };
+    return paymentRes.data.data;
   }
 };

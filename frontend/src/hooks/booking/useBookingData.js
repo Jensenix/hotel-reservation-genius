@@ -16,6 +16,22 @@ const parseLocalDate = (dateStr) => {
   return isNaN(d.getTime()) ? null : d;
 };
 
+// FIX (v2): the backend now returns an explicit, flat
+// `booking.selectedExtraServices` array — [{ id, quantity, subtotal }] —
+// sourced directly from the join table (see
+// booking.service.js#getBookingById), so there's no need to guess at
+// Sequelize's through-association pivot key naming on the client anymore.
+const extractSelectedExtraServices = (booking) => {
+  if (!booking || !Array.isArray(booking.selectedExtraServices)) return {};
+
+  return booking.selectedExtraServices.reduce((acc, item) => {
+    if (item?.id != null && Number(item.quantity) > 0) {
+      acc[item.id] = Number(item.quantity);
+    }
+    return acc;
+  }, {});
+};
+
 export const useBookingData = (roomId, initialBookingId) => {
   const [searchParams] = useSearchParams();
   
@@ -23,6 +39,10 @@ export const useBookingData = (roomId, initialBookingId) => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [extraServices, setExtraServices] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // FIX: holds extras restored from a resumed/pending booking so that
+  // useBookingProcess can seed its selectedExtraServices state with them.
+  const [existingExtraServices, setExistingExtraServices] = useState({});
 
   const [bookingData, setBookingData] = useState({
     checkInDate: parseLocalDate(searchParams.get('checkIn')),
@@ -61,6 +81,10 @@ export const useBookingData = (roomId, initialBookingId) => {
               guestCount: existing.room?.maxCapacity || prev.guestCount,
               specialRequests: existing.specialRequests || '',
             }));
+
+            // FIX (root cause): restore previously selected extra services
+            // for this pending booking, so resuming it doesn't lose them.
+            setExistingExtraServices(extractSelectedExtraServices(existing));
           }
         }
       } catch (err) {
@@ -85,5 +109,6 @@ export const useBookingData = (roomId, initialBookingId) => {
     setLoading,
     bookingData,
     setBookingData,
+    existingExtraServices,
   };
 };
