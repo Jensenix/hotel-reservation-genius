@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import apiService from '@/services/api/apiService';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { RealtimeEvents } from '@/shared/eventContract.js';
 
 export const useRevenueData = () => {
   const [revenueData, setRevenueData] = useState(null);
@@ -28,14 +30,24 @@ export const useRevenueData = () => {
       if (response.data.success) {
         setRevenueData(response.data.data);
       } else {
-        console.error('Error fetching revenue data:', response.data.message);
+        console.error(response.data.message);
       }
     } catch (error) {
-      console.error('Error fetching revenue data:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  useWebSocket(RealtimeEvents.PAYMENT.UPDATED, () => {
+    fetchRevenueData(dateRange);
+  });
+
+  useWebSocket(RealtimeEvents.BOOKING.STATUS_CHANGED, (data) => {
+    if (data && (data.status === 'cancelled' || data.status === 'confirmed')) {
+      fetchRevenueData(dateRange);
+    }
+  });
 
   useEffect(() => {
     const loadInitialData = async () => {

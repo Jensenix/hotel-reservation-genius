@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import apiService from '@/services/api/apiService';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { RealtimeEvents } from '@/shared/eventContract.js';
 
 export const useRoomAvailability = () => {
   const [availabilityData, setAvailabilityData] = useState(null);
@@ -24,13 +25,10 @@ export const useRoomAvailability = () => {
       if (response.data.success) {
         setAvailabilityData(response.data.data);
       } else {
-        console.error(
-          'Error fetching availability data:',
-          response.data.message,
-        );
+        console.error(response.data.message);
       }
     } catch (error) {
-      console.error('Error fetching availability data:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -52,10 +50,6 @@ export const useRoomAvailability = () => {
     };
   }, [selectedDate, fetchAvailabilityData]);
 
-  // ---------------------------------------------------------------------------
-  // Real-time Event Subscription
-  // ---------------------------------------------------------------------------
-  // Helper to compute new availability state based on payload
   const computeNewAvailabilityState = (prev, payload) => {
     if (!prev) return prev;
 
@@ -119,7 +113,7 @@ export const useRoomAvailability = () => {
     setAvailabilityData((prev) => computeNewAvailabilityState(prev, payload));
   };
 
-  useWebSocket('room:availability_changed', handleAvailabilityChanged);
+  useWebSocket(RealtimeEvents.ROOM.AVAILABILITY_CHANGED, handleAvailabilityChanged);
 
   const toggleRoomTypeDetails = useCallback((roomTypeId) => {
     setExpandedRoomType((prev) => (prev === roomTypeId ? null : roomTypeId));

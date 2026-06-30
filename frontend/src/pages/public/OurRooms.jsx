@@ -8,10 +8,16 @@ import Button from '@/components/ui/Button';
 import { Calendar, Search, Map } from 'lucide-react';
 import { MaxStayDays } from '@/config';
 
+// HELPER: Get accurate local timezone date (Prevents UTC mismatch in Indonesia)
+const getLocalYYYYMMDD = (dateObj) => {
+  const d = new Date(dateObj);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().split('T')[0];
+};
+
 const OurRooms = () => {
   const { loading, filters, updateFilters, clearFilters, filteredRooms } = useOurRooms();
   
-  // Lazily initialize modal state based on the URL context on load
   const [showDateModal, setShowDateModal] = useState(() => !filters.checkIn || !filters.checkOut);
   const [tempCheckIn, setTempCheckIn] = useState('');
   const [tempCheckOut, setTempCheckOut] = useState('');
@@ -27,20 +33,19 @@ const OurRooms = () => {
     setShowDateModal(false);
   };
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalYYYYMMDD(new Date());
   
   const minCheckOutStr = tempCheckIn 
-    ? new Date(new Date(tempCheckIn).getTime() + 86400000).toISOString().split('T')[0] 
+    ? getLocalYYYYMMDD(new Date(tempCheckIn).getTime() + 86400000)
     : todayStr;
 
   const maxCheckOutStr = tempCheckIn 
-    ? new Date(new Date(tempCheckIn).getTime() + (MaxStayDays * 86400000)).toISOString().split('T')[0]
+    ? getLocalYYYYMMDD(new Date(tempCheckIn).getTime() + (MaxStayDays * 86400000))
     : undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white relative">
       
-      {/* Pop-up Date Modal Overlay */}
       {showDateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-in fade-in zoom-in duration-300">

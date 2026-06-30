@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { RealtimeEvents } from '@/shared/eventContract.js';
 
 export const useMyBookings = () => {
   const { user } = useAuth();
@@ -27,7 +28,7 @@ export const useMyBookings = () => {
           setBookings(userBookings);
         }
       } catch (error) {
-        console.error('Error fetching user bookings:', error);
+        console.error(error);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -63,7 +64,7 @@ export const useMyBookings = () => {
         ),
       );
     } catch (error) {
-      console.error('Error checking in:', error);
+      console.error(error);
     }
   };
 
@@ -71,7 +72,6 @@ export const useMyBookings = () => {
     const booking = bookings.find((b) => b.id === bookingId);
 
     if (!booking) {
-      console.error('Could not find booking to check out:', bookingId);
       alert('Something went wrong. Please refresh and try again.');
       return;
     }
@@ -91,7 +91,7 @@ export const useMyBookings = () => {
         ),
       );
     } catch (error) {
-      console.error('Error checking out:', error);
+      console.error(error);
       alert('Failed to process checkout. Please try again or contact support.');
     }
   };
@@ -112,7 +112,7 @@ export const useMyBookings = () => {
     });
   }, [bookings, filter, search]);
 
-  useWebSocket('booking_created', (data) => {
+  useWebSocket(RealtimeEvents.BOOKING.CREATED, (data) => {
     if (data.userId !== userId) return;
 
     setBookings((prev) => {
@@ -131,10 +131,9 @@ export const useMyBookings = () => {
     });
   });
 
-  useWebSocket('booking:status_changed', (data) => {
+  useWebSocket(RealtimeEvents.BOOKING.STATUS_CHANGED, (data) => {
     if (!data || !data.bookingId || !data.status) return;
 
-    // Update the main bookings array instantly
     setBookings((prevBookings) =>
       prevBookings.map((b) =>
         String(b.id) === String(data.bookingId)
