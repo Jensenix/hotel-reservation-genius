@@ -6,7 +6,14 @@ import {
   isCheckOutAllowed as checkOutAllowed,
 } from '@/utils/bookingActionUtils';
 
-const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) => {
+const BookingSidebar = ({
+  booking,
+  onModify,
+  onContinuePayment,
+  onCheckIn,
+  onCheckOut,
+  onCancel,
+}) => {
   const isCheckInAllowed = checkInAllowed(booking);
   const isCheckOutAllowed = checkOutAllowed(booking);
 
@@ -43,7 +50,6 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) 
         </div>
       </div>
 
-      {/* Payment Summary */}
       <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl shadow-lg p-6 text-white">
         <h2 className="text-xl font-bold mb-4">Payment Summary</h2>
 
@@ -84,10 +90,20 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) 
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-100">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Actions</h2>
         <div className="space-y-3">
+          
+          {booking.status === 'pending' && (
+            <button
+              onClick={() => onContinuePayment?.(booking.room?.roomTypeId, booking.id)}
+              className="w-full py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium shadow-sm"
+            >
+              Continue to Payment
+            </button>
+          )}
+
           {booking.status === 'pending' && (
             <button
               onClick={() => onModify?.(booking.room?.roomTypeId)}
-              className="w-full py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+              className="w-full py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium shadow-sm"
             >
               Modify Booking
             </button>
@@ -96,7 +112,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) 
           {booking.status === 'pending' && (
             <button
               onClick={() => onCancel?.(booking.id)}
-              className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-sm"
             >
               Cancel Booking
             </button>
@@ -113,7 +129,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) 
                   );
                 }
               }}
-              className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
+              className={`w-full py-3 text-white rounded-lg transition-colors font-medium shadow-sm ${
                 isCheckInAllowed
                   ? 'bg-amber-600 hover:bg-amber-700'
                   : 'bg-gray-400 cursor-not-allowed'
@@ -134,7 +150,7 @@ const BookingSidebar = ({ booking, onModify, onCheckIn, onCheckOut, onCancel }) 
                   );
                 }
               }}
-              className={`w-full py-3 text-white rounded-lg transition-colors font-medium ${
+              className={`w-full py-3 text-white rounded-lg transition-colors font-medium shadow-sm ${
                 isCheckOutAllowed
                   ? 'bg-blue-600 hover:bg-blue-700'
                   : 'bg-gray-400 cursor-not-allowed'
@@ -172,6 +188,7 @@ BookingSidebar.propTypes = {
     }),
   }).isRequired,
   onModify: PropTypes.func,
+  onContinuePayment: PropTypes.func,
   onCheckIn: PropTypes.func,
   onCheckOut: PropTypes.func,
   onCancel: PropTypes.func,

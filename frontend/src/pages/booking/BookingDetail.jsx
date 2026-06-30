@@ -4,8 +4,16 @@ import BookingRoomInfo from '@/components/booking/detail/BookingRoomInfo';
 import BookingSidebar from '@/components/booking/detail/BookingSidebar';
 
 const BookingDetail = () => {
-  // ADDED handleCheckIn to the destructured properties from the hook
-  const { booking, loading, goBack, goToModify, handleCheckOut, handleCheckIn, handleCancel } = useBookingDetail();
+  const {
+    booking,
+    loading,
+    goBack,
+    goToModify,
+    handleContinuePayment,
+    handleCheckOut,
+    handleCheckIn,
+    handleCancel,
+  } = useBookingDetail();
 
   if (loading) {
     return (
@@ -48,10 +56,11 @@ const BookingDetail = () => {
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <BookingRoomInfo booking={booking} />
-          <BookingSidebar 
-            booking={booking} 
+          <BookingSidebar
+            booking={booking}
             onModify={goToModify}
-            onCheckIn={handleCheckIn} 
+            onContinuePayment={handleContinuePayment}
+            onCheckIn={handleCheckIn}
             onCheckOut={handleCheckOut}
             onCancel={handleCancel}
           />

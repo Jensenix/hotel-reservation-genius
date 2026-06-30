@@ -12,6 +12,18 @@ class PaymentService extends BaseService {
 
   /**
    * Creates a new payment and confirms the associated booking.
+   *
+   * FIX (financial bug): the amount charged now always comes from the
+   * booking's persisted totalPrice (kept correct by booking.service.js,
+   * which syncs extra services as soon as Step 1 is confirmed) rather than
+   * a client-supplied `amount`. This closes the gap where a resumed
+   * booking's React state could be empty/stale and a wrong amount would
+   * have been charged regardless of what the server actually had on file.
+   *
+   * NOTE: this intentionally removes the ability for a caller to charge an
+   * arbitrary `amount` for a given booking. If an admin-side "manual
+   * correction" payment flow needs that, add an explicit, separately
+   * authorized path rather than relaxing this check.
    */
   async createPayment({
     bookingId,
@@ -20,9 +32,16 @@ class PaymentService extends BaseService {
     paymentStatus,
     transactionTime,
   }) {
-    if (!bookingId || !amount) {
-      const err = new Error('bookingId and amount are required');
+    if (!bookingId) {
+      const err = new Error('bookingId is required');
       err.statusCode = 400;
+      throw err;
+    }
+
+    const existingBooking = await Booking.findByPk(bookingId);
+    if (!existingBooking) {
+      const err = new Error('Booking not found');
+      err.statusCode = 404;
       throw err;
     }
 
@@ -35,18 +54,23 @@ class PaymentService extends BaseService {
       }
     }
 
+    const authoritativeAmount = Number(existingBooking.totalPrice);
+
+    if (amount != null && Number(amount) !== authoritativeAmount) {
+      console.warn(
+        `[PaymentService] Client-sent amount (${amount}) did not match persisted booking total (${authoritativeAmount}) for booking ${bookingId}. Charging the persisted total.`,
+      );
+    }
+
     const payment = await super.create({
       bookingId,
       paymentMethodId,
-      amount,
+      amount: authoritativeAmount,
       paymentStatus: paymentStatus || 'paid',
       transactionTime: transactionTime || new Date(),
     });
 
-    let booking = await Booking.findByPk(bookingId);
-    if (booking) {
-      await booking.update({ status: 'confirmed' });
-    }
+    await existingBooking.update({ status: 'confirmed' });
     const updatedBooking = await Booking.findByPk(bookingId);
 
     try {
