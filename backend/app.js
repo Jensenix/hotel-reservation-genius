@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-// Import routes
+// Routes imports
 import authRoutes from './routes/auth/auth.routes.js';
 import userRoutes from './routes/users/user.routes.js';
 import roomTypeRoutes from './routes/room/roomType.routes.js';
@@ -16,8 +16,11 @@ import bookingExtraServiceRoutes from './routes/booking/bookingExtraService.rout
 import revenueRoutes from './routes/payment/revenue.routes.js';
 import roomAvailabilityRoutes from './routes/room/roomAvailability.routes.js';
 import guestRoutes from './routes/users/guest.routes.js';
+
+// Middleware and configuration imports
 import errorHandler from './middleware/errorHandler.js';
 import { corsOptions } from './config/config.js';
+import { setupSwagger } from './config/swagger.docs.js';
 
 const app = express();
 
@@ -30,6 +33,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.json({ message: 'Genius Society Hotel API' });
 });
+
+// API Documentation setup
+setupSwagger(app);
 
 // API Routes
 app.use('/api/auth', authRoutes);

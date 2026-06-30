@@ -19,11 +19,24 @@
 
 import { sendError } from '#utils/responseHandler.js';
 
+/**
+ * Global error-handling middleware for Express.
+ *
+ * @middleware
+ * @param {Object} err - The error object thrown in the application.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
+ * @returns {void}
+ *  
+ * @example
+ * // In app.js, register this middleware last:
+ * app.use(errorHandler);
+ */
 const errorHandler = (err, req, res, next) => {
-  // Always log the full stack server-side for debugging
   console.error(`[ErrorHandler] ${req.method} ${req.originalUrl}`, err.stack);
 
-  // ── Sequelize: model validation failed ─────────────────────────────
   if (err.name === 'SequelizeValidationError') {
     return res.status(400).json({
       success: false,
@@ -32,7 +45,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // ── Sequelize: unique constraint violated ───────────────────────────
   if (err.name === 'SequelizeUniqueConstraintError') {
     return res.status(409).json({
       success: false,
@@ -41,7 +53,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // ── Sequelize: foreign key constraint violated ──────────────────────
   if (err.name === 'SequelizeForeignKeyConstraintError') {
     return res.status(400).json({
       success: false,
@@ -50,15 +61,10 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // ── Custom operational errors from services ─────────────────────────
-  // Services throw:  const err = new Error('Room not found'); err.statusCode = 404;
-  // If statusCode is present → it's a known, intentional error → expose message.
-  // If statusCode is absent  → it's unexpected → hide internal detail.
   if (err.statusCode) {
     return sendError(res, err.message, err.statusCode);
   }
 
-  // ── Fallback: unexpected server error ───────────────────────────────
   return sendError(res, 'Internal Server Error', 500);
 };
 
