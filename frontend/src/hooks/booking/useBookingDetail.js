@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { getCheckOutBlockedReason } from '@/utils/bookingActionUtils';
-import { useWebSocket } from '@/hooks/useWebSocket'; // ADD THIS
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { RealtimeEvents } from '@/shared/eventContract.js';
 
 export const useBookingDetail = () => {
   const { id } = useParams();
@@ -10,13 +11,9 @@ export const useBookingDetail = () => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ---------------------------------------------------------------------------
-  // REAL-TIME EVENT SUBSCRIPTION
-  // ---------------------------------------------------------------------------
-  useWebSocket('booking:status_changed', (payload) => {
+  useWebSocket(RealtimeEvents.BOOKING.STATUS_CHANGED, (payload) => {
     if (!payload || !payload.bookingId || !payload.status) return;
 
-    // Instantly update UI if the admin changes the status of THIS booking
     setBooking((prevBooking) => {
       if (prevBooking && String(prevBooking.id) === String(payload.bookingId)) {
         return { ...prevBooking, status: payload.status };
@@ -24,7 +21,6 @@ export const useBookingDetail = () => {
       return prevBooking;
     });
   });
-  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     let isMounted = true;
@@ -36,7 +32,7 @@ export const useBookingDetail = () => {
           setBooking(response.data.data);
         }
       } catch (error) {
-        console.error('Error fetching booking detail:', error);
+        console.error(error);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -60,9 +56,8 @@ export const useBookingDetail = () => {
   const handleCheckIn = async () => {
     try {
       await apiService.bookings.selfCheckIn(id);
-      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
-      console.error('Error checking in:', error);
+      console.error(error);
       alert(error.response?.data?.message || 'Failed to check in');
     }
   };
@@ -78,21 +73,19 @@ export const useBookingDetail = () => {
 
     try {
       await apiService.bookings.selfCheckOut(id);
-      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
-      console.error('Error checking out:', error);
+      console.error(error);
       alert(error.response?.data?.message || 'Failed to check out');
     }
   };
 
   const handleCancel = async (bookingId) => {
     try {
-      await apiService.bookings.cancelBooking(bookingId, { 
-        reason: 'Cancelled by user via dashboard' 
+      await apiService.bookings.cancelBooking(bookingId, {
+        reason: 'Cancelled by user via dashboard',
       });
-      // Local state is updated automatically via the useWebSocket hook above!
     } catch (error) {
-      console.error('Cancel failed:', error);
+      console.error(error);
       alert(error.response?.data?.message || 'Failed to cancel booking');
     }
   };
