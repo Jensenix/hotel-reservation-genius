@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AdminHeader from './adminHeader/AdminHeader';
 import PropTypes from 'prop-types';
+import { logger } from '@/config';
 
 const AdminLayout = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log('AdminLayout rendered - Current path:', location.pathname);
+    logger.log('AdminLayout rendered - Current path:', location.pathname);
   }, [location.pathname]);
 
   return (

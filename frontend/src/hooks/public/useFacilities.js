@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useFacilities = () => {
   const [facilities, setFacilities] = useState([]);
@@ -18,7 +19,7 @@ export const useFacilities = () => {
         }
       } catch (error) {
         if (!ignore) {
-          console.error('Error fetching facilities:', error);
+          logger.error('Error fetching facilities:', error);
           setFacilities([]);
         }
       } finally {

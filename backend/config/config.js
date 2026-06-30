@@ -69,3 +69,6 @@ export const MaxStayDays = 14;
 
 /** @constant {number} Helper constant for time calculations (ms) */
 export const OneDayInMs = 1000 * 60 * 60 * 24;
+
+export const BaseUrl = process.env.BASE_URL || 'http://localhost:3000';
+export const ApiUrl = process.env.API_URL || 'http://localhost:3000/api';

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useFeaturedRooms = (limit = 3) => {
   const [rooms, setRooms] = useState([]);
@@ -18,7 +19,7 @@ export const useFeaturedRooms = (limit = 3) => {
         }
       } catch (err) {
         if (isMounted) setError(err);
-        console.error('Error fetching featured rooms:', err);
+        logger.error('Error fetching featured rooms:', err);
       } finally {
         if (isMounted) setLoading(false);
       }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useOurRooms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,14 +55,14 @@ export const useOurRooms = () => {
           checkIn: filters.checkIn,
           checkOut: filters.checkOut,
         };
-        
+
         const response = await apiService.roomTypes.getAll(queryParams);
-        
+
         if (isMounted) {
           setRooms(response.data.data);
         }
       } catch (error) {
-        console.error('Error fetching room types:', error);
+        logger.error('Error fetching room types:', error);
         if (isMounted) setRooms([]);
       } finally {
         if (isMounted) setLoading(false);

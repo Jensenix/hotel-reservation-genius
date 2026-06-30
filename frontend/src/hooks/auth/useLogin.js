@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
+import { logger } from '@/config';
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export const useLogin = () => {
         setError(response.data.message || 'Login failed');
       }
     } catch (err) {
-      console.error('Login error:', err);
+      logger.error('Login error:', err);
       setError(
         err.response?.data?.message || 'Login failed. Please try again.',
       );

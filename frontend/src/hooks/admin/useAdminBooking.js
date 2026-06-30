@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract';
+import { logger } from '@/config';
 
 export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,7 +66,7 @@ export const useAdminBooking = () => {
         setPagination(response.data.data.pagination);
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     } finally {
       setLoading(false);
     }
@@ -155,7 +156,7 @@ export const useAdminBooking = () => {
         setCancelReason('');
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert(error.response?.data?.message || 'Failed to execute action');
     }
   };
@@ -168,7 +169,7 @@ export const useAdminBooking = () => {
       const response = await apiService.bookings.getById(booking.id);
       setBookingDetails(response.data.data);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     } finally {
       setLoadingDetails(false);
     }
