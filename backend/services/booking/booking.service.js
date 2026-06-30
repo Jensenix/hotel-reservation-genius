@@ -8,10 +8,6 @@ const {
   ExtraService,
   RoomType,
   PaymentMethod,
-  // FIX: needed to persist/sync a booking's selected extra services.
-  // NOTE: verify this matches the actual model name registered in
-  // #models/index.js for the booking_extra_services join table — rename
-  // here if it differs (e.g. BookingExtraServices).
   BookingExtraService,
 } = db;
 import { Op } from 'sequelize';
@@ -19,25 +15,13 @@ import BookingUtils from '#utils/bookingUtils.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
 import { RealtimeEvents } from '../../shared/eventContract.js';
+import { MaxStayDays, OneDayInMs } from '#config/config.js';
 
 class BookingService extends BaseService {
   constructor() {
     super(Booking, 'Booking');
   }
 
-  /**
-   * FIX (financial bug): persists a booking's selected extra services and
-   * keeps totalPrice in sync, server-side.
-   *
-   * Why "destroy then bulkCreate": this makes the operation idempotent /
-   * replace-all, so calling it again (e.g. user goes back to Step 1, changes
-   * their selection, and continues to payment again) can never create
-   * duplicate bookingExtraServices rows for the same booking.
-   *
-   * Why prices are re-looked-up from ExtraService instead of trusting the
-   * caller's subtotal: never trust client-supplied amounts for what gets
-   * charged — the same principle applied to payment.service.js below.
-   */
   async _applyExtraServices(booking, extraServicesPayload, baseTotal) {
     const items = (extraServicesPayload || []).filter(
       (item) => item && item.extraServiceId && Number(item.quantity) > 0,
@@ -56,7 +40,7 @@ class BookingService extends BaseService {
     const rows = [];
     for (const item of items) {
       const unitPrice = priceById.get(item.extraServiceId);
-      if (unitPrice == null) continue; // unknown/deleted extra service — skip
+      if (unitPrice == null) continue; 
       const subtotal = unitPrice * Number(item.quantity);
       extrasTotal += subtotal;
       rows.push({
@@ -86,7 +70,7 @@ class BookingService extends BaseService {
     checkOutDate,
     totalPrice,
     status,
-    extraServices, // FIX: optional [{ extraServiceId, quantity, subtotal }]
+    extraServices,
   }) {
     if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
       const err = new Error(
@@ -96,10 +80,31 @@ class BookingService extends BaseService {
       throw err;
     }
 
+    // FIX: Safely parse dates directly from parameters
+    const checkIn = new Date(checkInDate);
+    let checkOut = new Date(checkOutDate);
+    
+    let finalCheckOutDate = checkOutDate;
+    let finalTotalPrice = totalPrice;
+
+    const diffTime = Math.abs(checkOut - checkIn);
+    const diffDays = Math.ceil(diffTime / OneDayInMs);
+
+    if (diffDays <= 0) {
+      throw new Error('Check-out date must be after check-in date.');
+    }
+
+    // BACKEND TRIMMING LOGIC
+    if (diffDays > MaxStayDays) {
+      checkOut = new Date(checkIn.getTime() + MaxStayDays * OneDayInMs);
+      finalCheckOutDate = checkOut.toISOString();
+      finalTotalPrice = null; // Force backend to recalculate true price
+    }
+
     const availableRoom = await BookingUtils.findAvailableRoom(
       roomTypeId,
       checkInDate,
-      checkOutDate,
+      finalCheckOutDate,
     );
     if (!availableRoom) {
       const err = new Error(
@@ -110,25 +115,22 @@ class BookingService extends BaseService {
     }
 
     let calculatedPrice =
-      totalPrice ||
+      finalTotalPrice ||
       (await BookingUtils.calculateTotalPrice(
         roomTypeId,
         checkInDate,
-        checkOutDate,
+        finalCheckOutDate,
       ));
 
     const booking = await super.create({
       userId,
       roomId: availableRoom.id,
       checkInDate,
-      checkOutDate,
+      checkOutDate: finalCheckOutDate,
       totalPrice: calculatedPrice,
       status: status || 'pending',
     });
 
-    // FIX (root cause): persist extras immediately so a PENDING booking
-    // remembers them even if the user leaves before paying. Previously
-    // these only existed in React state and were created at payment time.
     if (Array.isArray(extraServices) && extraServices.length > 0) {
       await this._applyExtraServices(booking, extraServices, calculatedPrice);
     }
@@ -154,6 +156,7 @@ class BookingService extends BaseService {
     return booking;
   }
 
+  // ... (Keep getAllBookings, getBookingById exactly as they were) ...
   async getAllBookings({ page = 1, limit = 10, status, userId, roomId }) {
     const where = {};
     if (status) where.status = status;
@@ -221,8 +224,6 @@ class BookingService extends BaseService {
         },
         { model: Review, as: 'reviews' },
         {
-          // NOTE: left exactly as it was before my changes — anything else
-          // already consuming this association's shape keeps working as-is.
           model: ExtraService,
           as: 'extraServices',
           through: { attributes: ['quantity', 'subtotal'] },
@@ -232,10 +233,6 @@ class BookingService extends BaseService {
 
     if (!booking) return booking;
 
-    // FIX: don't make the frontend guess Sequelize's pivot-key naming for
-    // the `extraServices` association above (that's what caused the resume
-    // flow to silently restore nothing, and then wipe real data on sync).
-    // Source an unambiguous, flat list directly from the join table instead.
     let extraServiceRows = [];
     try {
       extraServiceRows = await BookingExtraService.findAll({
@@ -259,6 +256,48 @@ class BookingService extends BaseService {
     return plainBooking;
   }
 
+  async updateBooking(id, data) {
+    const { extraServices, ...rest } = data || {};
+
+    // UPDATE LOGIC TRIMMING
+    if (rest.checkInDate && rest.checkOutDate) {
+      const checkIn = new Date(rest.checkInDate);
+      let checkOut = new Date(rest.checkOutDate);
+      const diffDays = Math.ceil((checkOut - checkIn) / OneDayInMs);
+
+      if (diffDays <= 0) {
+        throw new Error('Check-out date must be after check-in date.');
+      }
+
+      if (diffDays > MaxStayDays) {
+        checkOut = new Date(checkIn.getTime() + MaxStayDays * OneDayInMs);
+        rest.checkOutDate = checkOut.toISOString();
+        
+        // Recalculate price for the newly trimmed stay
+        const bookingToUpdate = await this.model.findByPk(id, {
+          include: [{ model: Room, as: 'room' }]
+        });
+        if (bookingToUpdate && bookingToUpdate.room) {
+          rest.totalPrice = await BookingUtils.calculateTotalPrice(
+            bookingToUpdate.room.roomTypeId,
+            rest.checkInDate,
+            rest.checkOutDate
+          );
+        }
+      }
+    }
+
+    const updatedBooking = await this.update(id, rest);
+
+    if (Array.isArray(extraServices)) {
+      const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
+      await this._applyExtraServices(updatedBooking, extraServices, baseTotal);
+    }
+
+    return updatedBooking;
+  }
+
+  // ... (Keep the rest of your methods exactly as they are) ...
   async confirmBooking(id) {
     const booking = await super.getById(id, {
       include: [
@@ -387,9 +426,6 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  // -----------------------------------------------------------------
-  // ADMIN CANCELLATION LOGIC
-  // -----------------------------------------------------------------
   async cancelBookingByAdmin(id, reason) {
     const booking = await super.getById(id, {
       include: [
@@ -406,7 +442,7 @@ class BookingService extends BaseService {
     }
 
     const wasOccupied = booking.room && booking.room.status === 'occupied';
-    
+
     if (wasOccupied) {
       await booking.room.update({ status: 'available' });
     }
@@ -444,9 +480,6 @@ class BookingService extends BaseService {
     return updatedBooking;
   }
 
-  // -----------------------------------------------------------------
-  // USER CANCELLATION LOGIC (WITH OWNERSHIP CHECK)
-  // -----------------------------------------------------------------
   async cancelBookingByUser(id, reason, userId) {
     const booking = await super.getById(id, {
       include: [
@@ -662,25 +695,6 @@ class BookingService extends BaseService {
         itemsPerPage: sanitizedLimit,
       },
     };
-  }
-
-  async updateBooking(id, data) {
-    const { extraServices, ...rest } = data || {};
-
-    const updatedBooking = await this.update(id, rest);
-
-    // FIX (root cause): this is the path hit when a user resumes a PENDING
-    // booking from "My Bookings" and continues to Step 2 again. Previously
-    // updateBooking was a pure passthrough and never touched extras, so a
-    // resumed booking's totalPrice never included them. Replace-all sync
-    // means this is safe even if the user edits and re-confirms Step 1
-    // multiple times — no duplicate bookingExtraServices rows.
-    if (Array.isArray(extraServices)) {
-      const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
-      await this._applyExtraServices(updatedBooking, extraServices, baseTotal);
-    }
-
-    return updatedBooking;
   }
 
   async deleteBooking(id) {

@@ -24,7 +24,26 @@ const OurRooms = () => {
 
   const handleSearchDates = () => {
     if (tempCheckIn && tempCheckOut) {
-      updateFilters({ checkIn: tempCheckIn, checkOut: tempCheckOut });
+      const checkInDate = new Date(tempCheckIn);
+      let checkOutDate = new Date(tempCheckOut);
+      
+      // STRICT UX VALIDATION: Catch manual typing bypasses
+      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      
+      let finalCheckOut = tempCheckOut;
+
+      if (diffDays <= 0) {
+        // If checkout is before or same as check-in, force 1 night
+        checkOutDate = new Date(checkInDate.getTime() + 86400000);
+        finalCheckOut = getLocalYYYYMMDD(checkOutDate);
+      } else if (diffDays > MaxStayDays) {
+        // If they bypassed the HTML max attr, force exactly MaxStayDays
+        checkOutDate = new Date(checkInDate.getTime() + (MaxStayDays * 86400000));
+        finalCheckOut = getLocalYYYYMMDD(checkOutDate);
+        alert(`Bookings are limited to a maximum of ${MaxStayDays} nights. Your dates have been adjusted.`);
+      }
+
+      updateFilters({ checkIn: tempCheckIn, checkOut: finalCheckOut });
       setShowDateModal(false);
     }
   };

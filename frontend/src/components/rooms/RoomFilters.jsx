@@ -3,7 +3,15 @@ import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 import { MaxStayDays } from '@/config';
 
+// HELPER: Get accurate local timezone date (Prevents UTC mismatch in Indonesia)
+const getLocalYYYYMMDD = (dateObj) => {
+  const d = new Date(dateObj);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().split('T')[0];
+};
+
 const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
+  
   const handleCheckInChange = (e) => {
     const newCheckIn = e.target.value;
     const updates = { checkIn: newCheckIn };
@@ -11,8 +19,7 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
     if (filters.checkOut) {
       const checkInDate = new Date(newCheckIn);
       const checkOutDate = new Date(filters.checkOut);
-      const diffTime = checkOutDate - checkInDate;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
 
       if (diffDays <= 0 || diffDays > MaxStayDays) {
         updates.checkOut = ''; 
@@ -21,10 +28,39 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
     updateFilters(updates);
   };
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  // STRICT UX VALIDATION: Catch manual typing bypasses in the Check-Out field
+  const handleCheckOutChange = (e) => {
+    let newCheckOut = e.target.value;
+
+    if (filters.checkIn && newCheckOut) {
+      const checkInDate = new Date(filters.checkIn);
+      let checkOutDate = new Date(newCheckOut);
+
+      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0) {
+        // If checkout is before or same as check-in, force 1 night
+        checkOutDate = new Date(checkInDate.getTime() + 86400000);
+        newCheckOut = getLocalYYYYMMDD(checkOutDate);
+      } else if (diffDays > MaxStayDays) {
+        // If they bypassed the HTML max attr, force exactly MaxStayDays
+        checkOutDate = new Date(checkInDate.getTime() + (MaxStayDays * 86400000));
+        newCheckOut = getLocalYYYYMMDD(checkOutDate);
+        alert(`Bookings are limited to a maximum of ${MaxStayDays} nights.`);
+      }
+    }
+    
+    updateFilters({ checkOut: newCheckOut });
+  };
+
+  const todayStr = getLocalYYYYMMDD(new Date());
   
+  const minCheckOutStr = filters.checkIn 
+    ? getLocalYYYYMMDD(new Date(new Date(filters.checkIn).getTime() + 86400000))
+    : todayStr;
+
   const maxCheckOutStr = filters.checkIn 
-    ? new Date(new Date(filters.checkIn).getTime() + (MaxStayDays * 86400000)).toISOString().split('T')[0]
+    ? getLocalYYYYMMDD(new Date(new Date(filters.checkIn).getTime() + (MaxStayDays * 86400000)))
     : undefined;
 
   return (
@@ -65,17 +101,19 @@ const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
               <label htmlFor="checkOutFilter" className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1 uppercase">
                 <Calendar className="w-3.5 h-3.5 text-amber-600" /> Check Out
               </label>
-              <input
-                id="checkOutFilter"
-                type="date"
-                disabled={!filters.checkIn}
-                min={filters.checkIn ? new Date(new Date(filters.checkIn).getTime() + 86400000).toISOString().split('T')[0] : todayStr}
-                max={maxCheckOutStr}
-                value={filters.checkOut}
-                onChange={(e) => updateFilters({ checkOut: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-gray-50"
-              />
-              {filters.checkIn && <p className="text-[10px] text-gray-500 mt-1 absolute">Max stay: {MaxStayDays} nights</p>}
+              <div className="relative">
+                <input
+                  id="checkOutFilter"
+                  type="date"
+                  disabled={!filters.checkIn}
+                  min={minCheckOutStr}
+                  max={maxCheckOutStr}
+                  value={filters.checkOut}
+                  onChange={handleCheckOutChange} /* <--- NOW GUARDED BY OUR NEW FUNCTION */
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
+                />
+                {filters.checkIn && <p className="text-[10px] text-gray-500 mt-1 absolute">Max stay: {MaxStayDays} nights</p>}
+              </div>
             </div>
 
             <div className="md:col-span-2">

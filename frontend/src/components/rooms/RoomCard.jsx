@@ -4,6 +4,13 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { Users, Wifi, ChevronRight, Heart, Calendar, X } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { MaxStayDays } from '@/config';
+
+const getLocalYYYYMMDD = (dateObj) => {
+  const d = new Date(dateObj);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().split('T')[0];
+};
 
 const RoomCard = ({ room }) => {
   const navigate = useNavigate();
@@ -34,10 +41,53 @@ const RoomCard = ({ room }) => {
     }
   };
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const handleCheckInChange = (e) => {
+    const newCheckIn = e.target.value;
+    setTempCheckIn(newCheckIn);
+
+    if (tempCheckOut) {
+      const checkInDate = new Date(newCheckIn);
+      const checkOutDate = new Date(tempCheckOut);
+      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0 || diffDays > MaxStayDays) {
+        setTempCheckOut('');
+      }
+    }
+  };
+
+  // STRICT UX VALIDATION: Catch manual typing bypasses
+  const handleCheckOutChange = (e) => {
+    let newCheckOut = e.target.value;
+
+    if (tempCheckIn && newCheckOut) {
+      const checkInDate = new Date(tempCheckIn);
+      let checkOutDate = new Date(newCheckOut);
+
+      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0) {
+        checkOutDate = new Date(checkInDate.getTime() + 86400000);
+        newCheckOut = getLocalYYYYMMDD(checkOutDate);
+      } else if (diffDays > MaxStayDays) {
+        checkOutDate = new Date(checkInDate.getTime() + (MaxStayDays * 86400000));
+        newCheckOut = getLocalYYYYMMDD(checkOutDate);
+        alert(`Bookings are limited to a maximum of ${MaxStayDays} nights.`);
+      }
+    }
+    
+    setTempCheckOut(newCheckOut);
+  };
+
+  const todayStr = getLocalYYYYMMDD(new Date());
+  
   const minCheckOutStr = tempCheckIn 
-    ? new Date(new Date(tempCheckIn).getTime() + 86400000).toISOString().split('T')[0] 
+    ? getLocalYYYYMMDD(new Date(new Date(tempCheckIn).getTime() + 86400000))
     : todayStr;
+
+  const maxCheckOutStr = tempCheckIn 
+    ? getLocalYYYYMMDD(new Date(new Date(tempCheckIn).getTime() + (MaxStayDays * 86400000)))
+    : undefined;
 
   return (
     <>
@@ -141,7 +191,7 @@ const RoomCard = ({ room }) => {
               <p className="text-sm text-gray-500 mt-1">Please select your dates to check {room.name}&apos;s availability.</p>
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-4 mb-6 relative">
               <div>
                 <label htmlFor={`checkIn-${room.id}`} className="block text-sm font-semibold text-gray-700 mb-1">Check-in Date</label>
                 <input
@@ -149,22 +199,23 @@ const RoomCard = ({ room }) => {
                   type="date"
                   min={todayStr}
                   value={tempCheckIn}
-                  onChange={(e) => {
-                    setTempCheckIn(e.target.value);
-                    if (tempCheckOut && tempCheckOut <= e.target.value) setTempCheckOut('');
-                  }}
+                  onChange={handleCheckInChange}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor={`checkOut-${room.id}`} className="block text-sm font-semibold text-gray-700 mb-1">Check-out Date</label>
+                <div className="flex justify-between items-end mb-1">
+                  <label htmlFor={`checkOut-${room.id}`} className="block text-sm font-semibold text-gray-700">Check-out Date</label>
+                  {tempCheckIn && <span className="text-[10px] text-gray-500">Max stay: {MaxStayDays} nights</span>}
+                </div>
                 <input
                   id={`checkOut-${room.id}`}
                   type="date"
                   disabled={!tempCheckIn}
                   min={minCheckOutStr}
+                  max={maxCheckOutStr}
                   value={tempCheckOut}
-                  onChange={(e) => setTempCheckOut(e.target.value)}
+                  onChange={handleCheckOutChange}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                 />
               </div>
