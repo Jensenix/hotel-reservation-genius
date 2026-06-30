@@ -22,7 +22,9 @@ class ReviewController extends BaseController {
    * Retrieves reviews made by a specific user.
    */
   getUserReviews = this.asyncHandler(async (req, res) => {
-    const data = await reviewService.getUserReviews(req.query.userId);
+    // FIX: Catch the ID whether the route is /user/:userId or /user?userId=1
+    const userId = req.params.userId || req.query.userId;
+    const data = await reviewService.getUserReviews(userId);
     this.sendSuccess(res, 'User reviews retrieved successfully', data);
   });
 
@@ -30,7 +32,16 @@ class ReviewController extends BaseController {
    * Retrieves a single review by ID.
    */
   getReviewById = this.asyncHandler(async (req, res) => {
-    const data = await reviewService.getReviewById(req.params.id);
+    const id = req.params.id;
+
+    // FIX: Prevent Postgres 500 crash if a string (like "user") falls into this route
+    if (isNaN(parseInt(id))) {
+      const err = new Error('Invalid review ID format');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const data = await reviewService.getReviewById(id);
     this.sendSuccess(res, 'Review retrieved successfully', data);
   });
 
