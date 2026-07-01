@@ -31,8 +31,6 @@ export const useRoomTypeDetail = () => {
 
   const fetchRooms = useCallback(async () => {
     try {
-      // Omitted setLoading(true) here to prevent synchronous state
-      // updates in the effect and to prevent UI flashing during background refetches.
       const response = await apiService.rooms.getAll();
       const allRooms = response.data.data || [];
       const typeRooms = allRooms.filter(
@@ -50,8 +48,6 @@ export const useRoomTypeDetail = () => {
   useEffect(() => {
     let isMounted = true;
 
-    // Abstract the fetches to an internal async function to cleanly resolve
-    // the promises without triggering the linter.
     const loadData = async () => {
       if (isMounted) {
         await Promise.all([fetchRoomTypeDetail(), fetchRooms()]);
@@ -131,6 +127,7 @@ export const useRoomTypeDetail = () => {
   return {
     roomType,
     rooms,
+    setRooms,
     loading,
     showRoomModal,
     editingRoom,

@@ -1,19 +1,7 @@
 import { apiClient } from '@/services/api/apiClient';
 
 /**
- * Room Categories / Types endpoints.
- */
-export const roomTypeAPI = {
-  getAll: () => apiClient.get('/room-types'),
-  getById: (id) => apiClient.get(`/room-types/${id}`),
-  create: (data) => apiClient.post('/room-types', data),
-  update: (id, data) => apiClient.put(`/room-types/${id}`, data),
-  delete: (id) => apiClient.delete(`/room-types/${id}`),
-  getAllWithFacilities: () => apiClient.get('/room-types/with-facilities'),
-};
-
-/**
- * Individual physical rooms endpoints.
+ * Room API service for frontend interactions with the backend room endpoints.
  */
 export const roomAPI = {
   getAll: () => apiClient.get('/rooms'),
@@ -21,12 +9,22 @@ export const roomAPI = {
   create: (data) => apiClient.post('/rooms', data),
   update: (id, data) => apiClient.put(`/rooms/${id}`, data),
   delete: (id) => apiClient.delete(`/rooms/${id}`),
-  getAvailable: (params) => apiClient.get('/rooms/available', { params }),
-  getAllWithRoomType: () => apiClient.get('/rooms/with-room-type'),
+  updateStatus: (id, status) => apiClient.put(`/rooms/${id}/status`, { status }),
 };
 
 /**
- * Hotel facilities endpoints.
+ * Room Type API service for frontend interactions with the backend room type endpoints.
+ */
+export const roomTypeAPI = {
+  getAll: () => apiClient.get('/room-types'),
+  getById: (id) => apiClient.get(`/room-types/${id}`),
+  create: (data) => apiClient.post('/room-types', data),
+  update: (id, data) => apiClient.put(`/room-types/${id}`, data),
+  delete: (id) => apiClient.delete(`/room-types/${id}`),
+};
+
+/**
+ * Facility API service for frontend interactions with the backend facility endpoints.
  */
 export const facilityAPI = {
   getAll: () => apiClient.get('/facilities'),
@@ -37,9 +35,8 @@ export const facilityAPI = {
 };
 
 /**
- * Room availability and statistical endpoints.
+ * Room Availability API service for frontend interactions with the backend room availability endpoints.
  */
 export const roomAvailabilityAPI = {
-  getStats: (params) => apiClient.get('/room-availability/stats', { params }),
-  getAvailability: (params) => apiClient.get('/room-availability/stats', { params }), 
+  getAvailability: (params) => apiClient.get('/room-availability', { params }),
 };

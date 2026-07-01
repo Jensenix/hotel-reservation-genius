@@ -86,6 +86,42 @@ router.post('/', authenticateToken, requireAdmin, roomController.createRoom);
 
 /**
  * @swagger
+ * /api/rooms/{id}/status:
+ *   put:
+ *     summary: Update room status (Admin)
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 example: available
+ *     responses:
+ *       200:
+ *         description: Room status updated successfully
+ */
+router.put(
+  '/:id/status',
+  authenticateToken,
+  requireAdmin,
+  roomController.updateRoomStatus
+);
+
+/**
+ * @swagger
  * /api/rooms/{id}:
  *   put:
  *     summary: Update room (Admin)
@@ -128,7 +164,7 @@ router.delete(
   '/:id',
   authenticateToken,
   requireAdmin,
-  roomController.deleteRoom,
+  roomController.deleteRoom
 );
 
 export default router;

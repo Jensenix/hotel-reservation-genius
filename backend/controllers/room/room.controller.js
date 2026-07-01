@@ -1,5 +1,7 @@
 import BaseController from '#controllers/base/base.controller.js';
 import roomService from '#services/room/room.service.js';
+import { publish, CHANNELS } from '#services/websocket/eventPublisher.js';
+import { RealtimeEvents } from '#shared/eventContract.js';
 
 class RoomController extends BaseController {
   /**
@@ -52,6 +54,32 @@ class RoomController extends BaseController {
   getAllWithRoomType = this.asyncHandler(async (req, res) => {
     const data = await roomService.getAllWithRoomType(req.query);
     this.sendSuccess(res, 'Rooms with room type retrieved successfully', data);
+  });
+
+  /**
+   * Updates a physical room's status and broadcasts the change via WebSocket.
+   */
+  updateRoomStatus = this.asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ['available', 'occupied', 'maintenance', 'cleaning'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status provided' });
+    }
+
+    const updatedRoom = await roomService.updateRoom(id, { status });
+
+    publish(CHANNELS.ROOM, {
+      event: RealtimeEvents.ROOM.STATUS_CHANGED,
+      data: {
+        roomId: id,
+        status: status,
+      },
+      rooms: ['admin:dashboard', 'room:public_availability'] 
+    });
+
+    this.sendSuccess(res, `Room status successfully updated to ${status}`, updatedRoom);
   });
 }
 

@@ -8,6 +8,7 @@ const RoomTypeDetail = () => {
   const {
     roomType,
     rooms,
+    setRooms, 
     loading,
     showRoomModal,
     editingRoom,
@@ -22,6 +23,16 @@ const RoomTypeDetail = () => {
     handleSubmitRoom,
     handleDelete,
   } = useRoomTypeDetail();
+
+  const handleUpdateLocalState = (roomId, newStatus) => {
+    if (setRooms) {
+      setRooms((prevRooms) =>
+        prevRooms.map((room) =>
+          room.id === roomId ? { ...room, status: newStatus } : room
+        )
+      );
+    }
+  };
 
   if (!roomType) {
     return (
@@ -51,6 +62,7 @@ const RoomTypeDetail = () => {
               setShowDeleteModal(true);
             }}
             onAddFirstRoom={() => handleOpenRoomModal()}
+            onUpdateLocalState={handleUpdateLocalState}
           />
         </div>
 
