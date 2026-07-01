@@ -10,8 +10,8 @@
  * - Ensure every lifecycle transition emits events in a consistent format
  */
 
-import { publish, CHANNELS } from '../services/websocket/eventPublisher.js';
-import { RealtimeEvents } from '../shared/eventContract.js';
+import { publish, CHANNELS } from '#services/websocket/eventPublisher.js';
+import { RealtimeEvents } from '#shared/eventContract.js';
 
 /**
  * Handles realtime events related to bookings and room availability.

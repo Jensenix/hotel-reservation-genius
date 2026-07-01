@@ -3,7 +3,7 @@ import db from '#models/index.js';
 const { Booking, Room } = db;
 
 import { Op } from 'sequelize';
-import BookingEvents from '#utils/bookingEvents.js';
+import BookingEvents from '#utils/events/bookingEvents.js';
 
 /**
  * BookingLifecycleService

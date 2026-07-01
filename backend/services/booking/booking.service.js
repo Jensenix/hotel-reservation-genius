@@ -12,7 +12,7 @@ const {
 } = db;
 import { Op } from 'sequelize';
 import BookingUtils from '#utils/bookingUtils.js';
-import BookingEvents from '#utils/bookingEvents.js';
+import BookingEvents from '#utils/events/bookingEvents.js';
 import BaseService from '../base/base.service.js';
 import bookingLifecycle from './bookingLifecycle.service.js';
 
@@ -23,9 +23,9 @@ class BookingService extends BaseService {
 
   /**
    * Applies extra services to a booking and updates the total price.
-   * @param {Object} booking 
-   * @param {Array} extraServicesPayload 
-   * @param {number} baseTotal 
+   * @param {Object} booking
+   * @param {Array} extraServicesPayload
+   * @param {number} baseTotal
    * @returns {Promise<number>}
    */
   async _applyExtraServices(booking, extraServicesPayload, baseTotal) {

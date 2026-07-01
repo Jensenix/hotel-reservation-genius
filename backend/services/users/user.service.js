@@ -3,7 +3,7 @@ const { User, Booking, Review } = db;
 
 import { Op } from 'sequelize';
 import pagination from '#utils/pagination.js';
-import UserEvents from '#utils/userEvents.js';
+import UserEvents from '#utils/events/userEvents.js';
 
 class UserService {
   /**

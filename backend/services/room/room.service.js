@@ -3,7 +3,7 @@ const { Room, RoomType, Booking } = db;
 import pagination from '#utils/pagination.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
-import { RealtimeEvents } from '../../shared/eventContract.js';
+import { RealtimeEvents } from '#shared/eventContract.js';
 
 class RoomService extends BaseService {
   constructor() {
@@ -53,7 +53,7 @@ class RoomService extends BaseService {
           { model: Booking, as: 'bookings' },
         ],
       });
-      return result; 
+      return result;
     }
 
     const { offset, limit: parsedLimit } = pagination.getPagination(

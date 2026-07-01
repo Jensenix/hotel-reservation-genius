@@ -3,8 +3,8 @@
  * Centralized realtime event publisher for user/admin management changes.
  */
 
-import { publish, CHANNELS } from '../services/websocket/eventPublisher.js';
-import { RealtimeEvents } from '../shared/eventContract.js';
+import { publish, CHANNELS } from '#services/websocket/eventPublisher.js';
+import { RealtimeEvents } from '#shared/eventContract.js';
 
 class UserEvents {
   static sanitizeUser(user) {
@@ -31,7 +31,10 @@ class UserEvents {
         rooms: ['admin:dashboard'],
       });
     } catch (err) {
-      console.error('[UserEvents] Failed to publish user created:', err.message);
+      console.error(
+        '[UserEvents] Failed to publish user created:',
+        err.message,
+      );
     }
   }
 
@@ -49,7 +52,10 @@ class UserEvents {
         rooms: ['admin:dashboard'],
       });
     } catch (err) {
-      console.error('[UserEvents] Failed to publish user updated:', err.message);
+      console.error(
+        '[UserEvents] Failed to publish user updated:',
+        err.message,
+      );
     }
   }
 
@@ -67,7 +73,10 @@ class UserEvents {
         rooms: ['admin:dashboard'],
       });
     } catch (err) {
-      console.error('[UserEvents] Failed to publish user deleted:', err.message);
+      console.error(
+        '[UserEvents] Failed to publish user deleted:',
+        err.message,
+      );
     }
   }
 }
