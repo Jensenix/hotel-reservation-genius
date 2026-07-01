@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookingData } from '@/hooks/booking/useBookingData';
 import { bookingPaymentService } from '@/services/bookingPaymentService';
+import { bookingExtraServiceAPI } from '@/services/endpoints/booking.service';
 import { calculateRoomTotal, calculateExtraServicesTotal } from '@/utils/bookingPrice';
 import apiService from '@/services/api/apiService';
 import { MaxStayDays } from '@/config';
@@ -26,6 +27,44 @@ export const useBookingProcess = (roomId, locationState, user) => {
   const [errorState, setErrorState] = useState({ show: false, message: '' });
   const [selectedExtraServices, setSelectedExtraServices] = useState({});
 
+  // BUG FIX: When resuming a pending booking (bookingId came from
+  // location.state instead of being created in this session),
+  // selectedExtraServices used to start empty with nothing to rehydrate it.
+  // handleNextStep would then send extraServices: [] on the very next
+  // "Continue" click, and the backend's _applyExtraServices() does a
+  // destroy-then-recreate against whatever array it receives — so an empty
+  // array wipes out the extras (and totalPrice) that were already saved.
+  // Prefilling from the server here makes the payload we send back an
+  // accurate reflection of what's actually attached to the booking.
+  useEffect(() => {
+    if (!initialBookingId) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await bookingExtraServiceAPI.getByBookingId(initialBookingId);
+        const rows = res.data?.data || [];
+        const prefilled = {};
+        rows.forEach((row) => {
+          prefilled[row.extraServiceId] = row.quantity;
+        });
+        if (!cancelled) {
+          setSelectedExtraServices(prefilled);
+        }
+      } catch (err) {
+        console.error(
+          `Failed to load existing extra services for booking ${initialBookingId}:`,
+          err,
+        );
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialBookingId]);
+
+  // Room-only price
   const totalPrice = useMemo(() => 
     calculateRoomTotal(bookingData.checkInDate, bookingData.checkOutDate, room?.basePrice),
   [bookingData.checkInDate, bookingData.checkOutDate, room]);
@@ -42,7 +81,6 @@ export const useBookingProcess = (roomId, locationState, user) => {
       return;
     }
 
-    // UX TRIMMING LOGIC: Intercept manual URL bypasses before sending to backend
     const checkIn = new Date(bookingData.checkInDate);
     const checkOut = new Date(bookingData.checkOutDate);
     const diffDays = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
@@ -59,8 +97,15 @@ export const useBookingProcess = (roomId, locationState, user) => {
         show: true,
         message: `Stays are limited to ${MaxStayDays} days. Your dates have been automatically adjusted. Please review the new price and click Continue again.`,
       });
-      return; // Stop execution so they can review the new price!
+      return;
     }
+
+    const formattedExtraServices = Object.entries(selectedExtraServices)
+      .filter(([_, quantity]) => quantity > 0)
+      .map(([serviceId, quantity]) => ({
+        extraServiceId: parseInt(serviceId, 10),
+        quantity
+      }));
 
     try {
       setLoading(true);
@@ -71,7 +116,14 @@ export const useBookingProcess = (roomId, locationState, user) => {
           checkInDate: bookingData.checkInDate.toISOString(),
           checkOutDate: bookingData.checkOutDate.toISOString(),
           specialRequests: bookingData.specialRequests,
-          totalPrice: totalPrice,
+          // 👉 FIX: Reverted to room-only price. Backend will add the extras safely!
+          totalPrice: totalPrice, 
+          extraServices: formattedExtraServices,
+          // selectedExtraServices is now prefilled from the server on resume
+          // (see the effect above), so an empty array here genuinely means
+          // "the user removed every extra." Tell the backend that explicitly
+          // so its safety guard still allows the intentional clear.
+          clearExtraServices: formattedExtraServices.length === 0,
         });
         setStep(2);
       } else {
@@ -81,7 +133,9 @@ export const useBookingProcess = (roomId, locationState, user) => {
           checkInDate: bookingData.checkInDate.toISOString(),
           checkOutDate: bookingData.checkOutDate.toISOString(),
           specialRequests: bookingData.specialRequests,
-          totalPrice: totalPrice,
+          // 👉 FIX: Reverted to room-only price. Backend will add the extras safely!
+          totalPrice: totalPrice, 
+          extraServices: formattedExtraServices, 
         });
 
         setBookingId(data.id);
@@ -110,6 +164,7 @@ export const useBookingProcess = (roomId, locationState, user) => {
       const paymentData = await bookingPaymentService.processPayment({
         bookingId,
         paymentMethodId: bookingData.paymentMethodId,
+        // grandTotal is passed here purely to advise the payment record
         grandTotal,
         selectedExtraServices,
         extraServices,
