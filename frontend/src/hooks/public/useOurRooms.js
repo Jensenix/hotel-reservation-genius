@@ -2,11 +2,14 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { RealtimeEvents } from '@/shared/eventContract';
 
 export const useOurRooms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const filters = useMemo(
     () => ({
@@ -44,11 +47,19 @@ export const useOurRooms = () => {
     setSearchParams(new URLSearchParams(), { replace: true });
   }, [setSearchParams]);
 
+  const handleRoomUpdate = useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
+
+  useWebSocket(RealtimeEvents.ROOM.STATUS_CHANGED, handleRoomUpdate);
+  useWebSocket(RealtimeEvents.ROOM.AVAILABILITY_CHANGED, handleRoomUpdate);
+
   useEffect(() => {
     let isMounted = true;
 
     const loadRooms = async () => {
-      setLoading(true); // Moved inside the async function to avoid synchronous effect renders
+      if (rooms.length === 0) setLoading(true); 
+      
       try {
         const queryParams = {
           search: filters.search,
@@ -74,7 +85,7 @@ export const useOurRooms = () => {
     return () => {
       isMounted = false;
     };
-  }, [filters.checkIn, filters.checkOut, filters.search]);
+  }, [filters.checkIn, filters.checkOut, filters.search, refreshKey]);
 
   const filteredRooms = useMemo(() => {
     return rooms

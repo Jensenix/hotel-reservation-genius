@@ -20,7 +20,7 @@ export default (sequelize, DataTypes) => {
       roomTypeId: DataTypes.INTEGER,
       floor: DataTypes.INTEGER,
       status: {
-        type: DataTypes.ENUM('available', 'occupied', 'maintenance'),
+        type: DataTypes.ENUM('available', 'occupied', 'maintenance', 'cleaning'),
         defaultValue: 'available',
       },
     },
