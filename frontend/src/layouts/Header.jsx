@@ -43,7 +43,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Main Navigation */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20 gap-4 relative">
           <div className="flex-1 flex justify-start min-w-0">

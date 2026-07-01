@@ -106,7 +106,6 @@ class BookingController extends BaseController {
    * Cancels a booking (Admin version without ownership check).
    */
   cancelBooking = this.asyncHandler(async (req, res) => {
-    // FIX: Safely access req.body to prevent 500 error crashes
     const reason = req.body?.reason || 'Cancelled by admin';
     
     const data = await bookingService.cancelBookingByAdmin(

@@ -22,7 +22,6 @@ class ReviewController extends BaseController {
    * Retrieves reviews made by a specific user.
    */
   getUserReviews = this.asyncHandler(async (req, res) => {
-    // FIX: Catch the ID whether the route is /user/:userId or /user?userId=1
     const userId = req.params.userId || req.query.userId;
     const data = await reviewService.getUserReviews(userId);
     this.sendSuccess(res, 'User reviews retrieved successfully', data);

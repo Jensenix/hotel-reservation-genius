@@ -36,7 +36,6 @@ export const useBookingData = (roomId, initialBookingId) => {
   const [extraServices, setExtraServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // FIX: holds extras restored from a resumed/pending booking so that
   // useBookingProcess can seed its selectedExtraServices state with them.
   const [existingExtraServices, setExistingExtraServices] = useState({});
 

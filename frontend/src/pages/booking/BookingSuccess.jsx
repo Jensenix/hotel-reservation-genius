@@ -50,7 +50,6 @@ const BookingSuccess = () => {
           </p>
         </div>
 
-        {/* Booking Details */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Booking Details
@@ -134,7 +133,6 @@ const BookingSuccess = () => {
           </Button>
         </div>
 
-        {/* Additional Info */}
         <div className="mt-12 text-center">
           <div className="bg-blue-50 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-3 text-blue-900">

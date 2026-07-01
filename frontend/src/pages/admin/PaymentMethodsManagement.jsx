@@ -93,7 +93,6 @@ export default function PaymentMethodsManagement() {
           />
         </div>
 
-        {/* Grid - Retained existing responsive cols, added text-sm clamping for mobile */}
         {state.loading ? (
           <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
@@ -129,8 +128,22 @@ export default function PaymentMethodsManagement() {
                   </p>
 
                   <div className="mt-2 text-xs text-slate-400 space-y-1 border-t border-slate-800 pt-2">
-                    {payment.accountNumber && <div><span className="font-medium text-slate-500">Acc No:</span> {payment.accountNumber}</div>}
-                    {payment.address && <div><span className="font-medium text-slate-500">Address:</span> {payment.address}</div>}
+                    {payment.accountNumber && (
+                      <div>
+                        <span className="font-medium text-slate-500">
+                          Acc No:
+                        </span>{' '}
+                        {payment.accountNumber}
+                      </div>
+                    )}
+                    {payment.address && (
+                      <div>
+                        <span className="font-medium text-slate-500">
+                          Address:
+                        </span>{' '}
+                        {payment.address}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="p-3 sm:p-4 bg-white flex justify-end gap-2 border-t border-slate-100">

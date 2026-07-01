@@ -18,7 +18,6 @@ const ReviewModal = ({
     >
       <form onSubmit={handleSubmitReview} className="space-y-6">
         <div>
-          {/* ACCESSIBILITY FIX: Replaced <label> with semantic <span> and radiogroup */}
           <span
             id="rating-group-label"
             className="block text-sm font-medium text-slate-700 mb-2"
