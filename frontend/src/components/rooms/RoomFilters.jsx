@@ -2,13 +2,7 @@ import { Search, Users, DollarSign, Calendar } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 import { MaxStayDays } from '@/config';
-
-// HELPER: Get accurate local timezone date (Prevents UTC mismatch in Indonesia)
-const getLocalYYYYMMDD = (dateObj) => {
-  const d = new Date(dateObj);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().split('T')[0];
-};
+import { getLocalYYYYMMDD } from '@/utils/dateUtils';
 
 const RoomFilters = ({ filters, updateFilters, clearFilters }) => {
   

@@ -3,7 +3,24 @@ import { MessageSquare } from 'lucide-react';
 import ReviewCard from './ReviewCard';
 import PropTypes from 'prop-types';
 
-const ReviewList = ({ loading, filteredReviews, activeTab, user, handleOpenReviewModal, handleDeleteReview }) => {
+/**
+ * @param {Object} props
+ * @param {boolean} props.loading
+ * @param {Array<Object>} props.filteredReviews
+ * @param {string} props.activeTab
+ * @param {Object|null} [props.user]
+ * @param {Function} props.handleOpenReviewModal
+ * @param {Function} props.handleDeleteReview
+ * @returns {JSX.Element}
+ */
+const ReviewList = ({
+  loading,
+  filteredReviews,
+  activeTab,
+  user,
+  handleOpenReviewModal,
+  handleDeleteReview,
+}) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">

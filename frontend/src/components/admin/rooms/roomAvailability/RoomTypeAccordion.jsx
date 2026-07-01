@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import { getStatusBadge, getStatusColor } from '@/utils/availabilityUtils';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.roomTypes
+ * @param {string|null} [props.expandedRoomType]
+ * @param {Function} props.onToggle
+ * @returns {JSX.Element}
+ */
 const RoomTypeAccordion = ({ roomTypes, expandedRoomType, onToggle }) => {
   return (
     <div className="space-y-6">

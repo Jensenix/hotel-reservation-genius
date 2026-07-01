@@ -2,6 +2,12 @@ import Button from '@/components/ui/Button';
 import RoomCard from './RoomCard';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.rooms
+ * @param {Function} props.clearFilters
+ * @returns {JSX.Element}
+ */
 const RoomList = ({ rooms, clearFilters }) => {
   return (
     <section className="py-12">

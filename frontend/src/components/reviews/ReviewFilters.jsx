@@ -2,6 +2,14 @@ import Card from '@/components/ui/Card';
 import { Search } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {string} props.searchTerm
+ * @param {Function} props.setSearchTerm
+ * @param {string} props.ratingFilter
+ * @param {Function} props.setRatingFilter
+ * @returns {JSX.Element}
+ */
 const ReviewFilters = ({
   searchTerm,
   setSearchTerm,

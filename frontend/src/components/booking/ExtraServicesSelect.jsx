@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} [props.extraServices]
+ * @param {Object<string, number>} [props.selectedExtraServices]
+ * @param {Function} props.setSelectedExtraServices
+ * @returns {JSX.Element}
+ */
 export default function ExtraServicesSelect({ 
   extraServices = [], 
   selectedExtraServices = {}, 

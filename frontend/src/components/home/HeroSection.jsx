@@ -3,6 +3,9 @@ import Button from '@/components/ui/Button';
 import { Sparkles, MapPin, Star, Shield } from 'lucide-react';
 import { ImageAssets } from '@/config';
 
+/**
+ * @returns {JSX.Element}
+ */
 const HeroSection = () => (
   <section
     className="relative min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-120px)] flex items-center justify-center bg-cover bg-center bg-no-repeat w-full overflow-hidden"
@@ -51,13 +54,15 @@ const HeroSection = () => (
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-white/80">
         <div className="flex items-center space-x-2">
           <MapPin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-          <span className="text-xs sm:text-sm text-center">123 Luxury Ave, Paradise City</span>
+          <span className="text-xs sm:text-sm text-center">
+            123 Luxury Ave, Paradise City
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 shrink-0" />
           <span className="text-xs sm:text-sm">5-Star Luxury</span>
         </div>
-      <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2">
           <Shield className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span className="text-xs sm:text-sm">Premium Service</span>
         </div>

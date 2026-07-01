@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import { ImageAssets } from '@/config';
 
+/**
+ * @param {Object} props
+ * @param {string} props.title
+ * @param {string} props.highlight
+ * @param {string} props.subtitle
+ * @returns {JSX.Element}
+ */
 const AuthHeader = ({ title, highlight, subtitle }) => {
   return (
     <div className="text-center mb-8 relative">

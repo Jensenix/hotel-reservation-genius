@@ -1,12 +1,30 @@
 import { Search } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-export default function GuestFilterBar({ searchTerm, setSearchTerm, roleFilter, setRoleFilter }) {
+/**
+ * @param {Object} props
+ * @param {string} props.searchTerm
+ * @param {Function} props.setSearchTerm
+ * @param {string} props.roleFilter
+ * @param {Function} props.setRoleFilter
+ * @returns {JSX.Element}
+ */
+export default function GuestFilterBar({
+  searchTerm,
+  setSearchTerm,
+  roleFilter,
+  setRoleFilter,
+}) {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-5 sm:p-8 mb-6 sm:mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         <div className="md:col-span-2">
-          <label htmlFor="searchInput" className="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 sm:mb-3">Search Users</label>
+          <label
+            htmlFor="searchInput"
+            className="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 sm:mb-3"
+          >
+            Search Users
+          </label>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
             <input
@@ -20,7 +38,12 @@ export default function GuestFilterBar({ searchTerm, setSearchTerm, roleFilter, 
           </div>
         </div>
         <div>
-          <label htmlFor="roleFilter" className="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 sm:mb-3">Filter by Role</label>
+          <label
+            htmlFor="roleFilter"
+            className="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 sm:mb-3"
+          >
+            Filter by Role
+          </label>
           <select
             id="roleFilter"
             value={roleFilter}

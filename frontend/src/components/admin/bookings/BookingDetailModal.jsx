@@ -1,6 +1,16 @@
 import Modal from '@/components/ui/Modal';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {Object|null} props.selectedBooking
+ * @param {Object|null} props.bookingDetails
+ * @param {boolean} props.loadingDetails
+ * @param {Function} props.getStatusBadge
+ * @returns {JSX.Element}
+ */
 export default function BookingDetailModal({
   isOpen,
   onClose,
@@ -171,9 +181,7 @@ export default function BookingDetailModal({
                 <span className="text-gray-600">Status</span>
 
                 <span className="shrink-0">
-                  {getStatusBadge(
-                    bookingDetails.payment.paymentStatus
-                  )}
+                  {getStatusBadge(bookingDetails.payment.paymentStatus)}
                 </span>
               </div>
             </div>
@@ -205,10 +213,7 @@ BookingDetailModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   selectedBooking: PropTypes.shape({
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   bookingDetails: PropTypes.shape({
     user: PropTypes.shape({
@@ -224,39 +229,24 @@ BookingDetailModal.propTypes = {
     checkInDate: PropTypes.string,
     checkOutDate: PropTypes.string,
     status: PropTypes.string,
-    totalPrice: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    totalPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     extraServices: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.number,
-        ]),
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         serviceName: PropTypes.string,
-        price: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.number,
-        ]),
+        price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         BookingExtraService: PropTypes.shape({
           quantity: PropTypes.number,
-          subtotal: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number,
-          ]),
+          subtotal: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         }),
-      })
+      }),
     ),
     specialRequests: PropTypes.string,
     payment: PropTypes.shape({
       paymentMethod: PropTypes.shape({
         methodName: PropTypes.string,
       }),
-      amount: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
+      amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       paymentStatus: PropTypes.string,
     }),
   }),

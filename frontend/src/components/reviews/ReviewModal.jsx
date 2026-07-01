@@ -2,6 +2,18 @@ import Modal from '@/components/ui/Modal';
 import { Star } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.showReviewModal
+ * @param {Function} props.handleCloseReviewModal
+ * @param {Object|null} [props.editingReview]
+ * @param {Function} props.handleSubmitReview
+ * @param {Object} props.reviewFormData
+ * @param {number} props.reviewFormData.rating
+ * @param {string} props.reviewFormData.comment
+ * @param {Function} props.setReviewFormData
+ * @returns {JSX.Element}
+ */
 const ReviewModal = ({
   showReviewModal,
   handleCloseReviewModal,

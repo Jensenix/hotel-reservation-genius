@@ -30,6 +30,18 @@ function formatEditorNames(editors = []) {
     .join(', ');
 }
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.users
+ * @param {boolean} props.loading
+ * @param {Array<Object>} props.allUsers
+ * @param {Object<string, Array<Object>>} [props.activeEditsByKey]
+ * @param {string|null} [props.currentSocketId]
+ * @param {Function} props.onEdit
+ * @param {Function} props.onDelete
+ * @param {Function} props.onAddUser
+ * @returns {JSX.Element}
+ */
 export default function GuestTable({
   users,
   loading,
@@ -120,9 +132,7 @@ export default function GuestTable({
                             <div
                               className="inline-flex items-center w-fit px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[10px] sm:text-xs font-semibold"
                               title={`${editorNames} ${
-                                editorNames.includes(',')
-                                  ? 'are'
-                                  : 'is'
+                                editorNames.includes(',') ? 'are' : 'is'
                               } currently editing this user`}
                             >
                               <AlertTriangle className="w-3 h-3 mr-1" />

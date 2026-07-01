@@ -6,6 +6,16 @@ import {
   isCheckOutAllowed as checkOutAllowed,
 } from '@/utils/bookingActionUtils';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.booking
+ * @param {Function} [props.onModify]
+ * @param {Function} [props.onContinuePayment]
+ * @param {Function} [props.onCheckIn]
+ * @param {Function} [props.onCheckOut]
+ * @param {Function} [props.onCancel]
+ * @returns {JSX.Element}
+ */
 const BookingSidebar = ({
   booking,
   onModify,
@@ -90,10 +100,11 @@ const BookingSidebar = ({
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-100">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Actions</h2>
         <div className="space-y-3">
-          
           {booking.status === 'pending' && (
             <button
-              onClick={() => onContinuePayment?.(booking.room?.roomTypeId, booking.id)}
+              onClick={() =>
+                onContinuePayment?.(booking.room?.roomTypeId, booking.id)
+              }
               className="w-full py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium shadow-sm"
             >
               Continue to Payment

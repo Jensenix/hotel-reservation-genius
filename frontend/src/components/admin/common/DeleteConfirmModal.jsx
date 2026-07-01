@@ -1,7 +1,20 @@
 import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 
-export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, itemName }) {
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {Function} props.onConfirm
+ * @param {string} [props.itemName]
+ * @returns {JSX.Element}
+ */
+export default function DeleteConfirmModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  itemName,
+}) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Confirm Delete">
       <div className="space-y-6">

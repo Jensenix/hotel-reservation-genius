@@ -1,6 +1,18 @@
 import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {Function} props.onSubmit
+ * @param {Object} props.formData
+ * @param {string} [props.formData.facilityName]
+ * @param {string} [props.formData.iconUrl]
+ * @param {Function} props.onChange
+ * @param {boolean} props.isEditing
+ * @returns {JSX.Element}
+ */
 export default function FacilityFormModal({
   isOpen,
   onClose,
@@ -17,7 +29,10 @@ export default function FacilityFormModal({
     >
       <form onSubmit={onSubmit} className="space-y-6">
         <div>
-          <label htmlFor="fm-facilityName" className="block text-sm font-medium text-slate-700 mb-2">
+          <label
+            htmlFor="fm-facilityName"
+            className="block text-sm font-medium text-slate-700 mb-2"
+          >
             Facility Name
           </label>
           <input
@@ -30,7 +45,10 @@ export default function FacilityFormModal({
           />
         </div>
         <div>
-          <label htmlFor="fm-iconUrl" className="block text-sm font-medium text-slate-700 mb-2">
+          <label
+            htmlFor="fm-iconUrl"
+            className="block text-sm font-medium text-slate-700 mb-2"
+          >
             Icon URL
           </label>
           <input

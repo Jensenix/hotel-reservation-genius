@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import Button from '@/components/ui/Button';
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.bookings
+ * @param {Function} props.getStatusBadge
+ * @param {Function} props.onViewDetails
+ * @param {Function} props.onAction
+ * @returns {JSX.Element}
+ */
 export default function BookingTable({
   bookings,
   getStatusBadge,

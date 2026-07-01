@@ -1,6 +1,12 @@
 import { Star, Clock, Shield } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object|null} [props.facility]
+ * @param {Function} props.onClose
+ * @returns {JSX.Element|null}
+ */
 const FacilityDetails = ({ facility, onClose }) => {
   if (!facility) return null;
 
@@ -39,15 +45,21 @@ const FacilityDetails = ({ facility, onClose }) => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center space-x-3 text-amber-600">
                 <Star className="w-5 h-5 fill-current" />
-                <span className="font-medium tracking-wide">5-Star Premium Service</span>
+                <span className="font-medium tracking-wide">
+                  5-Star Premium Service
+                </span>
               </div>
               <div className="flex items-center space-x-3 text-slate-600">
                 <Clock className="w-5 h-5" />
-                <span className="font-medium tracking-wide">24/7 Availability</span>
+                <span className="font-medium tracking-wide">
+                  24/7 Availability
+                </span>
               </div>
               <div className="flex items-center space-x-3 text-slate-600">
                 <Shield className="w-5 h-5" />
-                <span className="font-medium tracking-wide">Premium Quality Assurance</span>
+                <span className="font-medium tracking-wide">
+                  Premium Quality Assurance
+                </span>
               </div>
             </div>
             <div className="mt-8">

@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import { CheckCircle, XCircle, AlertCircle, Clock } from 'lucide-react';
 
+/**
+ * @param {Object} props
+ * @param {string} props.status
+ * @returns {JSX.Element}
+ */
 const BookingStatusBadge = ({ status }) => {
   const getBadgeConfig = (currentStatus) => {
     switch (currentStatus) {
@@ -46,7 +51,9 @@ const BookingStatusBadge = ({ status }) => {
   const config = getBadgeConfig(status);
 
   return (
-    <div className={`flex items-center space-x-2 px-4 py-2 rounded-full border-2 ${config.color}`}>
+    <div
+      className={`flex items-center space-x-2 px-4 py-2 rounded-full border-2 ${config.color}`}
+    >
       {config.icon}
       <span className="font-medium">{config.text}</span>
     </div>

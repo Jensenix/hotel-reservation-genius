@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
  * @param {Array} props.extraServices - List of available extra services fetched from API.
  * @param {Object} props.selectedExtraServices - Current state of selected extra services and their quantities.
  * @param {Function} props.setSelectedExtraServices - State setter to update selected extra services.
+ * @returns {JSX.Element} The rendered booking details form.
  */
 export default function BookingDetailsForm({
   bookingData,

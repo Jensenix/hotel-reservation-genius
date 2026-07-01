@@ -1,6 +1,11 @@
 import { Building2, DollarSign, Layers } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.roomTypes
+ * @returns {JSX.Element}
+ */
 const RoomTypeStats = ({ roomTypes }) => {
   const totalPhysicalRooms = roomTypes.reduce((sum, rt) => sum + (rt.rooms?.length || 0), 0);
   const avgBasePrice = roomTypes.length > 0 

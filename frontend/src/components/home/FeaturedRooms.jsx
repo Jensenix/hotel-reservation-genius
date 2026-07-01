@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { useFeaturedRooms } from '@/hooks/public/useFeaturedRoom';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RoomSkeleton = () => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
     <div className="h-64 bg-gradient-to-br from-slate-200 to-slate-300 animate-pulse"></div>
@@ -19,6 +22,9 @@ const RoomSkeleton = () => (
   </div>
 );
 
+/**
+ * @returns {JSX.Element}
+ */
 const FeaturedRooms = () => {
   const { rooms, loading, error } = useFeaturedRooms(3);
 

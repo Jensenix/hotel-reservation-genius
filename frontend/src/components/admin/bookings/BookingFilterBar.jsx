@@ -1,6 +1,16 @@
 import PropTypes from 'prop-types';
 import Button from '@/components/ui/Button';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.filters
+ * @param {string} props.filters.status
+ * @param {string} props.filters.search
+ * @param {Function} props.handleFilterChange
+ * @param {Function} props.fetchBookings
+ * @param {React.RefObject<HTMLInputElement>} [props.searchInputRef]
+ * @returns {JSX.Element}
+ */
 export default function BookingFilterBar({
   filters,
   handleFilterChange,
@@ -11,7 +21,10 @@ export default function BookingFilterBar({
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-8">
       <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-end">
         <div className="w-full md:flex-1 min-w-[200px]">
-          <label htmlFor="statusFilter" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="statusFilter"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+          >
             Status Filter
           </label>
           <select
@@ -30,7 +43,10 @@ export default function BookingFilterBar({
         </div>
 
         <div className="w-full md:flex-1 min-w-[200px]">
-          <label htmlFor="searchInput" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <label
+            htmlFor="searchInput"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+          >
             Search
           </label>
           <input

@@ -2,6 +2,23 @@ import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.showRoomModal
+ * @param {Function} props.handleCloseRoomModal
+ * @param {Object|null} [props.editingRoom]
+ * @param {Function} props.handleSubmitRoom
+ * @param {Object} props.roomFormData
+ * @param {string} props.roomFormData.roomNumber
+ * @param {string|number} props.roomFormData.floor
+ * @param {Function} props.setRoomFormData
+ * @param {boolean} props.showDeleteModal
+ * @param {Function} props.setShowDeleteModal
+ * @param {Object|null} [props.deletingRoom]
+ * @param {Function} props.setDeletingRoom
+ * @param {Function} props.handleDelete
+ * @returns {JSX.Element}
+ */
 const RoomModals = ({
   showRoomModal,
   handleCloseRoomModal,
