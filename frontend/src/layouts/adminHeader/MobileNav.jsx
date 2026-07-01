@@ -1,6 +1,17 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {Array<Object>} props.adminNavItems
+ * @param {Array<Object>} props.managementItems
+ * @param {Function} props.isActive
+ * @param {Object|null} [props.user]
+ * @param {Function} props.onLogout
+ * @returns {JSX.Element|null}
+ */
 const MobileNav = ({
   isOpen,
   onClose,
@@ -44,12 +55,12 @@ const MobileNav = ({
                 isActive(item.path)
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                }`}
-          >
-            <item.icon size={18} />
-            <span>{item.label}</span>
-          </Link>
-        ))}
+              }`}
+            >
+              <item.icon size={18} />
+              <span>{item.label}</span>
+            </Link>
+          ))}
         </div>
 
         <div className="pt-4 pb-3 border-t border-slate-700 mt-4">
@@ -61,7 +72,9 @@ const MobileNav = ({
                 </span>
               </div>
               <div>
-                <p className="text-white text-sm font-medium">{user?.fullName || 'Admin User'}</p>
+                <p className="text-white text-sm font-medium">
+                  {user?.fullName || 'Admin User'}
+                </p>
                 <p className="text-slate-400 text-xs">Administrator</p>
               </div>
             </div>
@@ -82,27 +95,27 @@ const MobileNav = ({
 };
 
 MobileNav.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    adminNavItems: PropTypes.arrayOf(
-        PropTypes.shape({
-            path: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
-            icon: PropTypes.elementType.isRequired,
-        })
-    ).isRequired,
-    managementItems: PropTypes.arrayOf(
-        PropTypes.shape({
-            path: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
-            icon: PropTypes.elementType.isRequired,
-        })
-    ).isRequired,
-    isActive: PropTypes.func.isRequired,
-    user: PropTypes.shape({
-        fullName: PropTypes.string,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  adminNavItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.elementType.isRequired,
     }),
-    onLogout: PropTypes.func.isRequired,
+  ).isRequired,
+  managementItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.elementType.isRequired,
+    }),
+  ).isRequired,
+  isActive: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    fullName: PropTypes.string,
+  }),
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default MobileNav;

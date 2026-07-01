@@ -4,6 +4,11 @@ import AdminHeader from './adminHeader/AdminHeader';
 import PropTypes from 'prop-types';
 import { logger } from '@/config';
 
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
+ */
 const AdminLayout = ({ children }) => {
   const location = useLocation();
 

@@ -5,6 +5,9 @@ import Button from '@/components/ui/Button';
 import { Phone, MapPin, Star, Menu, X } from 'lucide-react';
 import { ImageAssets } from '@/config';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();

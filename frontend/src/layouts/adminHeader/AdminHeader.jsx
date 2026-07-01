@@ -18,6 +18,9 @@ import {
 import ManagementDropdown from './ManagementDropdown';
 import MobileNav from './MobileNav';
 
+/**
+ * @returns {Array<Object>}
+ */
 const adminNavItems = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/revenue', label: 'Revenue', icon: DollarSign },
@@ -26,6 +29,9 @@ const adminNavItems = [
   { path: '/admin/rooms', label: 'Rooms', icon: Building2 },
 ];
 
+/**
+ * @returns {Array<Object>}
+ */
 const managementItems = [
   { path: '/admin/facilities', label: 'Facilities', icon: Coffee },
   { path: '/admin/extra-services', label: 'Extra Services', icon: Settings },
@@ -36,6 +42,9 @@ const managementItems = [
   },
 ];
 
+/**
+ * @returns {JSX.Element}
+ */
 const AdminHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
