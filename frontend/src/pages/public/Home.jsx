@@ -1,10 +1,13 @@
-import HeroSection from "@/components/home/HeroSection";
-import FeaturedRooms from "@/components/home/FeaturedRooms";
-import FacilitiesSection from "@/components/home/FacilitiesSection";
-import WhyChooseUsSection from "@/components/home/WhyChooseUsSection";
-import GallerySection from "@/components/home/GallerySection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
+import HeroSection from '@/components/home/HeroSection';
+import FeaturedRooms from '@/components/home/FeaturedRooms';
+import FacilitiesSection from '@/components/home/FacilitiesSection';
+import WhyChooseUsSection from '@/components/home/WhyChooseUsSection';
+import GallerySection from '@/components/home/GallerySection';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Home = () => {
   return (
     <div className="min-h-screen w-full max-w-[100vw] overflow-hidden">

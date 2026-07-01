@@ -1,3 +1,6 @@
+/**
+ * Shared realtime event names used by the backend Socket.IO server and frontend listeners.
+ */
 export const RealtimeEvents = {
   BOOKING: {
     CREATED: 'booking:created',

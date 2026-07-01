@@ -3,6 +3,9 @@ import BookingHeader from '@/components/booking/detail/BookingHeader';
 import BookingRoomInfo from '@/components/booking/detail/BookingRoomInfo';
 import BookingSidebar from '@/components/booking/detail/BookingSidebar';
 
+/**
+ * @returns {JSX.Element}
+ */
 const BookingDetail = () => {
   const {
     booking,

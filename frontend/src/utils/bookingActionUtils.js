@@ -23,6 +23,8 @@ export const CHECKOUT_TOO_LATE_MESSAGE =
  * Strips the time component so comparisons are day-based, not
  * millisecond-based (e.g. "is it today or later" shouldn't depend on
  * what hour it currently is).
+ * @param {Date} date
+ * @returns {Date}
  */
 const normalizeDate = (date) => {
   const normalized = new Date(date);
@@ -35,6 +37,8 @@ const getToday = () => normalizeDate(new Date());
 /**
  * One-sided check used to enable/disable the Check In button.
  * No upper bound -- a guest can check in any day on or after checkInDate.
+ * @param {Object} booking
+ * @returns {boolean}
  */
 export const isCheckInAllowed = (booking) => {
   if (!booking?.checkInDate) return false;
@@ -47,6 +51,8 @@ export const isCheckInAllowed = (booking) => {
  * that's enforced by getCheckOutBlockedReason below, right before the API
  * call, so the user gets a clear explanation rather than a button that's
  * just silently disabled.
+ * @param {Object} booking
+ * @returns {boolean}
  */
 export const isCheckOutAllowed = (booking) => {
   if (!booking?.checkOutDate) return false;
@@ -57,6 +63,8 @@ export const isCheckOutAllowed = (booking) => {
  * Two-sided enforcement, meant to run immediately before calling the
  * self-check-out API. Returns a user-facing message if checkout should be
  * blocked, or null if it's allowed to proceed (today === checkOutDate).
+ * @param {Object} booking
+ * @returns {string|null}
  */
 export const getCheckOutBlockedReason = (booking) => {
   if (!booking?.checkOutDate) {

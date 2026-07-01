@@ -16,10 +16,18 @@ import GuestModals from '@/components/admin/guests/GuestModals';
 
 const GUEST_RESOURCE_TYPE = 'guest';
 
+/**
+ * @param {string|number} userId
+ * @returns {string}
+ */
 function makeGuestEditKey(userId) {
   return `${GUEST_RESOURCE_TYPE}:${userId}`;
 }
 
+/**
+ * @param {Array<Object>} [activeEdits]
+ * @returns {Object<string, Array<Object>>}
+ */
 function mapActiveEdits(activeEdits = []) {
   const mapped = {};
 
@@ -31,10 +39,19 @@ function mapActiveEdits(activeEdits = []) {
   return mapped;
 }
 
+/**
+ * @param {Array<Object>} [editors]
+ * @param {string} currentSocketId
+ * @returns {Array<Object>}
+ */
 function getOtherEditors(editors = [], currentSocketId) {
   return editors.filter((editor) => editor.socketId !== currentSocketId);
 }
 
+/**
+ * @param {Array<Object>} [editors]
+ * @returns {string}
+ */
 function formatEditorNames(editors = []) {
   if (editors.length === 0) return '';
 
@@ -43,6 +60,10 @@ function formatEditorNames(editors = []) {
     .join(', ');
 }
 
+/**
+ * @param {string|number} userId
+ * @returns {string}
+ */
 export default function Guests() {
   const socket = useContext(WebSocketContext);
 

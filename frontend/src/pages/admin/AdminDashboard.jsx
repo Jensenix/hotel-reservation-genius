@@ -7,6 +7,10 @@ import BookingsPagination from '@/components/admin/bookings/BookingPagination';
 import BookingActionModal from '@/components/admin/bookings/BookingActionModal';
 import BookingDetailModal from '@/components/admin/bookings/BookingDetailModal';
 
+/**
+ * @param {string} status
+ * @returns {JSX.Element}
+ */
 const AdminDashboard = () => {
   const { state, refs, actions } = useAdminBooking();
 

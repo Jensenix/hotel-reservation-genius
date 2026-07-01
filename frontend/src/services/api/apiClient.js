@@ -2,6 +2,10 @@ import axios from 'axios';
 import { ApiUrl } from '@/config';
 import { logger } from '@/config';
 
+/**
+ * Axios instance for making API requests to the backend.
+ * Automatically includes the Authorization header if a user is logged in.
+ */
 export const apiClient = axios.create({
   baseURL: ApiUrl,
   headers: {

@@ -4,11 +4,14 @@ import RoomTypeHeader from '@/components/admin/rooms/roomTypeDetail/RoomTypeHead
 import PhysicalRoomsGrid from '@/components/admin/rooms/roomTypeDetail/PhysicalRoomsGrid';
 import RoomModals from '@/components/admin/rooms/roomTypeDetail/RoomModals';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RoomTypeDetail = () => {
   const {
     roomType,
     rooms,
-    setRooms, 
+    setRooms,
     loading,
     showRoomModal,
     editingRoom,
@@ -28,8 +31,8 @@ const RoomTypeDetail = () => {
     if (setRooms) {
       setRooms((prevRooms) =>
         prevRooms.map((room) =>
-          room.id === roomId ? { ...room, status: newStatus } : room
-        )
+          room.id === roomId ? { ...room, status: newStatus } : room,
+        ),
       );
     }
   };

@@ -2,17 +2,15 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 import AuthHeader from '@/components/auth/AuthHeader';
 import { useRegister } from '@/hooks/auth/useRegister';
+import { RegisterFields } from '@/config';
 
-const REGISTER_FIELDS = [
-  { id: 'fullName', label: 'Full Name', type: 'text', placeholder: 'Enter your full name' },
-  { id: 'email', label: 'Email Address', type: 'email', placeholder: 'Enter your email' },
-  { id: 'phoneNumber', label: 'Phone Number', type: 'tel', placeholder: 'Enter your phone number' },
-  { id: 'password', label: 'Password', type: 'password', placeholder: 'Create a password (min. 6 characters)' },
-  { id: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: 'Confirm your password' },
-];
 
+/**
+ * @returns {JSX.Element}
+ */
 const Register = () => {
-  const { formData, loading, error, success, handleChange, handleSubmit } = useRegister();
+  const { formData, loading, error, success, handleChange, handleSubmit } =
+    useRegister();
 
   if (success) {
     return (
@@ -86,7 +84,7 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {REGISTER_FIELDS.map(({ id, label, type, placeholder }) => (
+            {RegisterFields.map(({ id, label, type, placeholder }) => (
               <div key={id}>
                 <label
                   htmlFor={id}

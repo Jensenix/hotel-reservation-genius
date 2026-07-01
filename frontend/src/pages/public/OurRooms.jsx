@@ -10,6 +10,9 @@ import { MaxStayDays } from '@/config';
 import { WebSocketContext } from '@/context/WebSocketContext';
 import { getLocalYYYYMMDD } from '@/utils/dateUtils';
 
+/**
+ * @returns {JSX.Element}
+ */
 const OurRooms = () => {
   const { loading, filters, updateFilters, clearFilters, filteredRooms } =
     useOurRooms();
