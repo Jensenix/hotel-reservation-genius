@@ -2,6 +2,20 @@ import PropTypes from 'prop-types';
 import { MapPin, Users, Calendar, Star } from 'lucide-react';
 import { formatLongDate } from '@/utils/dateUtils';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.booking
+ * @param {string} [props.booking.checkInDate]
+ * @param {string} [props.booking.checkOutDate]
+ * @param {string} [props.booking.specialRequests]
+ * @param {Object} [props.booking.room]
+ * @param {string} [props.booking.room.roomNumber]
+ * @param {Object} [props.booking.room.roomType]
+ * @param {string} [props.booking.room.roomType.name]
+ * @param {number} [props.booking.room.roomType.maxCapacity]
+ * @param {Array<Object>} [props.booking.extraServices]
+ * @returns {JSX.Element}
+ */
 const BookingRoomInfo = ({ booking }) => {
   const roomName = booking.room?.roomType?.name || 'Room';
   const roomInitial = roomName.charAt(0) || 'R';

@@ -1,5 +1,10 @@
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {number} props.step
+ * @returns {JSX.Element}
+ */ 
 export default function BookingStepper({ step }) {
   return (
     <div className="mb-8 overflow-hidden">

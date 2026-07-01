@@ -11,6 +11,13 @@ function formatEditorNames(editors = []) {
     .join(', ');
 }
 
+/**
+ * @param {Object} props
+ * @param {Object} props.state
+ * @param {Object} props.actions
+ * @param {Function} props.handleCustomSubmit
+ * @returns {JSX.Element}
+ */
 export default function GuestModals({ state, actions, handleCustomSubmit }) {
   const hasEditingWarning =
     state.editingItem &&

@@ -2,6 +2,17 @@ import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {'cancel'|'confirm'|'approve'|'reject'} props.actionType
+ * @param {Object|null} props.selectedBooking
+ * @param {string} props.cancelReason
+ * @param {Function} props.setCancelReason
+ * @param {Function} props.executeAction
+ * @returns {JSX.Element|null}
+ */
 export default function BookingActionModal({
   isOpen,
   onClose,
@@ -27,7 +38,10 @@ export default function BookingActionModal({
               Please provide a reason for cancelling this booking. This action
               cannot be undone.
             </p>
-            <label htmlFor="cancelReason" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="cancelReason"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Cancel Reason
             </label>
             <textarea
@@ -88,7 +102,8 @@ export default function BookingActionModal({
 BookingActionModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  actionType: PropTypes.oneOf(['cancel', 'confirm', 'approve', 'reject']).isRequired,
+  actionType: PropTypes.oneOf(['cancel', 'confirm', 'approve', 'reject'])
+    .isRequired,
   selectedBooking: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     user: PropTypes.shape({

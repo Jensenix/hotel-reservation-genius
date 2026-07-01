@@ -1,5 +1,8 @@
 import { Star, CheckCircle, Wifi, Shield } from 'lucide-react';
 
+/**
+ * @returns {JSX.Element}
+ */
 const OurRoomsHero = () => {
   return (
     <section className="relative py-20">

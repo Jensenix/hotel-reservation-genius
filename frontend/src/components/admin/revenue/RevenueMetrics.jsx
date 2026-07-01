@@ -1,6 +1,14 @@
 import { formatCurrency } from '@/utils/formatters';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.revenueData
+ * @param {number} props.revenueData.totalRevenue
+ * @param {number} props.revenueData.totalBookings
+ * @param {Array<Object>} props.revenueData.revenueByRoomType
+ * @returns {JSX.Element}
+ */
 const RevenueMetrics = ({ revenueData }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -114,10 +122,10 @@ RevenueMetrics.propTypes = {
     totalRevenue: PropTypes.number.isRequired,
     totalBookings: PropTypes.number.isRequired,
     revenueByRoomType: PropTypes.arrayOf(
-        PropTypes.shape({
-            type: PropTypes.string.isRequired,
-            revenue: PropTypes.number.isRequired,
-        })
+      PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        revenue: PropTypes.number.isRequired,
+      }),
     ).isRequired,
   }).isRequired,
 };

@@ -2,6 +2,11 @@ import { formatCurrency } from '@/utils/formatters';
 import { formatDateIndonesian } from '@/utils/dateUtils';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.transactions
+ * @returns {JSX.Element}
+ */
 const RevenueTransactionsTable = ({ transactions }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">

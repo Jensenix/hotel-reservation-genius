@@ -1,6 +1,9 @@
 import { Star } from 'lucide-react';
 import { testimonials } from '@/data/testimonialData';
 
+/**
+ * @returns {JSX.Element}
+ */
 const TestimonialsSection = () => (
   <section className="py-16 sm:py-24 bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 overflow-hidden w-full">
     <div className="container mx-auto px-4 max-w-7xl w-full">

@@ -3,6 +3,17 @@ import Button from '@/components/ui/Button';
 import { ArrowLeft, Plus, Layers, Bed, DollarSign, Users } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.roomType
+ * @param {string} props.roomType.name
+ * @param {string|number} props.roomType.basePrice
+ * @param {string|number} props.roomType.maxCapacity
+ * @param {string} [props.roomType.description]
+ * @param {number} props.roomsCount
+ * @param {Function} props.onAddRoom
+ * @returns {JSX.Element}
+ */
 const RoomTypeHeader = ({ roomType, roomsCount, onAddRoom }) => {
   return (
     <>

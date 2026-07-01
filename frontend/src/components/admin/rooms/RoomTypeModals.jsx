@@ -2,6 +2,25 @@ import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.showRoomTypeModal
+ * @param {Function} props.handleCloseRoomTypeModal
+ * @param {Object|null} [props.editingRoomType]
+ * @param {Function} props.handleSubmitRoomType
+ * @param {Object} props.roomTypeFormData
+ * @param {string} props.roomTypeFormData.name
+ * @param {string} [props.roomTypeFormData.description]
+ * @param {string|number} props.roomTypeFormData.basePrice
+ * @param {string|number} props.roomTypeFormData.maxCapacity
+ * @param {Function} props.setRoomTypeFormData
+ * @param {boolean} props.showDeleteModal
+ * @param {Function} props.setShowDeleteModal
+ * @param {Object|null} [props.deleteTarget]
+ * @param {Function} props.setDeleteTarget
+ * @param {Function} props.handleDelete
+ * @returns {JSX.Element}
+ */
 const RoomTypeModals = ({
   showRoomTypeModal,
   handleCloseRoomTypeModal,
@@ -22,7 +41,10 @@ const RoomTypeModals = ({
         onClose={handleCloseRoomTypeModal}
         title={editingRoomType ? 'Edit Room Type' : 'Add New Room Type'}
       >
-        <form onSubmit={handleSubmitRoomType} className="space-y-4 sm:space-y-6">
+        <form
+          onSubmit={handleSubmitRoomType}
+          className="space-y-4 sm:space-y-6"
+        >
           <div>
             <label
               htmlFor="roomTypeName"

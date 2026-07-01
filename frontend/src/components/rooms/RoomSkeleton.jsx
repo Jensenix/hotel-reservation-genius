@@ -1,5 +1,8 @@
 import { Star } from 'lucide-react';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RoomSkeleton = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">

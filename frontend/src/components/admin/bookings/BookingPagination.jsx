@@ -1,6 +1,18 @@
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object|null} props.pagination
+ * @param {number} props.pagination.currentPage
+ * @param {number} props.pagination.itemsPerPage
+ * @param {number} props.pagination.totalItems
+ * @param {number} props.pagination.totalPages
+ * @param {Object} props.filters
+ * @param {number|string} props.filters.limit
+ * @param {Function} props.handleFilterChange
+ * @returns {JSX.Element|null}
+ */
 export default function BookingsPagination({
   pagination,
   filters,
@@ -10,7 +22,6 @@ export default function BookingsPagination({
 
   return (
     <div className="mt-6 flex flex-col lg:flex-row justify-between items-center gap-6">
-      
       {/* Left side info & dropdown */}
       <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left w-full lg:w-auto justify-between sm:justify-start">
         <div className="text-sm text-gray-700">
@@ -100,10 +111,7 @@ BookingsPagination.propTypes = {
     totalPages: PropTypes.number.isRequired,
   }),
   filters: PropTypes.shape({
-    limit: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]).isRequired,
+    limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   }).isRequired,
   handleFilterChange: PropTypes.func.isRequired,
 };

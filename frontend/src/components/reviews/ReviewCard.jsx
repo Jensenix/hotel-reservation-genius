@@ -2,6 +2,10 @@ import Card from '@/components/ui/Card';
 import { Star, Calendar, Clock, Edit } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {string} dateString
+ * @returns {string}
+ */
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -10,13 +14,30 @@ const formatDate = (dateString) => {
   });
 };
 
+/**
+ * @param {number} rating
+ * @returns {string}
+ */
 const getRatingColor = (rating) => {
   if (rating >= 4) return 'bg-emerald-100 text-emerald-700 border-emerald-200';
   if (rating >= 3) return 'bg-amber-100 text-amber-700 border-amber-200';
   return 'bg-red-100 text-red-700 border-red-200';
 };
 
-const ReviewCard = ({ review, user, handleOpenReviewModal, handleDeleteReview }) => {
+/**
+ * @param {Object} props
+ * @param {Object} props.review
+ * @param {Object|null} [props.user]
+ * @param {Function} props.handleOpenReviewModal
+ * @param {Function} props.handleDeleteReview
+ * @returns {JSX.Element}
+ */
+const ReviewCard = ({
+  review,
+  user,
+  handleOpenReviewModal,
+  handleDeleteReview,
+}) => {
   return (
     <Card className="bg-white border-2 border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="p-5">
@@ -38,7 +59,9 @@ const ReviewCard = ({ review, user, handleOpenReviewModal, handleDeleteReview })
               </div>
             </div>
           </div>
-          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${getRatingColor(review.rating)}`}>
+          <div
+            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${getRatingColor(review.rating)}`}
+          >
             <Star className="w-3 h-3 mr-0.5 fill-current" />
             {review.rating}.0
           </div>
@@ -56,7 +79,8 @@ const ReviewCard = ({ review, user, handleOpenReviewModal, handleDeleteReview })
             <div className="flex items-center gap-2">
               <Clock className="w-3 h-3 text-slate-400" />
               <span className="text-xs text-slate-500">
-                {formatDate(review.booking?.checkInDate)} - {formatDate(review.booking?.checkOutDate)}
+                {formatDate(review.booking?.checkInDate)} -{' '}
+                {formatDate(review.booking?.checkOutDate)}
               </span>
             </div>
           </div>
@@ -65,7 +89,10 @@ const ReviewCard = ({ review, user, handleOpenReviewModal, handleDeleteReview })
         {/* Rating Stars */}
         <div className="flex items-center gap-0.5 mb-3">
           {Array.from({ length: 5 }, (_, i) => (
-            <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-amber-500 text-amber-500' : 'text-slate-300'}`} />
+            <Star
+              key={i}
+              className={`w-4 h-4 ${i < review.rating ? 'fill-amber-500 text-amber-500' : 'text-slate-300'}`}
+            />
           ))}
         </div>
 

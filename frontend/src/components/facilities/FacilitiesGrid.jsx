@@ -1,5 +1,11 @@
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.facilities
+ * @param {Function} props.onSelectFacility
+ * @returns {JSX.Element}
+ */
 const FacilitiesGrid = ({ facilities, onSelectFacility }) => {
   const handleKeyDown = (e, facility) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -12,16 +18,19 @@ const FacilitiesGrid = ({ facilities, onSelectFacility }) => {
     <div className="pb-20">
       <div className="text-center mb-16">
         <h2 className="text-4xl font-light text-slate-800 mb-4 tracking-tight">
-          All <span className="font-semibold text-amber-600">Premium Facilities</span>
+          All{' '}
+          <span className="font-semibold text-amber-600">
+            Premium Facilities
+          </span>
         </h2>
         <p className="text-xl text-slate-600 font-light max-w-3xl mx-auto">
-          Explore our complete collection of world-class amenities designed for your ultimate comfort
+          Explore our complete collection of world-class amenities designed for
+          your ultimate comfort
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {facilities.map((facility) => (
-          // ACCESSIBILITY FIX: Added role, tabIndex, and onKeyDown
           <div
             key={facility.id}
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer hover:scale-105 border border-slate-100 overflow-hidden focus:outline-none focus:ring-4 focus:ring-amber-500 focus:border-transparent"
@@ -39,7 +48,9 @@ const FacilitiesGrid = ({ facilities, onSelectFacility }) => {
                       {facility.facilityName?.charAt(0) || 'F'}
                     </span>
                   </div>
-                  <p className="text-white font-semibold tracking-wide text-sm">Premium</p>
+                  <p className="text-white font-semibold tracking-wide text-sm">
+                    Premium
+                  </p>
                 </div>
               </div>
             </div>

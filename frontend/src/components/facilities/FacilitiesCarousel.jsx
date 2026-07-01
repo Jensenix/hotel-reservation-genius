@@ -2,12 +2,23 @@ import { useState, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {number} index
+ * @param {number} currentIndex
+ * @returns {string}
+ */
 const getSlideClasses = (index, currentIndex) => {
   if (index === currentIndex) return 'opacity-100 translate-x-0';
   if (index < currentIndex) return 'opacity-0 -translate-x-full';
   return 'opacity-0 translate-x-full';
 };
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.facilities
+ * @param {Function} props.onSelectFacility
+ * @returns {JSX.Element}
+ */
 const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -17,7 +28,7 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === facilities.length - 1 ? 0 : prevIndex + 1
+        prevIndex === facilities.length - 1 ? 0 : prevIndex + 1,
       );
     }, 3000);
 
@@ -26,12 +37,16 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
 
   const nextSlide = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prevIndex) => prevIndex === facilities.length - 1 ? 0 : prevIndex + 1);
+    setCurrentIndex((prevIndex) =>
+      prevIndex === facilities.length - 1 ? 0 : prevIndex + 1,
+    );
   };
 
   const prevSlide = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prevIndex) => prevIndex === 0 ? facilities.length - 1 : prevIndex - 1);
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? facilities.length - 1 : prevIndex - 1,
+    );
   };
 
   const goToSlide = (index) => {
@@ -50,7 +65,6 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
     <div className="mb-16 sm:mb-24 px-4 sm:px-0">
       <div className="relative max-w-5xl mx-auto">
         <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-100">
-          
           <div className="relative h-[550px] sm:h-[500px]">
             {facilities.map((facility, index) => (
               <div
@@ -74,7 +88,9 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
                               {facility.facilityName?.charAt(0) || 'F'}
                             </span>
                           </div>
-                          <p className="text-white font-semibold tracking-wide text-sm sm:text-lg">Premium Facility</p>
+                          <p className="text-white font-semibold tracking-wide text-sm sm:text-lg">
+                            Premium Facility
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -93,7 +109,9 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center space-x-2 text-amber-600">
                           <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                          <span className="font-medium tracking-wide text-sm sm:text-base">5-Star Service</span>
+                          <span className="font-medium tracking-wide text-sm sm:text-base">
+                            5-Star Service
+                          </span>
                         </div>
                         <span className="text-amber-600 font-medium tracking-wide hover:text-amber-700 transition-colors text-sm sm:text-base">
                           Explore More →
@@ -126,7 +144,11 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
             className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-white/90 hover:bg-white text-slate-800 p-2 sm:p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
             aria-label={isAutoPlaying ? 'Pause auto-play' : 'Start auto-play'}
           >
-            {isAutoPlaying ? <Pause className="w-4 h-4 sm:w-5 sm:h-5" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5" />}
+            {isAutoPlaying ? (
+              <Pause className="w-4 h-4 sm:w-5 sm:h-5" />
+            ) : (
+              <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+            )}
           </button>
         </div>
 
@@ -136,7 +158,9 @@ const FacilitiesCarousel = ({ facilities, onSelectFacility }) => {
               key={index}
               onClick={() => goToSlide(index)}
               className={`h-2 sm:h-3 rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 ${
-                index === currentIndex ? 'bg-amber-600 w-8 sm:w-12 shadow-lg' : 'bg-slate-300 hover:bg-slate-400 w-2 sm:w-3'
+                index === currentIndex
+                  ? 'bg-amber-600 w-8 sm:w-12 shadow-lg'
+                  : 'bg-slate-300 hover:bg-slate-400 w-2 sm:w-3'
               }`}
               aria-label={`Go to facility ${index + 1}`}
             />

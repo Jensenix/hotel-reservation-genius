@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types';
+
 /**
- * Component for selecting a payment method during the booking process (Step 2).
- * * @param {Object} props
- * @param {Array} props.paymentMethods - List of available payment methods fetched from API.
+ * Component for selecting a payment method during the booking process.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.paymentMethods - List of available payment methods fetched from API.
  * @param {Object} props.bookingData - Current booking state containing paymentMethodId.
- * @param {Function} props.setBookingData - State setter to update the selected method.
+ * @param {Function} props.setBookingData - State setter to update the selected payment method.
+ * @returns {JSX.Element}
  */
-export default function PaymentSelection({ paymentMethods, bookingData, setBookingData }) {
-  
+export default function PaymentSelection({
+  paymentMethods,
+  bookingData,
+  setBookingData,
+}) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBookingData((prev) => ({
@@ -29,14 +35,15 @@ export default function PaymentSelection({ paymentMethods, bookingData, setBooki
       ) : (
         <div className="space-y-3 sm:space-y-4">
           {paymentMethods.map((method) => {
-            const isSelected = bookingData.paymentMethodId === method.id.toString();
-            
+            const isSelected =
+              bookingData.paymentMethodId === method.id.toString();
+
             return (
               <label
                 key={method.id}
                 className={`flex items-start sm:items-center p-3 sm:p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                  isSelected 
-                    ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' 
+                  isSelected
+                    ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
                     : 'border-gray-300 hover:bg-gray-50'
                 }`}
               >
@@ -73,13 +80,10 @@ PaymentSelection.propTypes = {
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       methodName: PropTypes.string.isRequired,
       accountNumber: PropTypes.string,
-    })
+    }),
   ).isRequired,
   bookingData: PropTypes.shape({
-    paymentMethodId: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    paymentMethodId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
   setBookingData: PropTypes.func.isRequired,
 };

@@ -3,6 +3,16 @@ import { Bed, Edit, Trash2, Plus } from 'lucide-react';
 import PropTypes from 'prop-types';
 import RoomStatusSelector from '@/components/admin/rooms/RoomStatusSelector';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.rooms
+ * @param {boolean} props.loading
+ * @param {Function} props.onEdit
+ * @param {Function} props.onDelete
+ * @param {Function} props.onAddFirstRoom
+ * @param {Function} [props.onUpdateLocalState]
+ * @returns {JSX.Element}
+ */
 const PhysicalRoomsGrid = ({
   rooms,
   loading,

@@ -1,6 +1,15 @@
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.dateRange
+ * @param {Date} props.dateRange.startDate
+ * @param {Date} props.dateRange.endDate
+ * @param {Function} props.setDateRange
+ * @param {Function} props.onApplyFilter
+ * @returns {JSX.Element}
+ */
 const RevenueFilter = ({ dateRange, setDateRange, onApplyFilter }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">

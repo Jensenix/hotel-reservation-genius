@@ -1,6 +1,22 @@
 import PropTypes from 'prop-types';
 import Modal from '@/components/ui/Modal';
 
+/**
+ * @param {Object} props
+ * @param {boolean} props.isOpen
+ * @param {Function} props.onClose
+ * @param {Function} props.onSubmit
+ * @param {Object} props.formData
+ * @param {string} [props.formData.methodName]
+ * @param {string} [props.formData.type]
+ * @param {string} [props.formData.description]
+ * @param {boolean} [props.formData.isActive]
+ * @param {string} [props.formData.accountNumber]
+ * @param {string} [props.formData.address]
+ * @param {Function} props.onChange
+ * @param {boolean} props.isEditing
+ * @returns {JSX.Element}
+ */
 export default function PaymentMethodFormModal({
   isOpen,
   onClose,
@@ -17,7 +33,10 @@ export default function PaymentMethodFormModal({
     >
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label htmlFor="pm-methodName" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <label
+            htmlFor="pm-methodName"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
+          >
             Method Name
           </label>
           <input
@@ -31,7 +50,10 @@ export default function PaymentMethodFormModal({
           />
         </div>
         <div>
-          <label htmlFor="pm-type" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <label
+            htmlFor="pm-type"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
+          >
             Type
           </label>
           <select
@@ -49,7 +71,10 @@ export default function PaymentMethodFormModal({
           </select>
         </div>
         <div>
-          <label htmlFor="pm-description" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <label
+            htmlFor="pm-description"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
+          >
             Description
           </label>
           <textarea
@@ -62,7 +87,10 @@ export default function PaymentMethodFormModal({
           />
         </div>
         <div>
-          <label htmlFor="pm-accountNumber" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <label
+            htmlFor="pm-accountNumber"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
+          >
             Account Number
           </label>
           <input
@@ -75,7 +103,10 @@ export default function PaymentMethodFormModal({
           />
         </div>
         <div>
-          <label htmlFor="pm-address" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+          <label
+            htmlFor="pm-address"
+            className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1"
+          >
             Billing Address / Instructions
           </label>
           <textarea

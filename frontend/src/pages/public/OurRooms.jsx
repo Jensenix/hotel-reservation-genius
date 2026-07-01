@@ -8,12 +8,7 @@ import Button from '@/components/ui/Button';
 import { Calendar, Search, Map } from 'lucide-react';
 import { MaxStayDays } from '@/config';
 import { WebSocketContext } from '@/context/WebSocketContext';
-
-const getLocalYYYYMMDD = (dateObj) => {
-  const d = new Date(dateObj);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().split('T')[0];
-};
+import { getLocalYYYYMMDD } from '@/utils/dateUtils';
 
 const OurRooms = () => {
   const { loading, filters, updateFilters, clearFilters, filteredRooms } =

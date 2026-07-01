@@ -1,5 +1,16 @@
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.overall
+ * @param {number} props.overall.totalRooms
+ * @param {number} props.overall.availableRooms
+ * @param {string|number} props.overall.availabilityRate
+ * @param {number} props.overall.occupiedRooms
+ * @param {string|number} props.overall.occupancyRate
+ * @param {number} props.overall.maintenanceRooms
+ * @returns {JSX.Element}
+ */
 const AvailabilityStats = ({ overall }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

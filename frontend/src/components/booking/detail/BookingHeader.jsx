@@ -2,6 +2,13 @@ import PropTypes from 'prop-types';
 import { ArrowLeft } from 'lucide-react';
 import BookingStatusBadge from './BookingStatusBadge';
 
+/**
+ * @param {Object} props
+ * @param {string|number} props.bookingId
+ * @param {string} props.status
+ * @param {Function} props.onBack
+ * @returns {JSX.Element}
+ */
 const BookingHeader = ({ bookingId, status, onBack }) => {
   return (
     <div className="mb-8">
@@ -27,7 +34,8 @@ const BookingHeader = ({ bookingId, status, onBack }) => {
 };
 
 BookingHeader.propTypes = {
-  bookingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  bookingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   status: PropTypes.string.isRequired,
   onBack: PropTypes.func.isRequired,
 };

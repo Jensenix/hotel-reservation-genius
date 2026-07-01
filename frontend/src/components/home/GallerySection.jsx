@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Camera, ChevronRight } from 'lucide-react';
 
+/**
+ * @returns {JSX.Element}
+ */
 const GallerySection = () => (
   <section className="py-16 sm:py-24 bg-gradient-to-br from-white via-slate-50 to-white overflow-hidden w-full">
     <div className="container mx-auto px-4 max-w-7xl w-full">

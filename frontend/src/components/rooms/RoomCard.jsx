@@ -5,17 +5,23 @@ import Button from '@/components/ui/Button';
 import { Users, Wifi, ChevronRight, Heart, Calendar, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { MaxStayDays } from '@/config';
+import { getLocalYYYYMMDD } from '@/utils/dateUtils';
 
-const getLocalYYYYMMDD = (dateObj) => {
-  const d = new Date(dateObj);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().split('T')[0];
-};
-
+/**
+ * @param {Object} props
+ * @param {Object} props.room
+ * @param {string|number} props.room.id
+ * @param {string} props.room.name
+ * @param {string} [props.room.description]
+ * @param {Array<Object>} [props.room.facilities]
+ * @param {number} [props.room.maxCapacity]
+ * @param {string|number} [props.room.basePrice]
+ * @returns {JSX.Element}
+ */
 const RoomCard = ({ room }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   // Modal State for when dates are missing
   const [showDatePrompt, setShowDatePrompt] = useState(false);
   const [tempCheckIn, setTempCheckIn] = useState('');
@@ -24,7 +30,7 @@ const RoomCard = ({ room }) => {
   const handleBookNowClick = () => {
     const checkIn = searchParams.get('checkIn');
     const checkOut = searchParams.get('checkOut');
-    
+
     if (checkIn && checkOut) {
       // Dates exist globally, proceed directly to booking
       navigate(`/booking/${room.id}?checkIn=${checkIn}&checkOut=${checkOut}`);
@@ -37,7 +43,9 @@ const RoomCard = ({ room }) => {
   const handleModalSubmit = () => {
     if (tempCheckIn && tempCheckOut) {
       setShowDatePrompt(false);
-      navigate(`/booking/${room.id}?checkIn=${tempCheckIn}&checkOut=${tempCheckOut}`);
+      navigate(
+        `/booking/${room.id}?checkIn=${tempCheckIn}&checkOut=${tempCheckOut}`,
+      );
     }
   };
 
@@ -48,7 +56,9 @@ const RoomCard = ({ room }) => {
     if (tempCheckOut) {
       const checkInDate = new Date(newCheckIn);
       const checkOutDate = new Date(tempCheckOut);
-      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
+      );
 
       if (diffDays <= 0 || diffDays > MaxStayDays) {
         setTempCheckOut('');
@@ -64,34 +74,41 @@ const RoomCard = ({ room }) => {
       const checkInDate = new Date(tempCheckIn);
       let checkOutDate = new Date(newCheckOut);
 
-      const diffDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
+      );
 
       if (diffDays <= 0) {
         checkOutDate = new Date(checkInDate.getTime() + 86400000);
         newCheckOut = getLocalYYYYMMDD(checkOutDate);
       } else if (diffDays > MaxStayDays) {
-        checkOutDate = new Date(checkInDate.getTime() + (MaxStayDays * 86400000));
+        checkOutDate = new Date(checkInDate.getTime() + MaxStayDays * 86400000);
         newCheckOut = getLocalYYYYMMDD(checkOutDate);
         alert(`Bookings are limited to a maximum of ${MaxStayDays} nights.`);
       }
     }
-    
+
     setTempCheckOut(newCheckOut);
   };
 
   const todayStr = getLocalYYYYMMDD(new Date());
-  
-  const minCheckOutStr = tempCheckIn 
+
+  const minCheckOutStr = tempCheckIn
     ? getLocalYYYYMMDD(new Date(new Date(tempCheckIn).getTime() + 86400000))
     : todayStr;
 
-  const maxCheckOutStr = tempCheckIn 
-    ? getLocalYYYYMMDD(new Date(new Date(tempCheckIn).getTime() + (MaxStayDays * 86400000)))
+  const maxCheckOutStr = tempCheckIn
+    ? getLocalYYYYMMDD(
+        new Date(new Date(tempCheckIn).getTime() + MaxStayDays * 86400000),
+      )
     : undefined;
 
   return (
     <>
-      <Card hover={true} className="overflow-hidden group h-full flex flex-col relative">
+      <Card
+        hover={true}
+        className="overflow-hidden group h-full flex flex-col relative"
+      >
         <div className="relative h-64 bg-gradient-to-br from-amber-400 to-amber-600 mb-6 overflow-hidden rounded-t-2xl">
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -121,7 +138,10 @@ const RoomCard = ({ room }) => {
                   : room.description}
               </p>
             </div>
-            <button className="p-2 rounded-full hover:bg-amber-50 transition-colors duration-200 ml-2 flex-shrink-0" aria-label="Favorite room">
+            <button
+              className="p-2 rounded-full hover:bg-amber-50 transition-colors duration-200 ml-2 flex-shrink-0"
+              aria-label="Favorite room"
+            >
               <Heart className="w-5 h-5 text-gray-400 hover:text-red-500" />
             </button>
           </div>
@@ -175,25 +195,35 @@ const RoomCard = ({ room }) => {
       {showDatePrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200 relative">
-            <button 
+            <button
               onClick={() => setShowDatePrompt(false)}
               className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
-            
+
             <div className="text-center mb-6 mt-2">
               <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-600">
                 <Calendar className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Select Stay Dates</h3>
-              <p className="text-sm text-gray-500 mt-1">Please select your dates to check {room.name}&apos;s availability.</p>
+              <h3 className="text-xl font-bold text-gray-900">
+                Select Stay Dates
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Please select your dates to check {room.name}&apos;s
+                availability.
+              </p>
             </div>
 
             <div className="space-y-4 mb-6 relative">
               <div>
-                <label htmlFor={`checkIn-${room.id}`} className="block text-sm font-semibold text-gray-700 mb-1">Check-in Date</label>
+                <label
+                  htmlFor={`checkIn-${room.id}`}
+                  className="block text-sm font-semibold text-gray-700 mb-1"
+                >
+                  Check-in Date
+                </label>
                 <input
                   id={`checkIn-${room.id}`}
                   type="date"
@@ -205,8 +235,17 @@ const RoomCard = ({ room }) => {
               </div>
               <div>
                 <div className="flex justify-between items-end mb-1">
-                  <label htmlFor={`checkOut-${room.id}`} className="block text-sm font-semibold text-gray-700">Check-out Date</label>
-                  {tempCheckIn && <span className="text-[10px] text-gray-500">Max stay: {MaxStayDays} nights</span>}
+                  <label
+                    htmlFor={`checkOut-${room.id}`}
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Check-out Date
+                  </label>
+                  {tempCheckIn && (
+                    <span className="text-[10px] text-gray-500">
+                      Max stay: {MaxStayDays} nights
+                    </span>
+                  )}
                 </div>
                 <input
                   id={`checkOut-${room.id}`}
@@ -221,8 +260,8 @@ const RoomCard = ({ room }) => {
               </div>
             </div>
 
-            <Button 
-              onClick={handleModalSubmit} 
+            <Button
+              onClick={handleModalSubmit}
               disabled={!tempCheckIn || !tempCheckOut}
               className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold flex justify-center items-center"
             >

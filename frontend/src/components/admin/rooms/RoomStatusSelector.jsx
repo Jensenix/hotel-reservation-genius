@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import apiService from '@/services/api/apiService';
 import { getStatusColor } from '@/utils/availabilityUtils';
 
+/**
+ * @param {Object} props
+ * @param {Object} props.room
+ * @param {string|number} props.room.id
+ * @param {string} props.room.status
+ * @param {Function} [props.onUpdateLocalState]
+ * @returns {JSX.Element}
+ */
 const RoomStatusSelector = ({ room, onUpdateLocalState }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 

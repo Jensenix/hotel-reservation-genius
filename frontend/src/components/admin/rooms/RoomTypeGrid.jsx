@@ -3,6 +3,17 @@ import Button from '@/components/ui/Button';
 import { Search, Layers, ChevronRight, Edit, Trash2, Plus } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.filteredRoomTypes
+ * @param {boolean} props.loading
+ * @param {string} props.searchTerm
+ * @param {Function} props.setSearchTerm
+ * @param {Function} props.handleOpenRoomTypeModal
+ * @param {Function} props.setDeleteTarget
+ * @param {Function} props.setShowDeleteModal
+ * @returns {JSX.Element}
+ */
 const RoomTypeGrid = ({
   filteredRoomTypes,
   loading,

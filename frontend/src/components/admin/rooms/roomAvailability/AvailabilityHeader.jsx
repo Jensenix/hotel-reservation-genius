@@ -5,9 +5,13 @@ import Button from '@/components/ui/Button';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/styles/datepicker.css';
 
+/**
+ * Custom hook to detect if the viewport width is mobile size (< 768px)
+ * @returns {boolean} true if viewport width is less than 768px, false otherwise
+ */
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' && window.innerWidth < 768
+    typeof window !== 'undefined' && window.innerWidth < 768,
   );
 
   useEffect(() => {
@@ -19,6 +23,9 @@ const useIsMobile = () => {
   return isMobile;
 };
 
+/**
+ * @returns {boolean}
+ */
 const AvailabilityHeader = ({ selectedDate, setSelectedDate, setToday }) => {
   const isMobile = useIsMobile();
 
@@ -53,7 +60,6 @@ const AvailabilityHeader = ({ selectedDate, setSelectedDate, setToday }) => {
                   dateFormat="MMMM d, yyyy"
                   placeholderText="Select date"
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm bg-white shadow-sm cursor-pointer text-center md:text-left"
-
                   withPortal={isMobile}
                   popperPlacement={isMobile ? undefined : 'bottom-start'}
                   portalId={isMobile ? undefined : 'root'}
