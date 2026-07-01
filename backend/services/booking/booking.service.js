@@ -21,6 +21,13 @@ class BookingService extends BaseService {
     super(Booking, 'Booking');
   }
 
+  /**
+   * Applies extra services to a booking and updates the total price.
+   * @param {Object} booking 
+   * @param {Array} extraServicesPayload 
+   * @param {number} baseTotal 
+   * @returns {Promise<number>}
+   */
   async _applyExtraServices(booking, extraServicesPayload, baseTotal) {
     const items = (extraServicesPayload || []).filter(
       (item) => item && item.extraServiceId && Number(item.quantity) > 0,

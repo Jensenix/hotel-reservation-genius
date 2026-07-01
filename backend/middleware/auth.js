@@ -1,44 +1,35 @@
 /**
- * Authentication Middleware
+ * @module authMiddleware
+ * Express authentication and authorization middleware.
  *
- * Provides middleware functions for:
- * - Validating JWT access tokens from request headers
- * - Attaching authenticated user information to the request object
- * - Restricting routes based on user roles
- *
- * Uses JWT Bearer token authentication:
- * Authorization: Bearer <token>
+ * Responsibilities:
+ * - Validate JWT Bearer tokens
+ * - Attach decoded user data to req.user
+ * - Protect routes that require login
+ * - Restrict admin-only routes
  */
 
 import jwt from 'jsonwebtoken';
 import { jwtSecret } from '#config/config.js';
 
-
 /**
- * Verify JWT token and authenticate user.
+ * Authenticates a request using a JWT Bearer token.
  *
- * Checks the Authorization header for a valid Bearer token,
- * verifies the token using the configured JWT secret, and stores
- * the decoded user information in req.user.
+ * Expected header:
+ * Authorization: Bearer <token>
  *
- * Allows OPTIONS requests to pass through for CORS preflight handling.
+ * On success:
+ * - Decodes the JWT
+ * - Stores decoded data in req.user
+ * - Passes control to the next middleware/controller
  *
- * @middleware
+ * OPTIONS requests are allowed through so CORS preflight requests do not fail.
  *
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
  *
  * @returns {void}
- *
- * @example
- * router.get('/profile', authenticateToken, controller.getProfile);
- *
- * // After successful authentication:
- * req.user = {
- *   id: 1,
- *   role: "admin"
- * }
  */
 export const authenticateToken = (req, res, next) => {
   if (req.method === 'OPTIONS') return next();
@@ -68,30 +59,19 @@ export const authenticateToken = (req, res, next) => {
   }
 };
 
-
 /**
- * Restrict route access to admin users only.
+ * Restricts access to admin users only.
  *
- * Requires authenticateToken middleware to run first because
- * it depends on req.user containing decoded JWT information.
+ * This middleware should run after authenticateToken because it depends on
+ * req.user being available.
  *
- * Allows OPTIONS requests to pass through for CORS preflight handling.
+ * OPTIONS requests are allowed through for CORS preflight handling.
  *
- * @middleware
- *
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
  *
  * @returns {void}
- *
- * @example
- * router.post(
- *   '/users',
- *   authenticateToken,
- *   requireAdmin,
- *   controller.createUser
- * );
  */
 export const requireAdmin = (req, res, next) => {
   if (req.method === 'OPTIONS') return next();

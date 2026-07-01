@@ -1,38 +1,36 @@
 /**
- * @file middleware/errorHandler.js
- * @description Global error-handling middleware registered last in app.js.
+ * @module errorHandler
+ * Global Express error-handling middleware.
  *
- * Handles:
- *   1. Sequelize-specific errors (validation, unique constraint, FK violation)
- *   2. Custom operational errors thrown by services with a `statusCode` field
- *      e.g.  throw Object.assign(new Error('Not found'), { statusCode: 404 })
- *   3. Any unexpected/unhandled errors → 500 Internal Server Error
+ * Responsibilities:
+ * - Catch errors forwarded through next(error)
+ * - Handle common Sequelize database errors
+ * - Handle custom operational errors with statusCode
+ * - Return a consistent frontend-friendly error response
  *
- * All responses use { success, message } so the frontend can check
- * `response.data.success === false` uniformly across all error types.
+ * Register this middleware last in app.js:
  *
- * NOTE: The previous Sequelize error blocks used an `error` key instead of
- * `success: false`. This update adds `success: false` for consistency.
- * Sequelize errors are DB-layer errors that the frontend shows as generic
- * failures, so this change does not affect the established API contract.
+ * app.use(errorHandler);
  */
 
 import { sendError } from '#utils/responseHandler.js';
 
 /**
- * Global error-handling middleware for Express.
+ * Global error-handling middleware.
  *
- * @middleware
- * @param {Object} err - The error object thrown in the application.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
+ * Handles:
+ * - SequelizeValidationError
+ * - SequelizeUniqueConstraintError
+ * - SequelizeForeignKeyConstraintError
+ * - Custom errors with statusCode
+ * - Unexpected errors as 500 Internal Server Error
  *
- * @returns {void}
- *  
- * @example
- * // In app.js, register this middleware last:
- * app.use(errorHandler);
+ * @param {Error} err Error object
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ *
+ * @returns {import('express').Response}
  */
 const errorHandler = (err, req, res, next) => {
   console.error(`[ErrorHandler] ${req.method} ${req.originalUrl}`, err.stack);

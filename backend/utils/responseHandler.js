@@ -1,63 +1,113 @@
 /**
- * @file utils/responseHandler.js
- * @description Centralizes all API response formatting so every endpoint
- * returns a consistent shape that the frontend already expects.
+ * @module responseHandler
+ * Centralized API response formatting helpers.
  *
- * Existing frontend shape (preserved exactly):
- *   Success:    { success: true,  message, data }
- *   Paginated:  { success: true,  message, data, pagination }
- *   Created:    { success: true,  message, data }   (HTTP 201)
- *   Deleted:    { success: true,  message }          (no data key)
- *   Error:      { success: false, message }
+ * Responsibilities:
+ * - Keep API response shapes consistent across controllers
+ * - Preserve frontend-compatible response structures
+ * - Avoid repeated res.status(...).json(...) code in controllers
+ *
+ * Preserved response shapes:
+ * Success:
+ * {
+ *   success: true,
+ *   message,
+ *   data
+ * }
+ *
+ * Paginated:
+ * {
+ *   success: true,
+ *   message,
+ *   data,
+ *   pagination
+ * }
+ *
+ * Deleted / no data:
+ * {
+ *   success: true,
+ *   message
+ * }
+ *
+ * Error:
+ * {
+ *   success: false,
+ *   message
+ * }
  */
 
 /**
- * Generic success response.
- * Omits the `data` key entirely when no data is provided (e.g. DELETE).
+ * Sends a generic success response.
  *
- * @param {import('express').Response} res
- * @param {string}  message
- * @param {*}       [data]       - Payload; omitted when undefined.
- * @param {number}  [statusCode=200]
+ * The data key is only included when data is not undefined.
+ * This is useful for DELETE responses where the frontend expects no data key.
+ *
+ * @param {import('express').Response} res Express response object
+ * @param {string} message Success message
+ * @param {*} [data] Optional response payload
+ * @param {number} [statusCode=200] HTTP status code
+ *
+ * @returns {import('express').Response}
  */
 export const sendSuccess = (res, message, data, statusCode = 200) => {
   const body = { success: true, message };
-  if (data !== undefined) body.data = data;
+
+  if (data !== undefined) {
+    body.data = data;
+  }
+
   return res.status(statusCode).json(body);
 };
 
 /**
- * 201 Created response – thin wrapper around sendSuccess.
+ * Sends a 201 Created response.
  *
- * @param {import('express').Response} res
- * @param {string} message
- * @param {*}      data
+ * Thin wrapper around sendSuccess() for create endpoints.
+ *
+ * @param {import('express').Response} res Express response object
+ * @param {string} message Success message
+ * @param {*} data Created resource payload
+ *
+ * @returns {import('express').Response}
  */
 export const sendCreated = (res, message, data) =>
   sendSuccess(res, message, data, 201);
 
 /**
- * Paginated list response.
- * Keeps `data` (rows) and `pagination` as siblings so the frontend
- * can destructure them from the top-level response object.
+ * Sends a paginated success response.
  *
- * @param {import('express').Response} res
- * @param {string} message
- * @param {Array}  rows        - The page of records.
- * @param {Object} pagination  - { page, limit, total, totalPages }
+ * Keeps data and pagination as top-level sibling keys so existing frontend
+ * hooks can safely destructure them from response.data.
+ *
+ * @param {import('express').Response} res Express response object
+ * @param {string} message Success message
+ * @param {Array} rows Current page records
+ * @param {object} pagination Pagination metadata
+ *
+ * @returns {import('express').Response}
  */
 export const sendPaginated = (res, message, rows, pagination) =>
-  res.status(200).json({ success: true, message, data: rows, pagination });
+  res.status(200).json({
+    success: true,
+    message,
+    data: rows,
+    pagination,
+  });
 
 /**
- * Error response.
- * Controllers no longer call this directly; they forward to next(error)
- * and the global errorHandler middleware calls this. It is exported so
- * the middleware can import it too.
+ * Sends a standardized error response.
  *
- * @param {import('express').Response} res
- * @param {string} message
- * @param {number} [statusCode=500]
+ * Usually called by the global errorHandler middleware instead of directly
+ * inside controllers.
+ *
+ * @param {import('express').Response} res Express response object
+ * @param {string} message Error message
+ * @param {number} [statusCode=500] HTTP status code
+ *
+ * @returns {import('express').Response}
  */
 export const sendError = (res, message, statusCode = 500) =>
-  res.status(statusCode).json({ success: false, message });
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
