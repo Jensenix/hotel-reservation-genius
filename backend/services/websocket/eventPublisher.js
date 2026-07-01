@@ -27,6 +27,7 @@ export const CHANNELS = {
   BOOKING: 'booking_events',
   PAYMENT: 'payment_events',
   ROOM: 'room_events',
+  USER: 'user_events',
 };
 
 /**
