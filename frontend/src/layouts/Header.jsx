@@ -52,11 +52,11 @@ const Header = () => {
                 <img
                   src={ImageAssets.HotelLogo}
                   alt="Hotel Logo"
-                  className="w-full h-full object-contain scale-150"
+                  className="w-full h-full object-contain scale-110 md:scale-150"
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h1 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight truncate">
+                <h1 className="text-sm sm:text-lg md:text-xl font-bold text-white leading-tight whitespace-nowrap">
                   Genius Society Hotel
                 </h1>
                 <p className="text-[10px] md:text-xs text-amber-200 font-light tracking-wider hidden sm:block">

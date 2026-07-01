@@ -48,11 +48,6 @@ class RoomAvailabilityService {
         const cleaningRooms = roomType.rooms.filter(
           (r) => !bookedRoomIds.includes(r.id) && r.status === 'cleaning',
         ).length;
-        // Occupancy for a given date must come from bookings that actually
-        // overlap that date, not from the live Room.status column — that
-        // column reflects "right now" only and isn't date-aware, so using
-        // it here made rooms look permanently occupied on every date
-        // (past or future) once it got stuck at 'occupied'.
         const occupiedRooms = bookedRoomIds.length;
         const availableRooms = roomType.rooms.filter(
           (r) =>

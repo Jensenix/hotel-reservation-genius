@@ -1,9 +1,34 @@
 import { Op } from 'sequelize';
 import db from '#models/index.js';
+import { MaxStayDays, OneDayInMs } from '#config/config.js';
 
 const { Room, Booking, RoomType } = db;
 
 class BookingUtils {
+  /**
+   * Validates a check-in/check-out pair and caps the stay at MaxStayDays.
+   * Used by both createBooking and updateBooking, which previously each
+   * had their own copy of this diffDays/capping logic.
+   *
+   * @returns {{ checkOutDate: string, wasCapped: boolean }}
+   */
+  static resolveStayDuration(checkInDate, checkOutDate) {
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const diffDays = Math.ceil((checkOut - checkIn) / OneDayInMs);
+
+    if (diffDays <= 0) {
+      throw new Error('Check-out date must be after check-in date.');
+    }
+
+    if (diffDays > MaxStayDays) {
+      const cappedCheckOut = new Date(checkIn.getTime() + MaxStayDays * OneDayInMs);
+      return { checkOutDate: cappedCheckOut.toISOString(), wasCapped: true };
+    }
+
+    return { checkOutDate, wasCapped: false };
+  }
+
   /**
    * Finds the first available room of a specific type for the given dates.
    * Availability is based on overlapping bookings, NOT the current realtime room status.
