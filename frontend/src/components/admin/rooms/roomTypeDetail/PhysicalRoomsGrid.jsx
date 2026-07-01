@@ -20,7 +20,9 @@ const PhysicalRoomsGrid = ({
               Physical{' '}
               <span className="font-semibold text-amber-600">Rooms</span>
             </h2>
-            <p className="text-slate-500 text-xs sm:text-sm">{rooms.length} rooms found</p>
+            <p className="text-slate-500 text-xs sm:text-sm">
+              {rooms.length} rooms found
+            </p>
           </div>
         </div>
       </div>
@@ -37,7 +39,6 @@ const PhysicalRoomsGrid = ({
               className="bg-white rounded-2xl shadow-lg sm:shadow-xl border border-slate-200 hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 group"
             >
               <div className="p-5 sm:p-6">
-                {/* Changed to flex-col on mobile so the dropdown doesn't overlap the title */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-5 sm:mb-6">
                   <div className="flex items-center space-x-3 sm:space-x-4">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">

@@ -35,7 +35,9 @@ const FeaturedRooms = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-slate-800 mb-4 sm:mb-6 tracking-tight break-words">
             Exquisite{' '}
-            <span className="font-semibold text-amber-600 block sm:inline">Accommodations</span>
+            <span className="font-semibold text-amber-600 block sm:inline">
+              Accommodations
+            </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-light">
             Indulge in our meticulously curated rooms and suites, where every
@@ -89,15 +91,18 @@ const FeaturedRooms = () => {
                       </div>
                       <div className="flex items-center text-slate-600">
                         <Wifi className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-amber-500 shrink-0" />
-                        <span className="text-xs sm:text-sm">High-Speed Internet</span>
+                        <span className="text-xs sm:text-sm">
+                          High-Speed Internet
+                        </span>
                       </div>
                       <div className="flex items-center text-slate-600">
                         <Coffee className="w-4 h-4 sm:w-5 sm:h-5 mr-3 text-amber-500 shrink-0" />
-                        <span className="text-xs sm:text-sm">Premium Amenities</span>
+                        <span className="text-xs sm:text-sm">
+                          Premium Amenities
+                        </span>
                       </div>
                     </div>
 
-                    {/* FIX: Changed flex-row to flex-col on small screens so the button fits */}
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100">
                       <div className="text-center sm:text-left">
                         <p className="text-2xl sm:text-3xl font-light text-slate-800">
@@ -107,7 +112,10 @@ const FeaturedRooms = () => {
                           per night
                         </p>
                       </div>
-                      <Link to={`/booking/${room.id}`} className="w-full sm:w-auto">
+                      <Link
+                        to={`/booking/${room.id}`}
+                        className="w-full sm:w-auto"
+                      >
                         <button className="w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-0 tracking-wide text-sm sm:text-base">
                           Reserve Now
                         </button>
@@ -120,7 +128,6 @@ const FeaturedRooms = () => {
 
         <div className="text-center mt-12 sm:mt-16">
           <Link to="/our-rooms">
-            {/* FIX: Reduced padding and text size on mobile so it doesn't overflow */}
             <button className="w-full sm:w-auto bg-white border-2 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white px-6 py-3 sm:px-12 sm:py-4 rounded-xl text-base sm:text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 tracking-wide group flex items-center justify-center mx-auto">
               Discover All Suites
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 inline transition-transform group-hover:translate-x-1" />

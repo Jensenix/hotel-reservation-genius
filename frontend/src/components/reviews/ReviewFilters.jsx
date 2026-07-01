@@ -2,19 +2,26 @@ import Card from '@/components/ui/Card';
 import { Search } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const ReviewFilters = ({ searchTerm, setSearchTerm, ratingFilter, setRatingFilter }) => {
+const ReviewFilters = ({
+  searchTerm,
+  setSearchTerm,
+  ratingFilter,
+  setRatingFilter,
+}) => {
   return (
     <Card className="bg-white border-2 border-slate-200 shadow-xl mb-8">
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <label htmlFor="searchReviews" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="searchReviews"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Search Reviews
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-              
-              {/* FIX: Mobile Input (Short Placeholder) */}
+
               <input
                 id="searchReviewsMobile"
                 type="text"
@@ -23,8 +30,7 @@ const ReviewFilters = ({ searchTerm, setSearchTerm, ratingFilter, setRatingFilte
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all sm:hidden"
               />
-              
-              {/* FIX: Desktop Input (Long Placeholder) */}
+
               <input
                 id="searchReviews"
                 type="text"
@@ -37,7 +43,10 @@ const ReviewFilters = ({ searchTerm, setSearchTerm, ratingFilter, setRatingFilte
           </div>
 
           <div>
-            <label htmlFor="filterRating" className="block text-sm font-medium text-slate-700 mb-2">
+            <label
+              htmlFor="filterRating"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
               Filter by Rating
             </label>
             <select

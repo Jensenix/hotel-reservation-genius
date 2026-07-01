@@ -21,7 +21,6 @@ const AvailabilityStats = ({ overall }) => {
         </div>
       </div>
 
-      {/* Available Rooms */}
       <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl shadow-lg p-6 border border-emerald-500 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
         <div className="relative">
@@ -57,7 +56,6 @@ const AvailabilityStats = ({ overall }) => {
         </div>
       </div>
 
-      {/* Maintenance */}
       <div className="bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl shadow-lg p-6 border border-amber-500 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
         <div className="relative">

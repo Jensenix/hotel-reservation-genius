@@ -41,7 +41,6 @@ export default function BookingsPagination({
         </div>
       </div>
 
-      {/* Right side buttons - FIX: Added flex-wrap and justify-center so they wrap nicely on small phones */}
       <div className="flex flex-wrap items-center justify-center gap-2 w-full lg:w-auto">
         <Button
           variant="outline"

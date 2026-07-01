@@ -18,10 +18,8 @@ export const calculateExtraServicesTotal = (selectedServices, availableServices)
   if (!selectedServices || !availableServices?.length) return 0;
 
   return Object.entries(selectedServices).reduce((total, [id, qty]) => {
-    // FIX: Convert both IDs to strings so they safely match
     const service = availableServices.find((s) => String(s.id) === String(id));
     
-    // FIX: Ensure the price is treated as a Number before multiplying
     return total + (service ? Number(service.price) * qty : 0);
   }, 0);
 };
