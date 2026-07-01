@@ -41,18 +41,24 @@ class RoomAvailabilityService {
           },
         });
 
-        const bookedRoomIds = bookings.map((b) => b.roomId);
+        const bookedRoomIds = [...new Set(bookings.map((b) => b.roomId))];
         const maintenanceRooms = roomType.rooms.filter(
-          (r) => r.status === 'maintenance',
+          (r) => !bookedRoomIds.includes(r.id) && r.status === 'maintenance',
         ).length;
         const cleaningRooms = roomType.rooms.filter(
-          (r) => r.status === 'cleaning',
+          (r) => !bookedRoomIds.includes(r.id) && r.status === 'cleaning',
         ).length;
+        // Occupancy for a given date must come from bookings that actually
+        // overlap that date, not from the live Room.status column — that
+        // column reflects "right now" only and isn't date-aware, so using
+        // it here made rooms look permanently occupied on every date
+        // (past or future) once it got stuck at 'occupied'.
+        const occupiedRooms = bookedRoomIds.length;
         const availableRooms = roomType.rooms.filter(
-          (r) => !bookedRoomIds.includes(r.id) && r.status === 'available',
-        ).length;
-        const occupiedRooms = roomType.rooms.filter(
-          (r) => bookedRoomIds.includes(r.id) || r.status === 'occupied',
+          (r) =>
+            !bookedRoomIds.includes(r.id) &&
+            r.status !== 'maintenance' &&
+            r.status !== 'cleaning',
         ).length;
 
         return {
@@ -72,10 +78,18 @@ class RoomAvailabilityService {
           bookedRoomsCount: bookedRoomIds.length,
           rooms: roomType.rooms.map((room) => {
             const isBooked = bookedRoomIds.includes(room.id);
+            let status;
+            if (isBooked) {
+              status = 'occupied';
+            } else if (room.status === 'maintenance' || room.status === 'cleaning') {
+              status = room.status;
+            } else {
+              status = 'available';
+            }
             return {
               id: room.id,
               roomNumber: room.roomNumber,
-              status: isBooked ? 'occupied' : room.status,
+              status,
               floor: room.floor,
               isBooked: isBooked,
             };
@@ -170,10 +184,18 @@ class RoomAvailabilityService {
       basePrice: parseFloat(roomType.basePrice),
       rooms: roomType.rooms.map((room) => {
         const isBooked = room.bookings && room.bookings.length > 0;
+        let status;
+        if (isBooked) {
+          status = 'occupied';
+        } else if (room.status === 'maintenance' || room.status === 'cleaning') {
+          status = room.status;
+        } else {
+          status = 'available';
+        }
         return {
           id: room.id,
           roomNumber: room.roomNumber,
-          status: isBooked ? 'occupied' : room.status,
+          status,
           floor: room.floor,
           isBooked: isBooked,
         };

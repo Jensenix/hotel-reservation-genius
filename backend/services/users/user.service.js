@@ -1,6 +1,7 @@
 import db from '#models/index.js';
 const { User, Booking, Payment, Review } = db;
 import { Op } from 'sequelize';
+import pagination from '#utils/pagination.js';
 
 class UserService {
   /**

@@ -9,7 +9,8 @@ const options = {
     info: {
       title: 'Genius Society Hotel API',
       version: '1.0.0',
-      description: 'API documentation for the Genius Society Hotel booking system',
+      description:
+        'API documentation for the Genius Society Hotel booking system',
     },
 
     servers: [
@@ -35,19 +36,12 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-
 /**
  * Initialize Swagger UI
  * @param {import('express').Application} app
  */
 export const setupSwagger = (app) => {
-  app.use(
-    '/api-docs',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerSpec)
-  );
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  console.log(
-    `[Swagger] Docs available at ${ApiUrl}/api-docs`
-  );
+  console.log(`[Swagger] Docs available at ${ApiUrl}/api-docs`);
 };

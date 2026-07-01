@@ -702,7 +702,9 @@ class BookingService extends BaseService {
   }
 
   async selfCheckIn(bookingId, userId) {
-    const booking = await this.model.findByPk(bookingId);
+    const booking = await this.model.findByPk(bookingId, {
+      include: [{ model: Room, as: 'room' }],
+    });
 
     if (!booking) {
       throw new Error('Booking not found');
@@ -727,8 +729,13 @@ class BookingService extends BaseService {
       throw new Error('Cannot check in before your scheduled check-in date');
     }
 
+    if (booking.room) {
+      await booking.room.update({ status: 'occupied' });
+    }
+
     const updatedBooking = await this.update(bookingId, {
       status: 'checked_in',
+      actualCheckIn: new Date(),
     });
 
     try {
@@ -740,6 +747,14 @@ class BookingService extends BaseService {
         },
         rooms: [`user:${updatedBooking.userId}`, 'admin:dashboard'],
       });
+
+      if (booking.room) {
+        await publish(CHANNELS.ROOM, {
+          event: RealtimeEvents.ROOM.AVAILABILITY_CHANGED,
+          data: { roomId: booking.room.id, status: 'occupied' },
+          rooms: [`room:${booking.room.id}`, 'admin:dashboard'],
+        });
+      }
     } catch (err) {
       console.error(
         '[BookingService] Failed to publish self check-in event:',
@@ -778,13 +793,10 @@ class BookingService extends BaseService {
       throw err;
     }
 
-    if (checkOutDate < today) {
-      const err = new Error(
-        'Your checkout date has passed. Please contact the admin to assist you with the checkout process.',
-      );
-      err.statusCode = 400;
-      throw err;
-    }
+    // Allow self-checkout on the scheduled date OR any day after it.
+    // Previously this rejected checkout once the exact day had passed,
+    // which permanently blocked self-checkout and left the room stuck
+    // as 'occupied' with no automatic way to release it.
 
     if (booking.room) {
       await booking.room.update({ status: 'available' });
