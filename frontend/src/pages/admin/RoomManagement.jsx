@@ -6,6 +6,9 @@ import RoomTypeStats from '@/components/admin/rooms/RoomTypeStats';
 import RoomTypeGrid from '@/components/admin/rooms/RoomTypeGrid';
 import RoomTypeModals from '@/components/admin/rooms/RoomTypeModals';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RoomManagement = () => {
   const roomState = useRoomTypes();
 

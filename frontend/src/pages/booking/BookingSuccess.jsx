@@ -1,6 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 
+/**
+ * @returns {JSX.Element}
+ */
 const BookingSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();

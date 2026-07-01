@@ -1,3 +1,8 @@
+/**
+ * Converts a Date object to a string in YYYY-MM-DD format.
+ * @param {Date} date 
+ * @returns {string}
+ */
 export const dateToString = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -5,6 +10,11 @@ export const dateToString = (date) => {
   return `${year}-${month}-${day}`;
 };
 
+/**
+ * Returns the color class for a given availability status.
+ * @param {string} status 
+ * @returns {string}
+ */
 export const getStatusColor = (status) => {
   switch (status) {
     case 'available':
@@ -20,6 +30,11 @@ export const getStatusColor = (status) => {
   }
 };
 
+/**
+ * 
+ * @param {string} status 
+ * @returns {string}
+ */
 export const getStatusBadge = (status) => {
   switch (status) {
     case 'available':

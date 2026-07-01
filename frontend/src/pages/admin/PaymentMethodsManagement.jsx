@@ -15,6 +15,9 @@ import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 import PaymentMethodFormModal from '@/components/admin/paymentMethods/PaymentMethodFormModal';
 import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
 
+/**
+ * @returns {JSX.Element}
+ */
 export default function PaymentMethodsManagement() {
   const initialFormState = {
     methodName: '',
@@ -25,6 +28,10 @@ export default function PaymentMethodsManagement() {
     address: '',
   };
 
+  /**
+   * @param {Array<Object>} apiData
+   * @returns {Array<Object>}
+   */
   const mapApiResponse = (apiData) => {
     return Array.isArray(apiData)
       ? apiData.map((item) => ({
@@ -45,6 +52,10 @@ export default function PaymentMethodsManagement() {
     mapApiResponse,
   });
 
+  /**
+   * @param {string} type
+   * @returns {JSX.Element}
+   */
   const getIconComponent = (type) => {
     const icons = {
       card: CreditCard,

@@ -11,6 +11,9 @@ import BookingDetailsForm from '@/components/booking/BookingDetailsForm';
 import PaymentSelection from '@/components/booking/PaymentSelection';
 import BookingSummarySidebar from '@/components/booking/BookingSummarySidebar';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Booking = () => {
   const { roomId } = useParams();
   const location = useLocation();
@@ -45,7 +48,8 @@ const Booking = () => {
           </h2>
 
           <p className="text-gray-600 mb-6">
-            The room you&apos;re trying to book doesn&apos;t exist or is unavailable.
+            The room you&apos;re trying to book doesn&apos;t exist or is
+            unavailable.
           </p>
 
           <Button onClick={() => navigate('/our-rooms')}>

@@ -6,6 +6,9 @@ import AvailabilityStats from '@/components/admin/rooms/roomAvailability/Availab
 import RoomTypeAccordion from '@/components/admin/rooms/roomAvailability/RoomTypeAccordion';
 import { logger } from '@/config';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RoomAvailability = () => {
   const {
     availabilityData,

@@ -1,4 +1,26 @@
-/* Custom DatePicker Styles */
+/* ==========================================================================
+   Custom React DatePicker Styles
+   --------------------------------------------------------------------------
+   This file customizes the third-party `react-datepicker` package so the
+   booking date picker matches the hotel UI and behaves consistently across
+   desktop and mobile screens.
+
+   Main goals:
+   - Match the app's rounded, shadowed card style
+   - Keep the calendar dropdown below the input
+   - Prevent the calendar from overflowing the viewport
+   - Improve selected, disabled, today, weekend, and hover states
+   - Make the input field blend naturally with the booking form
+   ========================================================================== */
+
+
+/* ==========================================================================
+   DatePicker Container
+   --------------------------------------------------------------------------
+   `.react-datepicker` is the main calendar popup container.
+   These styles control the popup card appearance.
+   ========================================================================== */
+
 .react-datepicker {
   font-family: inherit;
   border: 1px solid #e5e7eb;
@@ -6,40 +28,73 @@
   background-color: white;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   z-index: 9;
-}
 
-/* Force dropdown to ALWAYS appear below input */
-.react-datepicker-popper {
-  z-index: 9;
-}
+  /*
+    Keep the calendar usable on smaller screens or shorter viewports.
 
-/* Disable all top placements - force bottom only */
-.react-datepicker-popper[data-placement^="top"] {
-  display: none !important;
-}
-
-.react-datepicker-popper[data-placement^="bottom"] {
-  display: block !important;
-  margin-top: 8px !important;
-}
-
-/* Hide triangle for cleaner look */
-.react-datepicker__triangle {
-  display: none !important;
-}
-
-/* Force calendar to stay below viewport */
-.react-datepicker {
+    `position: fixed` helps prevent the calendar from being clipped by parent
+    containers that may have overflow rules.
+  */
   max-height: 70vh;
   overflow-y: auto;
   position: fixed !important;
 }
 
-/* Ensure calendar container respects bottom placement */
+
+/* ==========================================================================
+   Dropdown Placement
+   --------------------------------------------------------------------------
+   The date picker should always open below the input.
+
+   React DatePicker can automatically flip placement to the top when space is
+   limited. For this UI, top placement can overlap important form content, so
+   top placement is disabled.
+   ========================================================================== */
+
+.react-datepicker-popper {
+  z-index: 9;
+}
+
+.react-datepicker-popper[data-placement^='top'] {
+  display: none !important;
+}
+
+.react-datepicker-popper[data-placement^='bottom'] {
+  display: block !important;
+  margin-top: 8px !important;
+}
+
+
+/* ==========================================================================
+   Triangle / Arrow
+   --------------------------------------------------------------------------
+   React DatePicker includes a small triangle arrow by default.
+   It is hidden here for a cleaner card-like popup style.
+   ========================================================================== */
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   Calendar Inner Layout
+   --------------------------------------------------------------------------
+   These rules keep the internal month structure stable after forcing the
+   calendar popup into a fixed-position container.
+   ========================================================================== */
+
 .react-datepicker__month-container,
 .react-datepicker__month {
   position: relative !important;
 }
+
+
+/* ==========================================================================
+   Header
+   --------------------------------------------------------------------------
+   The header contains the current month/year text and weekday labels.
+   ========================================================================== */
 
 .react-datepicker__header {
   background-color: #3b82f6;
@@ -61,6 +116,13 @@
   font-size: 0.875rem;
   font-weight: 500;
 }
+
+
+/* ==========================================================================
+   Month Navigation Buttons
+   --------------------------------------------------------------------------
+   These are the previous/next month controls inside the calendar header.
+   ========================================================================== */
 
 .react-datepicker__navigation {
   color: white;
@@ -85,6 +147,13 @@
   right: 1rem;
 }
 
+
+/* ==========================================================================
+   Day Cells
+   --------------------------------------------------------------------------
+   These styles control the appearance of each date inside the calendar grid.
+   ========================================================================== */
+
 .react-datepicker__day {
   color: #374151;
   border: 1px solid transparent;
@@ -101,6 +170,13 @@
   border-color: #3b82f6;
 }
 
+
+/* ==========================================================================
+   Selected Date
+   --------------------------------------------------------------------------
+   Applied to the currently selected day.
+   ========================================================================== */
+
 .react-datepicker__day--selected {
   background-color: #3b82f6;
   color: white;
@@ -113,11 +189,26 @@
   border-color: #2563eb;
 }
 
+
+/* ==========================================================================
+   Keyboard Selected Date
+   --------------------------------------------------------------------------
+   Used by React DatePicker when navigating with keyboard focus.
+   ========================================================================== */
+
 .react-datepicker__day--keyboard-selected {
   background-color: #3b82f6;
   color: white;
   border-color: #3b82f6;
 }
+
+
+/* ==========================================================================
+   Disabled / Outside Month / Today / Highlighted States
+   --------------------------------------------------------------------------
+   These states make unavailable dates, dates from other months, today's date,
+   and highlighted dates visually distinct.
+   ========================================================================== */
 
 .react-datepicker__day--disabled {
   color: #d1d5db;
@@ -142,39 +233,14 @@
   color: #92400e;
 }
 
-.react-datepicker__triangle {
-  position: absolute;
-  display: block;
-  height: 0;
-  width: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 8px;
-  left: 25px;
-  margin-left: -8px;
-  border-top-color: #3b82f6;
-  border-bottom-width: 0;
-  border-left-color: transparent;
-  border-right-color: transparent;
-}
 
-.react-datepicker__triangle::before {
-  content: '';
-  position: absolute;
-  display: block;
-  height: 0;
-  width: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 8px;
-  left: -8px;
-  border-top-color: #3b82f6;
-  border-bottom-width: 0;
-  border-left-color: transparent;
-  border-right-color: transparent;
-}
+/* ==========================================================================
+   Input Wrapper
+   --------------------------------------------------------------------------
+   React DatePicker wraps the actual input in these generated containers.
+   Setting width to 100% ensures the picker respects the form layout.
+   ========================================================================== */
 
-/* Input field styling */
 .react-datepicker-wrapper {
   width: 100%;
 }
@@ -199,7 +265,14 @@
   color: #9ca3af;
 }
 
-/* Month and year dropdown */
+
+/* ==========================================================================
+   Month and Year Dropdowns
+   --------------------------------------------------------------------------
+   These styles apply when React DatePicker is configured with month/year
+   dropdown selectors.
+   ========================================================================== */
+
 .react-datepicker__month-dropdown-container,
 .react-datepicker__year-dropdown-container {
   position: relative;
@@ -236,7 +309,14 @@
   color: white;
 }
 
-/* Weekend styling */
+
+/* ==========================================================================
+   Weekend Styling
+   --------------------------------------------------------------------------
+   Weekends are shown in red by default, then switch to white on hover so the
+   text stays readable against the blue hover background.
+   ========================================================================== */
+
 .react-datepicker__day--weekend {
   color: #ef4444;
 }
@@ -245,16 +325,23 @@
   color: white;
 }
 
-/* Responsive */
+
+/* ==========================================================================
+   Responsive Adjustments
+   --------------------------------------------------------------------------
+   Reduces calendar spacing on smaller screens so the date picker remains
+   compact and usable on mobile.
+   ========================================================================== */
+
 @media (max-width: 768px) {
   .react-datepicker {
     font-size: 0.875rem;
   }
-  
+
   .react-datepicker__header {
     padding: 0.75rem;
   }
-  
+
   .react-datepicker__day {
     margin: 0.0625rem;
     padding: 0.375rem;

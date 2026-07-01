@@ -14,8 +14,17 @@ import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 import ExtraServiceFormModal from '@/components/admin/extraServices/ExtraServiceFormModal';
 import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
 
-const initialFormState = { serviceName: '', description: '', price: '', iconUrl: '' };
+const initialFormState = {
+  serviceName: '',
+  description: '',
+  price: '',
+  iconUrl: '',
+};
 
+/**
+ * @param {Array<Object>} apiData
+ * @returns {Array<Object>}
+ */
 const mapApiResponse = (apiData) => {
   return Array.isArray(apiData)
     ? apiData.map((item) => ({
@@ -28,6 +37,9 @@ const mapApiResponse = (apiData) => {
     : [];
 };
 
+/**
+ * @returns {JSX.Element}
+ */
 const getIconComponent = (iconName) => {
   const icons = {
     room_service: Coffee,
@@ -41,6 +53,9 @@ const getIconComponent = (iconName) => {
   return <Icon className="w-8 h-8 text-white" />;
 };
 
+/**
+ * @returns {JSX.Element}
+ */
 export default function ExtraServicesManagement() {
   const { state, actions } = useAdminCRUD({
     endpoint: 'extraServices',
@@ -55,7 +70,6 @@ export default function ExtraServicesManagement() {
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-light text-slate-800 mb-2">
