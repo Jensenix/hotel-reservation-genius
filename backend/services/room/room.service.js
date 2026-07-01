@@ -40,9 +40,9 @@ class RoomService extends BaseService {
    */
   async getAllRooms({ page = 1, limit, status, roomTypeId, floor }) {
     const where = {};
-    if (status) where.status = status;
-    if (roomTypeId) where.roomTypeId = roomTypeId;
-    if (floor) where.floor = floor;
+    if (status) {where.status = status;}
+    if (roomTypeId) {where.roomTypeId = roomTypeId;}
+    if (floor) {where.floor = floor;}
 
     if (!limit) {
       const result = await super.getAll({
@@ -142,8 +142,8 @@ class RoomService extends BaseService {
    */
   async getAllWithRoomType({ status, roomTypeId }) {
     const where = {};
-    if (status) where.status = status;
-    if (roomTypeId) where.roomTypeId = roomTypeId;
+    if (status) {where.status = status;}
+    if (roomTypeId) {where.roomTypeId = roomTypeId;}
 
     return super.getAll({
       where,

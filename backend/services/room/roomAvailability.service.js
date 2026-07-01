@@ -86,7 +86,7 @@ class RoomAvailabilityService {
               roomNumber: room.roomNumber,
               status,
               floor: room.floor,
-              isBooked: isBooked,
+              isBooked,
             };
           }),
         };
@@ -192,7 +192,7 @@ class RoomAvailabilityService {
           roomNumber: room.roomNumber,
           status,
           floor: room.floor,
-          isBooked: isBooked,
+          isBooked,
         };
       }),
     };

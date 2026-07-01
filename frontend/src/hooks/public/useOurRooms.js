@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
@@ -10,6 +10,12 @@ export const useOurRooms = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const roomsLengthRef = useRef(0);
+
+  useEffect(() => {
+    roomsLengthRef.current = rooms.length;
+  }, [rooms.length]);
 
   const filters = useMemo(
     () => ({
@@ -28,6 +34,7 @@ export const useOurRooms = () => {
       setSearchParams(
         (prevParams) => {
           const params = new URLSearchParams(prevParams);
+
           Object.entries(newFilters).forEach(([key, value]) => {
             if (value) {
               params.set(key, value);
@@ -35,6 +42,7 @@ export const useOurRooms = () => {
               params.delete(key);
             }
           });
+
           return params;
         },
         { replace: true },
@@ -58,8 +66,10 @@ export const useOurRooms = () => {
     let isMounted = true;
 
     const loadRooms = async () => {
-      if (rooms.length === 0) setLoading(true); 
-      
+      if (roomsLengthRef.current === 0) {
+        setLoading(true);
+      }
+
       try {
         const queryParams = {
           search: filters.search,
@@ -74,9 +84,14 @@ export const useOurRooms = () => {
         }
       } catch (error) {
         logger.error('Error fetching room types:', error);
-        if (isMounted) setRooms([]);
+
+        if (isMounted) {
+          setRooms([]);
+        }
       } finally {
-        if (isMounted) setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
@@ -95,12 +110,18 @@ export const useOurRooms = () => {
           room.maxCapacity >= parseInt(filters.capacity, 10);
 
         let matchesPrice = true;
-        if (filters.priceRange === 'budget')
+
+        if (filters.priceRange === 'budget') {
           matchesPrice = room.basePrice <= 100;
-        if (filters.priceRange === 'mid')
+        }
+
+        if (filters.priceRange === 'mid') {
           matchesPrice = room.basePrice > 100 && room.basePrice <= 200;
-        if (filters.priceRange === 'luxury')
+        }
+
+        if (filters.priceRange === 'luxury') {
           matchesPrice = room.basePrice > 200;
+        }
 
         return matchesCapacity && matchesPrice;
       })
@@ -108,15 +129,24 @@ export const useOurRooms = () => {
         switch (filters.sortBy) {
           case 'price-low':
             return a.basePrice - b.basePrice;
+
           case 'price-high':
             return b.basePrice - a.basePrice;
+
           case 'capacity':
             return b.maxCapacity - a.maxCapacity;
+
           default:
             return a.name.localeCompare(b.name);
         }
       });
   }, [rooms, filters]);
 
-  return { loading, filters, updateFilters, clearFilters, filteredRooms };
+  return {
+    loading,
+    filters,
+    updateFilters,
+    clearFilters,
+    filteredRooms,
+  };
 };

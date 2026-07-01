@@ -110,7 +110,7 @@ class BookingEvents {
    * @returns {Promise<void>}
    */
   static async roomAvailabilityChanged(room, status) {
-    if (!room) return;
+    if (!room) {return;}
 
     try {
       await publish(CHANNELS.ROOM, {

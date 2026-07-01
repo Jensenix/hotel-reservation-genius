@@ -41,9 +41,9 @@ class BookingQueryService {
   async getAllBookings({ page = 1, limit = 10, status, userId, roomId } = {}) {
     const where = {};
 
-    if (status) where.status = status;
-    if (userId) where.userId = userId;
-    if (roomId) where.roomId = roomId;
+    if (status) {where.status = status;}
+    if (userId) {where.userId = userId;}
+    if (roomId) {where.roomId = roomId;}
 
     const parsedPage = parseInt(page, 10);
     const parsedLimit = parseInt(limit, 10);
@@ -139,7 +139,7 @@ class BookingQueryService {
       ],
     });
 
-    if (!booking) return booking;
+    if (!booking) {return booking;}
 
     const plainBooking = booking.toJSON();
 

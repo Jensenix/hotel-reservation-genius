@@ -56,7 +56,7 @@ class PaymentService extends BaseService {
 
     const authoritativeAmount = Number(existingBooking.totalPrice);
 
-    if (amount != null && Number(amount) !== authoritativeAmount) {
+    if (amount !== null && Number(amount) !== authoritativeAmount) {
       console.warn(
         `[PaymentService] Client-sent amount (${amount}) did not match persisted booking total (${authoritativeAmount}) for booking ${bookingId}. Charging the persisted total.`,
       );
@@ -99,8 +99,8 @@ class PaymentService extends BaseService {
    */
   async getAllPayments({ page = 1, limit, paymentStatus, bookingId }) {
     const where = {};
-    if (paymentStatus) where.paymentStatus = paymentStatus;
-    if (bookingId) where.bookingId = bookingId;
+    if (paymentStatus) {where.paymentStatus = paymentStatus;}
+    if (bookingId) {where.bookingId = bookingId;}
 
     const { offset, limit: parsedLimit } = pagination.getPagination(
       page,

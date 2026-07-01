@@ -61,7 +61,7 @@ module.exports = {
     for (const target of TARGET_BOOKINGS) {
       const user = users[target.userIndex];
       const room = rooms[target.roomIndex];
-      if (!user || !room) continue;
+      if (!user || !room) {continue;}
 
       // Find the specific booking injected by the previous seeder safely handling JS dates
       const booking = bookings.find(b => 
@@ -71,14 +71,14 @@ module.exports = {
         new Date(b.checkOutDate).toISOString().startsWith(target.checkOutDate)
       );
 
-      if (!booking) continue;
+      if (!booking) {continue;}
 
       let additionalTotal = 0;
 
       // Process Extras
       for (const extra of target.extras) {
         const service = extraServices[extra.serviceIndex];
-        if (!service) continue;
+        if (!service) {continue;}
 
         const subtotal = parseFloat(service.price) * extra.quantity;
         additionalTotal += subtotal;
@@ -87,7 +87,7 @@ module.exports = {
           bookingId: booking.id,
           extraServiceId: service.id,
           quantity: extra.quantity,
-          subtotal: subtotal,
+          subtotal,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
@@ -101,7 +101,7 @@ module.exports = {
           `UPDATE "Bookings" SET "totalPrice" = :newTotal, "updatedAt" = NOW() WHERE id = :bookingId`,
           {
             replacements: {
-              newTotal: newTotal,
+              newTotal,
               bookingId: booking.id,
             },
             type: Sequelize.QueryTypes.UPDATE,

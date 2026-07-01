@@ -74,7 +74,7 @@ class RoomController extends BaseController {
       event: RealtimeEvents.ROOM.STATUS_CHANGED,
       data: {
         roomId: id,
-        status: status,
+        status,
       },
       rooms: ['admin:dashboard', 'room:public_availability'] 
     });

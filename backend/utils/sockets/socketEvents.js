@@ -23,7 +23,7 @@ import { createEnvelope } from '#utils/sockets/socketEnvelope.js';
  * @returns {void}
  */
 function emitToAdminDashboard(io, eventName, data = {}, meta = {}) {
-  if (!io) return;
+  if (!io) {return;}
 
   io.to(ADMIN_DASHBOARD_ROOM).emit(
     eventName,

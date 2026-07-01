@@ -1,4 +1,3 @@
-
 import db from '#models/index.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -25,13 +24,12 @@ class AuthService {
       throw error;
     }
 
-    let isMatch = false;
+    const isHashedPassword =
+      user.password.startsWith('$2a$') || user.password.startsWith('$2b$');
 
-    if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$')) {
-      isMatch = await bcrypt.compare(password, user.password);
-    } else {
-      isMatch = user.password === password;
-    }
+    const isMatch = isHashedPassword
+      ? await bcrypt.compare(password, user.password)
+      : user.password === password;
 
     if (!isMatch) {
       const error = new Error('Invalid email or password');
