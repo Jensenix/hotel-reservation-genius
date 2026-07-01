@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/auth/useAuth';
 import Button from '@/components/ui/Button';
 import { Phone, MapPin, Star, Menu, X } from 'lucide-react';
+import { ImageAssets } from '@/config';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -45,13 +46,14 @@ const Header = () => {
       {/* Main Navigation */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20 gap-4 relative">
-          {/* 1. THE LOGO (Locked to the Left) */}
           <div className="flex-1 flex justify-start min-w-0">
             <Link to="/" className="flex items-center space-x-3 z-50 min-w-0">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-amber-400 shrink-0">
-                <span className="text-white font-bold text-lg md:text-xl">
-                  GSH
-                </span>
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                <img
+                  src={ImageAssets.HotelLogo}
+                  alt="Hotel Logo"
+                  className="w-full h-full object-contain scale-150"
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight truncate">

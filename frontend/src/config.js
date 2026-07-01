@@ -1,6 +1,8 @@
 import HomeWallpaper from '@/assets/HomeWallpaper.webp';
+import HotelLogo from '@/assets/gsh_logo.png';
 export const ImageAssets = {
   HomeWallpaper: HomeWallpaper,
+  HotelLogo : HotelLogo
 };
 
 export const MaxStayDays = 14;
