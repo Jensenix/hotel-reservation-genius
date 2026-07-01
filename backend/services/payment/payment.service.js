@@ -3,7 +3,7 @@ const { Payment, Booking, PaymentMethod } = db;
 import pagination from '#utils/pagination.js';
 import BaseService from '../base/base.service.js';
 import { publish, CHANNELS } from '../websocket/eventPublisher.js';
-import { RealtimeEvents } from '../../shared/eventContract.js';
+import { RealtimeEvents } from '#shared/eventContract.js';
 
 class PaymentService extends BaseService {
   constructor() {
@@ -85,7 +85,10 @@ class PaymentService extends BaseService {
         rooms: targetRooms,
       });
     } catch (err) {
-      console.error('[PaymentService] Failed to publish payment_updated event:', err.message);
+      console.error(
+        '[PaymentService] Failed to publish payment_updated event:',
+        err.message,
+      );
     }
 
     return { payment, booking: updatedBooking };
