@@ -12,6 +12,9 @@ import { useAdminCRUD } from '@/hooks/admin/useAdminCRUD';
 import FacilityFormModal from '@/components/admin/facilities/FacilityFormModal';
 import DeleteConfirmModal from '@/components/admin/common/DeleteConfirmModal';
 
+/**
+ * @returns {JSX.Element}
+ */
 export default function FacilitiesManagement() {
   const initialFormState = { facilityName: '', iconUrl: '' };
 

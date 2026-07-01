@@ -5,6 +5,9 @@ import FacilitiesCarousel from '@/components/facilities/FacilitiesCarousel';
 import FacilityDetails from '@/components/facilities/FacilityDetails';
 import FacilitiesGrid from '@/components/facilities/FacilitiesGrid';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Facilities = () => {
   const { facilities, loading, selectedFacility, setSelectedFacility } =
     useFacilities();

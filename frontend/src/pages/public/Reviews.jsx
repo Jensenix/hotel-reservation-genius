@@ -3,6 +3,9 @@ import ReviewFilters from '@/components/reviews/ReviewFilters';
 import ReviewList from '@/components/reviews/ReviewList';
 import ReviewModal from '@/components/reviews/ReviewModal';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Reviews = () => {
   const {
     user,

@@ -3,6 +3,9 @@ import Button from '@/components/ui/Button';
 import AuthHeader from '@/components/auth/AuthHeader';
 import { useLogin } from '@/hooks/auth/useLogin';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Login = () => {
   const {
     formData,

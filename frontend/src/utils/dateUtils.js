@@ -1,3 +1,8 @@
+/**
+ * Formats a date string into a long date format.
+ * @param {string} dateString
+ * @returns {string}
+ */
 export const formatLongDate = (dateString) => {
   if (!dateString) return 'N/A';
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -7,6 +12,11 @@ export const formatLongDate = (dateString) => {
   });
 };
 
+/**
+ * Formats a date into Indonesian locale format.
+ * @param {Date|string|number} date
+ * @returns {string}
+ */
 export const formatDateIndonesian = (date) => {
   if (!date) return '';
 

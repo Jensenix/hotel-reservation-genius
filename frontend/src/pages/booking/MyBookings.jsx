@@ -7,15 +7,18 @@ import MyBookingsFilter from '@/components/booking/myBookings/MyBookingsFilter';
 import { Calendar, CheckCircle, Clock, Shield } from 'lucide-react';
 import { getStatusText } from '@/utils/bookingStatusUtils';
 
+/**
+ * @returns {JSX.Element}
+ */
 const MyBookings = () => {
   const navigate = useNavigate();
-  
-  const { 
-    loading, 
-    filter, 
-    setFilter, 
-    search, 
-    setSearch, 
+
+  const {
+    loading,
+    filter,
+    setFilter,
+    search,
+    setSearch,
     filteredBookings,
     handleCheckIn,
     handleCheckOut,
@@ -64,15 +67,21 @@ const MyBookings = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-8">
               <div className="flex items-center space-x-2 text-amber-600">
                 <CheckCircle className="w-5 h-5 shrink-0" />
-                <span className="font-medium text-sm sm:text-base">Easy Management</span>
+                <span className="font-medium text-sm sm:text-base">
+                  Easy Management
+                </span>
               </div>
               <div className="flex items-center space-x-2 text-amber-600">
                 <Clock className="w-5 h-5 shrink-0" />
-                <span className="font-medium text-sm sm:text-base">Real-time Updates</span>
+                <span className="font-medium text-sm sm:text-base">
+                  Real-time Updates
+                </span>
               </div>
               <div className="flex items-center space-x-2 text-amber-600">
                 <Shield className="w-5 h-5 shrink-0" />
-                <span className="font-medium text-sm sm:text-base">Secure Booking</span>
+                <span className="font-medium text-sm sm:text-base">
+                  Secure Booking
+                </span>
               </div>
             </div>
           </div>
@@ -109,7 +118,7 @@ const MyBookings = () => {
                 onWriteReview={(bookingId) =>
                   navigate('/reviews', { state: { bookingId } })
                 }
-                onCheckIn={handleCheckIn} 
+                onCheckIn={handleCheckIn}
                 onCheckOut={handleCheckOut}
               />
             ))}

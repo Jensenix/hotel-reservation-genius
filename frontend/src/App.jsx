@@ -15,6 +15,10 @@ import Loading from '@/components/ui/Loading';
 
 import { routesConfig } from '@/routes';
 
+/**
+ * A helper component that scrolls the window to the top whenever the route changes.
+ * @returns {null}
+ */
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -40,8 +44,10 @@ function AppRoutes() {
             renderedElement = <MainLayout>{renderedElement}</MainLayout>;
           }
 
-          const missingProtectedAuth = route.type === 'protected' && !isAuthenticated;
-          const missingAdminAuth = route.type === 'admin' && (!isAuthenticated || !isAdmin);
+          const missingProtectedAuth =
+            route.type === 'protected' && !isAuthenticated;
+          const missingAdminAuth =
+            route.type === 'admin' && (!isAuthenticated || !isAdmin);
 
           if (missingProtectedAuth || missingAdminAuth) {
             renderedElement = <Navigate to="/login" replace />;

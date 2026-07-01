@@ -7,6 +7,9 @@ import RevenueMetrics from '@/components/admin/revenue/RevenueMetrics';
 import RevenueCharts from '@/components/admin/revenue/RevenueCharts';
 import RevenueTransactionsTable from '@/components/admin/revenue/RevenueTransactionsTable';
 
+/**
+ * @returns {JSX.Element}
+ */
 const RevenueDashboard = () => {
   const { revenueData, loading, dateRange, setDateRange, handleApplyFilter } =
     useRevenueData();
