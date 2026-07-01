@@ -4,6 +4,27 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   user: Object|null,
+ *   activeTab: string,
+ *   setActiveTab: Function,
+ *   loading: boolean,
+ *   searchTerm: string,
+ *   setSearchTerm: Function,
+ *   ratingFilter: string,
+ *   setRatingFilter: Function,
+ *   filteredReviews: Array<Object>,
+ *   showReviewModal: boolean,
+ *   editingReview: Object|null,
+ *   reviewFormData: Object,
+ *   setReviewFormData: Function,
+ *   handleOpenReviewModal: Function,
+ *   handleCloseReviewModal: Function,
+ *   handleSubmitReview: Function,
+ *   handleDeleteReview: Function
+ * }}
+ */
 export const useReviews = () => {
   const { user } = useAuth();
   const navigate = useNavigate();

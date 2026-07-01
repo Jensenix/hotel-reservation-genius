@@ -1,6 +1,11 @@
 import { useContext, useEffect, useRef } from 'react';
 import { WebSocketContext } from '@/context/WebSocketContext';
 
+/**
+ * @param {string} eventName
+ * @param {Function} callback
+ * @returns {void}
+ */
 export function useWebSocket(eventName, callback) {
   const socket = useContext(WebSocketContext);
   const callbackRef = useRef(callback);

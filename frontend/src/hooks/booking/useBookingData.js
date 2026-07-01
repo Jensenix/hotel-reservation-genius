@@ -3,6 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @param {string|null} dateStr
+ * @returns {Date|null}
+ */
 const parseLocalDate = (dateStr) => {
   if (!dateStr) return null;
   const parts = dateStr.split('-');
@@ -17,6 +21,10 @@ const parseLocalDate = (dateStr) => {
   return isNaN(d.getTime()) ? null : d;
 };
 
+/**
+ * @param {Object|null} booking
+ * @returns {Object<string, number>}
+ */
 const extractSelectedExtraServices = (booking) => {
   if (!booking || !Array.isArray(booking.selectedExtraServices)) return {};
 
@@ -28,6 +36,20 @@ const extractSelectedExtraServices = (booking) => {
   }, {});
 };
 
+/**
+ * @param {string|number} roomId
+ * @param {string|number|null} initialBookingId
+ * @returns {{
+ *   room: Object|null,
+ *   paymentMethods: Array<Object>,
+ *   extraServices: Array<Object>,
+ *   loading: boolean,
+ *   setLoading: Function,
+ *   bookingData: Object,
+ *   setBookingData: Function,
+ *   existingExtraServices: Object<string, number>
+ * }}
+ */
 export const useBookingData = (roomId, initialBookingId) => {
   const [searchParams] = useSearchParams();
 

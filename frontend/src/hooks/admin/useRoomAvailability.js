@@ -4,6 +4,17 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   availabilityData: Object|null,
+ *   loading: boolean,
+ *   selectedDate: Date,
+ *   setSelectedDate: Function,
+ *   expandedRoomType: string|null,
+ *   toggleRoomTypeDetails: Function,
+ *   setToday: Function
+ * }}
+ */
 export const useRoomAvailability = () => {
   const [availabilityData, setAvailabilityData] = useState(null);
   const [loading, setLoading] = useState(true);

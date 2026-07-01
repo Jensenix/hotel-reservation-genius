@@ -2,6 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 
+/**
+ * @returns {{
+ *   createBooking: Function,
+ *   processPayment: Function,
+ *   isProcessing: boolean,
+ *   errorState: Object,
+ *   setErrorState: Function
+ * }}
+ */
 export const useBookingMutations = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -59,8 +68,8 @@ export const useBookingMutations = () => {
 
       await Promise.all(servicePromises);
 
-      await apiService.bookings.update(bookingId, { 
-        totalPrice: grandTotal 
+      await apiService.bookings.update(bookingId, {
+        totalPrice: grandTotal,
       });
 
       const paymentRes = await apiService.payments.create({
@@ -74,7 +83,7 @@ export const useBookingMutations = () => {
       if (paymentRes.data.success) {
         const finalBookingReceipt = {
           ...paymentRes.data.data.booking,
-          totalPrice: grandTotal 
+          totalPrice: grandTotal,
         };
 
         navigate('/booking-success', {

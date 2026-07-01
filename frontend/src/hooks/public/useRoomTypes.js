@@ -2,6 +2,27 @@ import { useState, useEffect, useMemo } from 'react';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   roomTypes: Array<Object>,
+ *   filteredRoomTypes: Array<Object>,
+ *   loading: boolean,
+ *   searchTerm: string,
+ *   setSearchTerm: Function,
+ *   showRoomTypeModal: boolean,
+ *   editingRoomType: Object|null,
+ *   roomTypeFormData: Object,
+ *   setRoomTypeFormData: Function,
+ *   handleOpenRoomTypeModal: Function,
+ *   handleCloseRoomTypeModal: Function,
+ *   handleSubmitRoomType: Function,
+ *   showDeleteModal: boolean,
+ *   setShowDeleteModal: Function,
+ *   deleteTarget: Object|null,
+ *   setDeleteTarget: Function,
+ *   handleDelete: Function
+ * }}
+ */
 export const useRoomTypes = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const [loading, setLoading] = useState(true);

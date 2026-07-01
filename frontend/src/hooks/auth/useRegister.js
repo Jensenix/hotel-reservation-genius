@@ -4,6 +4,16 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   formData: Object,
+ *   loading: boolean,
+ *   error: string,
+ *   success: boolean,
+ *   handleChange: Function,
+ *   handleSubmit: Function
+ * }}
+ */
 export const useRegister = () => {
   const navigate = useNavigate();
   const { login } = useAuth();

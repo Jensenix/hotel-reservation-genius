@@ -3,10 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { useBookingData } from '@/hooks/booking/useBookingData';
 import { bookingPaymentService } from '@/services/bookingPaymentService';
 import { bookingExtraServiceAPI } from '@/services/endpoints/booking.service';
-import { calculateRoomTotal, calculateExtraServicesTotal } from '@/utils/bookingPrice';
+import {
+  calculateRoomTotal,
+  calculateExtraServicesTotal,
+} from '@/utils/bookingPrice';
 import apiService from '@/services/api/apiService';
 import { MaxStayDays } from '@/config';
 
+/**
+ * @param {string|number} roomId
+ * @param {Object|null} locationState
+ * @param {Object|null} user
+ * @returns {{
+ *   state: Object,
+ *   setBookingData: Function,
+ *   setSelectedExtraServices: Function,
+ *   setStep: Function,
+ *   setErrorState: Function,
+ *   handleNextStep: Function,
+ *   handleConfirmPayment: Function
+ * }}
+ */
 export const useBookingProcess = (roomId, locationState, user) => {
   const navigate = useNavigate();
   const initialBookingId = locationState?.bookingId || null;
@@ -42,7 +59,8 @@ export const useBookingProcess = (roomId, locationState, user) => {
 
     (async () => {
       try {
-        const res = await bookingExtraServiceAPI.getByBookingId(initialBookingId);
+        const res =
+          await bookingExtraServiceAPI.getByBookingId(initialBookingId);
         const rows = res.data?.data || [];
         const prefilled = {};
         rows.forEach((row) => {
@@ -65,19 +83,29 @@ export const useBookingProcess = (roomId, locationState, user) => {
   }, [initialBookingId]);
 
   // Room-only price
-  const totalPrice = useMemo(() => 
-    calculateRoomTotal(bookingData.checkInDate, bookingData.checkOutDate, room?.basePrice),
-  [bookingData.checkInDate, bookingData.checkOutDate, room]);
+  const totalPrice = useMemo(
+    () =>
+      calculateRoomTotal(
+        bookingData.checkInDate,
+        bookingData.checkOutDate,
+        room?.basePrice,
+      ),
+    [bookingData.checkInDate, bookingData.checkOutDate, room],
+  );
 
-  const extraServicesTotal = useMemo(() => 
-    calculateExtraServicesTotal(selectedExtraServices, extraServices),
-  [selectedExtraServices, extraServices]);
+  const extraServicesTotal = useMemo(
+    () => calculateExtraServicesTotal(selectedExtraServices, extraServices),
+    [selectedExtraServices, extraServices],
+  );
 
   const grandTotal = totalPrice + extraServicesTotal;
 
   const handleNextStep = async () => {
     if (!bookingData.checkInDate || !bookingData.checkOutDate) {
-      setErrorState({ show: true, message: 'Please select valid check-in and check-out dates.' });
+      setErrorState({
+        show: true,
+        message: 'Please select valid check-in and check-out dates.',
+      });
       return;
     }
 
@@ -86,12 +114,17 @@ export const useBookingProcess = (roomId, locationState, user) => {
     const diffDays = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
 
     if (diffDays <= 0) {
-      setErrorState({ show: true, message: 'Check-out date must be after check-in date.' });
+      setErrorState({
+        show: true,
+        message: 'Check-out date must be after check-in date.',
+      });
       return;
     }
 
     if (diffDays > MaxStayDays) {
-      const trimmedCheckOut = new Date(checkIn.getTime() + (MaxStayDays * 24 * 60 * 60 * 1000));
+      const trimmedCheckOut = new Date(
+        checkIn.getTime() + MaxStayDays * 24 * 60 * 60 * 1000,
+      );
       setBookingData((prev) => ({ ...prev, checkOutDate: trimmedCheckOut }));
       setErrorState({
         show: true,
@@ -104,7 +137,7 @@ export const useBookingProcess = (roomId, locationState, user) => {
       .filter(([_, quantity]) => quantity > 0)
       .map(([serviceId, quantity]) => ({
         extraServiceId: parseInt(serviceId, 10),
-        quantity
+        quantity,
       }));
 
     try {
@@ -117,7 +150,7 @@ export const useBookingProcess = (roomId, locationState, user) => {
           checkOutDate: bookingData.checkOutDate.toISOString(),
           specialRequests: bookingData.specialRequests,
           // 👉 FIX: Reverted to room-only price. Backend will add the extras safely!
-          totalPrice: totalPrice, 
+          totalPrice: totalPrice,
           extraServices: formattedExtraServices,
           // selectedExtraServices is now prefilled from the server on resume
           // (see the effect above), so an empty array here genuinely means
@@ -134,8 +167,8 @@ export const useBookingProcess = (roomId, locationState, user) => {
           checkOutDate: bookingData.checkOutDate.toISOString(),
           specialRequests: bookingData.specialRequests,
           // 👉 FIX: Reverted to room-only price. Backend will add the extras safely!
-          totalPrice: totalPrice, 
-          extraServices: formattedExtraServices, 
+          totalPrice: totalPrice,
+          extraServices: formattedExtraServices,
         });
 
         setBookingId(data.id);
@@ -144,7 +177,10 @@ export const useBookingProcess = (roomId, locationState, user) => {
     } catch (error) {
       setErrorState({
         show: true,
-        message: error.response?.data?.message || error.message || 'Failed to process booking.',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to process booking.',
       });
     } finally {
       setLoading(false);
@@ -176,7 +212,10 @@ export const useBookingProcess = (roomId, locationState, user) => {
     } catch (error) {
       setErrorState({
         show: true,
-        message: error.response?.data?.message || error.message || 'Failed to process payment.',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to process payment.',
       });
     } finally {
       setIsProcessingPayment(false);

@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   facilities: Array<Object>,
+ *   loading: boolean,
+ *   selectedFacility: Object|null,
+ *   setSelectedFacility: Function
+ * }}
+ */
 export const useFacilities = () => {
   const [facilities, setFacilities] = useState([]);
   const [loading, setLoading] = useState(true); // Initialized as true
@@ -12,7 +20,6 @@ export const useFacilities = () => {
 
     const initialFetch = async () => {
       try {
-        // No synchronous setLoading(true) here!
         const response = await apiService.facilities.getAll();
         if (!ignore) {
           setFacilities(response.data.data || []);

@@ -24,3 +24,5 @@ export const logger = {
     if (DEBUG) console.error(...args);
   },
 };
+
+export const SocketRetryDelays = [1000, 2000, 5000, 10000]; 

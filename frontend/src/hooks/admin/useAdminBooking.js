@@ -5,6 +5,13 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   state: Object,
+ *   refs: Object,
+ *   actions: Object
+ * }}
+ */
 export const useAdminBooking = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchInputRef = useRef(null);

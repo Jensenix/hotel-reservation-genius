@@ -5,6 +5,15 @@ import { logger } from '@/config';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract';
 
+/**
+ * @returns {{
+ *   loading: boolean,
+ *   filters: Object,
+ *   updateFilters: Function,
+ *   clearFilters: Function,
+ *   filteredRooms: Array<Object>
+ * }}
+ */
 export const useOurRooms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [rooms, setRooms] = useState([]);

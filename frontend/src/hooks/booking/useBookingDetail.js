@@ -6,6 +6,18 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   booking: Object|null,
+ *   loading: boolean,
+ *   goBack: Function,
+ *   goToModify: Function,
+ *   handleContinuePayment: Function,
+ *   handleCheckIn: Function,
+ *   handleCheckOut: Function,
+ *   handleCancel: Function
+ * }}
+ */
 export const useBookingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();

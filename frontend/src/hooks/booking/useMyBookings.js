@@ -7,6 +7,18 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract.js';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   loading: boolean,
+ *   filter: string,
+ *   setFilter: Function,
+ *   search: string,
+ *   setSearch: Function,
+ *   filteredBookings: Array<Object>,
+ *   handleCheckIn: Function,
+ *   handleCheckOut: Function
+ * }}
+ */
 export const useMyBookings = () => {
   const { user } = useAuth();
   const userId = user?.id;

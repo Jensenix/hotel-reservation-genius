@@ -2,6 +2,17 @@ import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @param {string|number} roomId
+ * @param {string|number|null} initialBookingId
+ * @returns {{
+ *   room: Object|null,
+ *   paymentMethods: Array<Object>,
+ *   extraServices: Array<Object>,
+ *   existingBooking: Object|null,
+ *   loading: boolean
+ * }}
+ */
 export const useBookingQueries = (roomId, initialBookingId) => {
   const [room, setRoom] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
