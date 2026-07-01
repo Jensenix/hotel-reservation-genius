@@ -45,7 +45,7 @@ export const useRoomTypes = () => {
 
     const initialFetch = async () => {
       try {
-        const response = await apiService.roomTypes.getAll();
+        const response = await apiService.roomTypes.getAllWithFacilities();
         if (!ignore) {
           setRoomTypes(response.data.data || []);
         }
@@ -66,7 +66,7 @@ export const useRoomTypes = () => {
   const refetchRoomTypes = async () => {
     setLoading(true);
     try {
-      const response = await apiService.roomTypes.getAll();
+      const response = await apiService.roomTypes.getAllWithFacilities();
       setRoomTypes(response.data.data || []);
     } catch (error) {
       logger.error('Error refetching room types:', error);

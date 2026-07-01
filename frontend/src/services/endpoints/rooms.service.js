@@ -9,20 +9,21 @@ export const roomAPI = {
   create: (data) => apiClient.post('/rooms', data),
   update: (id, data) => apiClient.put(`/rooms/${id}`, data),
   delete: (id) => apiClient.delete(`/rooms/${id}`),
-  updateStatus: (id, status) => apiClient.put(`/rooms/${id}/status`, { status }),
+  updateStatus: (id, status) =>
+    apiClient.put(`/rooms/${id}/status`, { status }),
 };
 
 /**
  * Room Type API service for frontend interactions with the backend room type endpoints.
  */
 export const roomTypeAPI = {
-  getAll: () => apiClient.get('/room-types'),
+  getAll: (params) => apiClient.get('/room-types', { params }),
+  getAllWithFacilities: () => apiClient.get('/room-types/with-facilities'),
   getById: (id) => apiClient.get(`/room-types/${id}`),
   create: (data) => apiClient.post('/room-types', data),
   update: (id, data) => apiClient.put(`/room-types/${id}`, data),
   delete: (id) => apiClient.delete(`/room-types/${id}`),
 };
-
 /**
  * Facility API service for frontend interactions with the backend facility endpoints.
  */
