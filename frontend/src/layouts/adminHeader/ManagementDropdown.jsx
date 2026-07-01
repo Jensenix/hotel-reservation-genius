@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import { Settings, ChevronDown } from 'lucide-react';
 import PropTypes from 'prop-types';
 
+/**
+ * @param {Object} props
+ * @param {Array<Object>} props.items
+ * @param {Function} props.isActive
+ * @returns {JSX.Element}
+ */
 const ManagementDropdown = ({ items, isActive }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -67,7 +73,7 @@ ManagementDropdown.propTypes = {
       path: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       icon: PropTypes.elementType.isRequired,
-    })
+    }),
   ).isRequired,
   isActive: PropTypes.func.isRequired,
 };

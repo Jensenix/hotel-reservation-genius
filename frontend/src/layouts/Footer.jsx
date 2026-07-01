@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * @returns {JSX.Element}
+ */
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
@@ -9,7 +12,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Genius Society Hotel</h3>
             <p className="text-gray-400 mb-4">
-              Experience luxury and comfort at its finest. Your perfect getaway awaits.
+              Experience luxury and comfort at its finest. Your perfect getaway
+              awaits.
             </p>
             <div className="flex space-x-4">
               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
@@ -23,22 +27,34 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/rooms" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  to="/rooms"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Rooms & Suites
                 </Link>
               </li>
               <li>
-                <Link to="/facilities" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  to="/facilities"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Facilities
                 </Link>
               </li>
               <li>
-                <Link to="/my-bookings" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  to="/my-bookings"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Bookings
                 </Link>
               </li>
               <li>
-                <Link to="/reviews" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  to="/reviews"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Reviews
                 </Link>
               </li>
