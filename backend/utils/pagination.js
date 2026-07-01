@@ -1,39 +1,37 @@
 /**
- * Pagination Utility Class
+ * @module Pagination
+ * Utility class for handling pagination values and paginated response metadata.
  *
- * Provides helper methods for:
- * - Calculating database query pagination values (limit and offset)
- * - Formatting paginated query results into a consistent response structure
+ * Responsibilities:
+ * - Convert page/size query parameters into Sequelize limit/offset values
+ * - Normalize Sequelize paginated query results
+ * - Return consistent pagination metadata for API responses
+ */
+
+/**
+ * Pagination helper class.
  *
- * Designed to work with Sequelize pagination queries that return:
+ * Designed for Sequelize queries that return data in this shape:
  * {
  *   count: number,
  *   rows: array
  * }
  */
 class Pagination {
-  
   /**
-   * Calculate pagination values for database queries.
+   * Converts page and size values into database pagination options.
    *
-   * Converts page and size query parameters into:
-   * - limit: number of records per page
-   * - offset: number of records to skip
+   * Example:
+   * page = 2, size = 10
    *
-   * @param {number|string} page - Current page number
-   * @param {number|string} size - Number of records per page
+   * Result:
+   * limit = 10
+   * offset = 10
    *
-   * @returns {Object} Pagination query options
-   * @returns {number} limit - Maximum records to return
-   * @returns {number} offset - Records to skip before fetching data
+   * @param {number|string} page Current page number
+   * @param {number|string} size Number of records per page
    *
-   * @example
-   * Pagination.getPagination(2, 10)
-   * // Returns:
-   * {
-   *   limit: 10,
-   *   offset: 10
-   * }
+   * @returns {{ limit: number, offset: number }}
    */
   static getPagination(page, size) {
     const limit = size ? +size : 10;
@@ -42,46 +40,27 @@ class Pagination {
     return { limit, offset };
   }
 
-
   /**
-   * Format paginated database results.
+   * Formats paginated database results into a consistent response object.
    *
-   * Extracts total items and rows from Sequelize pagination response
-   * and returns a standardized pagination object.
-   *
-   * Supports Sequelize result formats:
+   * Supports Sequelize-style results:
    * {
    *   count: number,
-   *   rows: []
+   *   rows: array
    * }
    *
-   * @param {Object} data - Database query result
-   * @param {number|string} page - Current page number
-   * @param {number|string} limit - Records per page
+   * Also supports rowCount as a fallback for other query result formats.
    *
-   * @returns {Object} Formatted pagination response
-   * @returns {number} totalItems - Total number of records
-   * @returns {Array} results - Records for current page
-   * @returns {number} totalPages - Total available pages
-   * @returns {number} currentPage - Current page number
+   * @param {object} data Paginated database result
+   * @param {number|string} page Current page number
+   * @param {number|string} limit Records per page
    *
-   * @example
-   * Pagination.getPagingData(
-   *   {
-   *     count: 25,
-   *     rows: [...]
-   *   },
-   *   1,
-   *   10
-   * )
-   *
-   * // Returns:
-   * {
-   *   totalItems: 25,
-   *   results: [...],
-   *   totalPages: 3,
-   *   currentPage: 1
-   * }
+   * @returns {{
+   *   totalItems: number,
+   *   results: Array,
+   *   totalPages: number,
+   *   currentPage: number
+   * }}
    */
   static getPagingData(data, page, limit) {
     const totalItems = parseInt(data?.count || data?.rowCount || 0);
