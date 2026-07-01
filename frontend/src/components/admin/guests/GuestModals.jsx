@@ -1,8 +1,24 @@
+import { AlertTriangle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import PropTypes from 'prop-types';
 
+function formatEditorNames(editors = []) {
+  if (editors.length === 0) return '';
+
+  return editors
+    .map((editor) => editor.userName || `Admin ${editor.userId}`)
+    .join(', ');
+}
+
 export default function GuestModals({ state, actions, handleCustomSubmit }) {
+  const hasEditingWarning =
+    state.editingItem &&
+    Array.isArray(state.editingWarningEditors) &&
+    state.editingWarningEditors.length > 0;
+
+  const editorNames = formatEditorNames(state.editingWarningEditors || []);
+
   return (
     <>
       <Modal
@@ -11,11 +27,37 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
         title={state.editingItem ? 'Edit User' : 'Add New User'}
       >
         <form onSubmit={handleCustomSubmit} className="space-y-4">
+          {hasEditingWarning && (
+            <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 mt-0.5 shrink-0 text-amber-600" />
+
+                <div>
+                  <p className="font-semibold">
+                    {editorNames}{' '}
+                    {state.editingWarningEditors.length === 1 ? 'is' : 'are'}{' '}
+                    currently editing this user.
+                  </p>
+
+                  <p className="mt-1 text-xs sm:text-sm text-amber-700">
+                    You can continue, but if they save first, your update may be
+                    rejected to prevent overwriting newer data.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div>
-            <label htmlFor="fullName" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="fullName"
+              className="block text-xs sm:text-sm font-medium text-slate-700 mb-1"
+            >
               Full Name
             </label>
+
             <input
+              id="fullName"
               type="text"
               required
               value={state.formData.fullName}
@@ -29,11 +71,17 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
               placeholder="e.g., John Doe"
             />
           </div>
+
           <div>
-            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-xs sm:text-sm font-medium text-slate-700 mb-1"
+            >
               Email
             </label>
+
             <input
+              id="email"
               type="email"
               required
               value={state.formData.email}
@@ -47,11 +95,17 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
               placeholder="e.g., john@example.com"
             />
           </div>
+
           <div>
-            <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-xs sm:text-sm font-medium text-slate-700 mb-1"
+            >
               Password {state.editingItem && '(leave empty to keep current)'}
             </label>
+
             <input
+              id="password"
               type="password"
               required={!state.editingItem}
               value={state.formData.password}
@@ -69,10 +123,15 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
               }
             />
           </div>
+
           <div>
-            <label htmlFor="phoneNumber" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="phoneNumber"
+              className="block text-xs sm:text-sm font-medium text-slate-700 mb-1"
+            >
               Phone Number
             </label>
+
             <input
               type="tel"
               id="phoneNumber"
@@ -87,25 +146,33 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
               placeholder="e.g., +1234567890"
             />
           </div>
+
           <div>
-            <label htmlFor="role" className="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="role"
+              className="block text-xs sm:text-sm font-medium text-slate-700 mb-1"
+            >
               Role
             </label>
+
             <select
               id="role"
               required
               value={state.formData.role}
               onChange={(e) =>
-                actions.setFormData({ ...state.formData, role: e.target.value })
+                actions.setFormData({
+                  ...state.formData,
+                  role: e.target.value,
+                })
               }
               className="w-full px-3 py-2.5 sm:px-4 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 bg-white text-sm sm:text-base"
             >
               <option value="guest">Guest</option>
               <option value="admin">Admin</option>
+              <option value="staff">Staff</option>
             </select>
           </div>
-          
-          {/* Action Buttons - Stacked horizontally on sm+, vertically (Submit on top) on mobile */}
+
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 pt-3 sm:pt-4">
             <Button
               type="button"
@@ -114,6 +181,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             >
               Cancel
             </Button>
+
             <Button
               type="submit"
               className="w-full sm:flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-700 text-white shadow-lg border-0 rounded-xl font-semibold py-3 sm:py-2"
@@ -135,7 +203,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             <strong>{state.deleteTarget?.fullName}</strong>? This action cannot
             be undone.
           </p>
-          {/* Action Buttons - Made Responsive */}
+
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
             <Button
               onClick={actions.closeDeleteModal}
@@ -143,6 +211,7 @@ export default function GuestModals({ state, actions, handleCustomSubmit }) {
             >
               Cancel
             </Button>
+
             <Button
               onClick={actions.handleDelete}
               className="w-full sm:flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-700 text-white shadow-lg border-0 rounded-xl font-semibold py-3 sm:py-2"
@@ -161,6 +230,14 @@ GuestModals.propTypes = {
     showModal: PropTypes.bool.isRequired,
     showDeleteModal: PropTypes.bool.isRequired,
     editingItem: PropTypes.object,
+    editingWarningEditors: PropTypes.arrayOf(
+      PropTypes.shape({
+        socketId: PropTypes.string,
+        userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        userName: PropTypes.string,
+        role: PropTypes.string,
+      }),
+    ),
     deleteTarget: PropTypes.shape({
       fullName: PropTypes.string,
     }),
@@ -172,11 +249,13 @@ GuestModals.propTypes = {
       role: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+
   actions: PropTypes.shape({
     closeModal: PropTypes.func.isRequired,
     closeDeleteModal: PropTypes.func.isRequired,
     setFormData: PropTypes.func.isRequired,
     handleDelete: PropTypes.func.isRequired,
   }).isRequired,
+
   handleCustomSubmit: PropTypes.func.isRequired,
 };
