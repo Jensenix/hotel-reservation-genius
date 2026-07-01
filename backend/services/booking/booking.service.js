@@ -80,7 +80,6 @@ class BookingService extends BaseService {
       throw err;
     }
 
-    // FIX: Safely parse dates directly from parameters
     const checkIn = new Date(checkInDate);
     let checkOut = new Date(checkOutDate);
     
@@ -94,11 +93,10 @@ class BookingService extends BaseService {
       throw new Error('Check-out date must be after check-in date.');
     }
 
-    // BACKEND TRIMMING LOGIC
     if (diffDays > MaxStayDays) {
       checkOut = new Date(checkIn.getTime() + MaxStayDays * OneDayInMs);
       finalCheckOutDate = checkOut.toISOString();
-      finalTotalPrice = null; // Force backend to recalculate true price
+      finalTotalPrice = null; 
     }
 
     const availableRoom = await BookingUtils.findAvailableRoom(
@@ -156,7 +154,6 @@ class BookingService extends BaseService {
     return booking;
   }
 
-  // ... (Keep getAllBookings, getBookingById exactly as they were) ...
   async getAllBookings({ page = 1, limit = 10, status, userId, roomId }) {
     const where = {};
     if (status) where.status = status;
@@ -259,7 +256,6 @@ class BookingService extends BaseService {
   async updateBooking(id, data) {
     const { extraServices, ...rest } = data || {};
 
-    // UPDATE LOGIC TRIMMING
     if (rest.checkInDate && rest.checkOutDate) {
       const checkIn = new Date(rest.checkInDate);
       let checkOut = new Date(rest.checkOutDate);
@@ -273,7 +269,6 @@ class BookingService extends BaseService {
         checkOut = new Date(checkIn.getTime() + MaxStayDays * OneDayInMs);
         rest.checkOutDate = checkOut.toISOString();
         
-        // Recalculate price for the newly trimmed stay
         const bookingToUpdate = await this.model.findByPk(id, {
           include: [{ model: Room, as: 'room' }]
         });
@@ -290,14 +285,19 @@ class BookingService extends BaseService {
     const updatedBooking = await this.update(id, rest);
 
     if (Array.isArray(extraServices)) {
-      const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
-      await this._applyExtraServices(updatedBooking, extraServices, baseTotal);
+      const hasItems = extraServices.some(
+        (item) => item && item.extraServiceId && Number(item.quantity) > 0,
+      );
+
+      if (hasItems || data?.clearExtraServices === true) {
+        const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
+        await this._applyExtraServices(updatedBooking, extraServices, baseTotal);
+      }
     }
 
     return updatedBooking;
   }
 
-  // ... (Keep the rest of your methods exactly as they are) ...
   async confirmBooking(id) {
     const booking = await super.getById(id, {
       include: [
