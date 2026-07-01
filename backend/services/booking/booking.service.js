@@ -1,21 +1,29 @@
 import db from '#models/index.js';
-const {
-  Booking,
-  User,
-  Room,
-  Payment,
-  Review,
-  ExtraService,
-  RoomType,
-  PaymentMethod,
-  BookingExtraService,
-} = db;
-import { Op } from 'sequelize';
+
+const { Booking, Room } = db;
+
 import BookingUtils from '#utils/bookingUtils.js';
-import BookingEvents from '#utils/events/bookingEvents.js';
 import BaseService from '../base/base.service.js';
+
+import bookingCreation from './bookingCreation.service.js';
+import bookingQuery from './bookingQuery.service.js';
+import bookingAdminQuery from './bookingAdminQuery.service.js';
+import bookingExtraServices from './bookingExtraService.service.js';
 import bookingLifecycle from './bookingLifecycle.service.js';
 
+/**
+ * @module BookingService
+ * Booking service facade.
+ *
+ * Responsibilities:
+ * - Preserve the existing public booking service API used by controllers
+ * - Delegate creation logic to BookingCreationService
+ * - Delegate read/query logic to BookingQueryService
+ * - Delegate admin list/search logic to BookingAdminQueryService
+ * - Delegate extra-service logic to BookingExtraServicesService
+ * - Delegate status lifecycle transitions to BookingLifecycleService
+ * - Keep generic update/delete behavior from BaseService
+ */
 class BookingService extends BaseService {
   constructor() {
     super(Booking, 'Booking');
@@ -23,223 +31,89 @@ class BookingService extends BaseService {
 
   /**
    * Applies extra services to a booking and updates the total price.
-   * @param {Object} booking
-   * @param {Array} extraServicesPayload
-   * @param {number} baseTotal
-   * @returns {Promise<number>}
+   *
+   * Kept as a compatibility wrapper for internal callers that may still use
+   * BookingService._applyExtraServices().
+   *
+   * @param {Object} booking Booking Sequelize instance
+   * @param {Array} extraServicesPayload Extra-service selection payload
+   * @param {number} baseTotal Room-only/base booking total
+   *
+   * @returns {Promise<number>} New total price
    */
   async _applyExtraServices(booking, extraServicesPayload, baseTotal) {
-    const items = (extraServicesPayload || []).filter(
-      (item) => item && item.extraServiceId && Number(item.quantity) > 0,
+    return bookingExtraServices.applyExtraServices(
+      booking,
+      extraServicesPayload,
+      baseTotal,
     );
-
-    const catalog = items.length
-      ? await ExtraService.findAll({
-          where: { id: items.map((item) => item.extraServiceId) },
-        })
-      : [];
-    const priceById = new Map(catalog.map((s) => [s.id, Number(s.price)]));
-
-    await BookingExtraService.destroy({ where: { bookingId: booking.id } });
-
-    let extrasTotal = 0;
-    const rows = [];
-    for (const item of items) {
-      const unitPrice = priceById.get(item.extraServiceId);
-      if (unitPrice == null) continue;
-      const subtotal = unitPrice * Number(item.quantity);
-      extrasTotal += subtotal;
-      rows.push({
-        bookingId: booking.id,
-        extraServiceId: item.extraServiceId,
-        quantity: item.quantity,
-        subtotal,
-      });
-    }
-
-    if (rows.length > 0) {
-      await BookingExtraService.bulkCreate(rows);
-    }
-
-    const newTotal = Number(baseTotal) + extrasTotal;
-    if (Number(booking.totalPrice) !== newTotal) {
-      await booking.update({ totalPrice: newTotal });
-    }
-
-    return newTotal;
   }
 
-  async createBooking({
-    userId,
-    roomTypeId,
-    checkInDate,
-    checkOutDate,
-    totalPrice,
-    status,
-    extraServices,
-  }) {
-    if (!userId || !roomTypeId || !checkInDate || !checkOutDate) {
-      const err = new Error(
-        'userId, roomTypeId, checkInDate, and checkOutDate are required',
-      );
-      err.statusCode = 400;
-      throw err;
-    }
-
-    const { checkOutDate: finalCheckOutDate, wasCapped } =
-      BookingUtils.resolveStayDuration(checkInDate, checkOutDate);
-    const finalTotalPrice = wasCapped ? null : totalPrice;
-
-    const availableRoom = await BookingUtils.findAvailableRoom(
-      roomTypeId,
-      checkInDate,
-      finalCheckOutDate,
-    );
-    if (!availableRoom) {
-      const err = new Error(
-        'All rooms of this type are fully booked for the selected dates',
-      );
-      err.statusCode = 400;
-      throw err;
-    }
-
-    let calculatedPrice =
-      finalTotalPrice ||
-      (await BookingUtils.calculateTotalPrice(
-        roomTypeId,
-        checkInDate,
-        finalCheckOutDate,
-      ));
-
-    const booking = await super.create({
-      userId,
-      roomId: availableRoom.id,
-      checkInDate,
-      checkOutDate: finalCheckOutDate,
-      totalPrice: calculatedPrice,
-      status: status || 'pending',
-    });
-
-    if (Array.isArray(extraServices) && extraServices.length > 0) {
-      await this._applyExtraServices(booking, extraServices, calculatedPrice);
-    }
-
-    await BookingEvents.bookingCreated(booking);
-
-    return booking;
+  /**
+   * Creates a booking.
+   *
+   * @param {Object} data Booking creation payload
+   *
+   * @returns {Promise<Object>} Created booking
+   */
+  createBooking(data) {
+    return bookingCreation.createBooking(data);
   }
 
-  async getAllBookings({ page = 1, limit = 10, status, userId, roomId }) {
-    const where = {};
-    if (status) where.status = status;
-    if (userId) where.userId = userId;
-    if (roomId) where.roomId = roomId;
-
-    const parsedLimit = parseInt(limit, 10);
-    const offset = (parseInt(page, 10) - 1) * parsedLimit;
-
-    const { count, rows } = await Booking.findAndCountAll({
-      where,
-      offset,
-      limit: parsedLimit,
-      order: [['createdAt', 'DESC']],
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
-        },
-        {
-          model: Room,
-          as: 'room',
-          include: [
-            {
-              model: RoomType,
-              as: 'roomType',
-              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
-            },
-          ],
-        },
-      ],
-    });
-
-    return {
-      rows,
-      pagination: {
-        currentPage: parseInt(page, 10),
-        totalPages: Math.ceil(count / parsedLimit),
-        totalItems: count,
-        itemsPerPage: parsedLimit,
-      },
-    };
+  /**
+   * Retrieves all bookings with pagination and optional filters.
+   *
+   * @param {Object} query Query parameters
+   *
+   * @returns {Promise<Object>} Paginated booking result
+   */
+  getAllBookings(query) {
+    return bookingQuery.getAllBookings(query);
   }
 
-  async getBookingById(id) {
-    const booking = await super.getById(id, {
-      include: [
-        { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        {
-          model: Room,
-          as: 'room',
-          include: [
-            {
-              model: RoomType,
-              as: 'roomType',
-              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
-            },
-          ],
-        },
-        {
-          model: Payment,
-          as: 'payment',
-          include: [{ model: PaymentMethod, as: 'paymentMethod' }],
-        },
-        { model: Review, as: 'reviews' },
-        {
-          model: ExtraService,
-          as: 'extraServices',
-          through: { attributes: ['quantity', 'subtotal'] },
-        },
-      ],
-    });
-
-    if (!booking) return booking;
-
-    let extraServiceRows = [];
-    try {
-      extraServiceRows = await BookingExtraService.findAll({
-        where: { bookingId: booking.id },
-      });
-    } catch (err) {
-      console.error(
-        '[BookingService] Failed to load selectedExtraServices for booking',
-        booking.id,
-        err.message,
-      );
-    }
-
-    const plainBooking = booking.toJSON();
-    plainBooking.selectedExtraServices = extraServiceRows.map((row) => ({
-      id: row.extraServiceId,
-      quantity: row.quantity,
-      subtotal: row.subtotal,
-    }));
-
-    return plainBooking;
+  /**
+   * Retrieves a booking by ID.
+   *
+   * @param {number|string} id Booking ID
+   *
+   * @returns {Promise<Object|null>} Booking detail
+   */
+  getBookingById(id) {
+    return bookingQuery.getBookingById(id);
   }
 
+  /**
+   * Updates a booking.
+   *
+   * Handles:
+   * - Stay-duration normalization
+   * - Total-price recalculation when capped dates are applied
+   * - Extra-service replacement/recalculation
+   *
+   * @param {number|string} id Booking ID
+   * @param {Object} data Update payload
+   *
+   * @returns {Promise<Object>} Updated booking
+   */
   async updateBooking(id, data) {
     const { extraServices, ...rest } = data || {};
 
     if (rest.checkInDate && rest.checkOutDate) {
       const { checkOutDate: finalCheckOutDate, wasCapped } =
         BookingUtils.resolveStayDuration(rest.checkInDate, rest.checkOutDate);
+
       rest.checkOutDate = finalCheckOutDate;
 
       if (wasCapped) {
         const bookingToUpdate = await this.model.findByPk(id, {
-          include: [{ model: Room, as: 'room' }],
+          include: [
+            {
+              model: Room,
+              as: 'room',
+            },
+          ],
         });
+
         if (bookingToUpdate && bookingToUpdate.room) {
           rest.totalPrice = await BookingUtils.calculateTotalPrice(
             bookingToUpdate.room.roomTypeId,
@@ -258,207 +132,181 @@ class BookingService extends BaseService {
       );
 
       if (hasItems || data?.clearExtraServices === true) {
-        const baseTotal = rest.totalPrice ?? updatedBooking.totalPrice;
-        await this._applyExtraServices(
+        const baseTotal =
+          rest.totalPrice ??
+          (await BookingUtils.calculateTotalPrice(
+            updatedBooking.room?.roomTypeId,
+            updatedBooking.checkInDate,
+            updatedBooking.checkOutDate,
+          ));
+
+        await bookingExtraServices.applyExtraServices(
           updatedBooking,
           extraServices,
           baseTotal,
         );
+
+        await updatedBooking.reload();
       }
     }
 
     return updatedBooking;
   }
 
-  async getAllBookingsAdmin({
-    status,
-    search,
-    checkInDate,
-    checkOutDate,
-    userId,
-    page = 1,
-    limit = 10,
-  }) {
-    const sanitizedPage = Math.max(1, parseInt(page) || 1);
-    const sanitizedLimit = Math.min(100, Math.max(1, parseInt(limit) || 10));
-    const where = {};
-
-    const statusMapping = {
-      pending: 'pending',
-      confirmed: 'confirmed',
-      'checked-in': 'checked_in',
-      'checked-out': 'checked_out',
-      cancelled: 'cancelled',
-    };
-    if (status && statusMapping[status]) where.status = statusMapping[status];
-    if (checkInDate && !isNaN(Date.parse(checkInDate)))
-      where.checkInDate = { [Op.gte]: checkInDate };
-    if (checkOutDate && !isNaN(Date.parse(checkOutDate)))
-      where.checkOutDate = { [Op.lte]: checkOutDate };
-    if (userId && !isNaN(parseInt(userId)) && parseInt(userId) > 0)
-      where.userId = parseInt(userId);
-
-    if (search) {
-      const searchId = parseInt(search);
-      if (!isNaN(searchId) && searchId > 0) {
-        where.id = { [Op.eq]: searchId };
-      } else {
-        where[Op.or] = [{ '$user.fullName$': { [Op.iLike]: `%${search}%` } }];
-      }
-    }
-
-    const { count, rows: bookings } = await Booking.findAndCountAll({
-      where,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
-        },
-        {
-          model: Room,
-          as: 'room',
-          include: [
-            {
-              model: RoomType,
-              as: 'roomType',
-              attributes: ['id', 'name', 'maxCapacity'],
-            },
-          ],
-          attributes: ['id', 'roomNumber', 'status'],
-        },
-        { model: Payment, as: 'payment' },
-      ],
-      order: [['id', 'DESC']],
-      limit: sanitizedLimit,
-      offset: (sanitizedPage - 1) * sanitizedLimit,
-    });
-
-    const responseStatusMapping = {
-      pending: 'pending',
-      confirmed: 'confirmed',
-      checked_in: 'checked-in',
-      checked_out: 'checked-out',
-      cancelled: 'cancelled',
-    };
-    const mappedBookings = bookings.map((b) => ({
-      ...b.toJSON(),
-      status: responseStatusMapping[b.status] || b.status,
-    }));
-
-    return {
-      bookings: mappedBookings,
-      pagination: {
-        currentPage: sanitizedPage,
-        totalPages: Math.ceil(count / sanitizedLimit),
-        totalItems: count,
-        itemsPerPage: sanitizedLimit,
-      },
-    };
+  /**
+   * Retrieves bookings for the admin dashboard.
+   *
+   * @param {Object} query Admin query filters
+   *
+   * @returns {Promise<Object>} Paginated admin booking result
+   */
+  getAllBookingsAdmin(query) {
+    return bookingAdminQuery.getAllBookingsAdmin(query);
   }
 
-  async deleteBooking(id) {
+  /**
+   * Deletes a booking.
+   *
+   * @param {number|string} id Booking ID
+   *
+   * @returns {Promise<Object|void>}
+   */
+  deleteBooking(id) {
     return this.delete(id);
   }
 
-  async getUserBookings(userId) {
-    if (!userId) {
-      const err = new Error('User ID is required');
-      err.statusCode = 400;
-      throw err;
-    }
-
-    return Booking.findAll({
-      where: { userId },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'fullName', 'email', 'phoneNumber'],
-        },
-        {
-          model: Room,
-          as: 'room',
-          include: [
-            {
-              model: RoomType,
-              as: 'roomType',
-              attributes: ['id', 'name', 'basePrice', 'maxCapacity'],
-            },
-          ],
-        },
-        {
-          model: Payment,
-          as: 'payment',
-          attributes: [
-            'id',
-            'paymentMethodId',
-            'amount',
-            'paymentStatus',
-            'transactionTime',
-          ],
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
+  /**
+   * Retrieves bookings owned by a user.
+   *
+   * @param {number|string} userId User ID
+   *
+   * @returns {Promise<Array>} User bookings
+   */
+  getUserBookings(userId) {
+    return bookingQuery.getUserBookings(userId);
   }
 
-  async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
-    if (!roomId || !checkInDate || !checkOutDate) {
-      const err = new Error(
-        'roomId, checkInDate, and checkOutDate are required',
-      );
-      err.statusCode = 400;
-      throw err;
-    }
-    return BookingUtils.checkRoomAvailability(
+  /**
+   * Checks whether a room is available.
+   *
+   * @param {number|string} roomId Room ID
+   * @param {string} checkInDate Check-in date
+   * @param {string} checkOutDate Check-out date
+   *
+   * @returns {Promise<boolean>}
+   */
+  checkRoomAvailability(roomId, checkInDate, checkOutDate) {
+    return bookingQuery.checkRoomAvailability(
       roomId,
       checkInDate,
       checkOutDate,
     );
   }
 
-  async getAvailableRooms(checkInDate, checkOutDate, roomTypeId) {
-    if (!checkInDate || !checkOutDate) {
-      const err = new Error('checkInDate and checkOutDate are required');
-      err.statusCode = 400;
-      throw err;
-    }
-    return BookingUtils.getAvailableRooms(
+  /**
+   * Retrieves available rooms for a date range.
+   *
+   * @param {string} checkInDate Check-in date
+   * @param {string} checkOutDate Check-out date
+   * @param {number|string} [roomTypeId] Optional room type ID
+   *
+   * @returns {Promise<Array>}
+   */
+  getAvailableRooms(checkInDate, checkOutDate, roomTypeId) {
+    return bookingQuery.getAvailableRooms(
       checkInDate,
       checkOutDate,
       roomTypeId,
     );
   }
 
+  /**
+   * Confirms a booking.
+   *
+   * @param {number|string} id Booking ID
+   *
+   * @returns {Promise<Object>}
+   */
   confirmBooking(id) {
     return bookingLifecycle.confirmBooking(id);
   }
 
+  /**
+   * Checks in a guest by admin.
+   *
+   * @param {number|string} id Booking ID
+   *
+   * @returns {Promise<Object>}
+   */
   checkInGuest(id) {
     return bookingLifecycle.checkInGuest(id);
   }
 
+  /**
+   * Checks out a guest by admin.
+   *
+   * @param {number|string} id Booking ID
+   *
+   * @returns {Promise<Object>}
+   */
   checkOutGuest(id) {
     return bookingLifecycle.checkOutGuest(id);
   }
 
+  /**
+   * Cancels a booking by admin.
+   *
+   * @param {number|string} id Booking ID
+   * @param {string} reason Cancel reason
+   *
+   * @returns {Promise<Object>}
+   */
   cancelBookingByAdmin(id, reason) {
     return bookingLifecycle.cancelBookingByAdmin(id, reason);
   }
 
+  /**
+   * Cancels a booking by user.
+   *
+   * @param {number|string} id Booking ID
+   * @param {string} reason Cancel reason
+   * @param {number|string} userId User ID
+   *
+   * @returns {Promise<Object>}
+   */
   cancelBookingByUser(id, reason, userId) {
     return bookingLifecycle.cancelBookingByUser(id, reason, userId);
   }
 
+  /**
+   * Performs self check-in.
+   *
+   * @param {number|string} bookingId Booking ID
+   * @param {number|string} userId User ID
+   *
+   * @returns {Promise<Object>}
+   */
   selfCheckIn(bookingId, userId) {
     return bookingLifecycle.selfCheckIn(bookingId, userId);
   }
 
+  /**
+   * Performs self check-out.
+   *
+   * @param {number|string} bookingId Booking ID
+   * @param {number|string} userId User ID
+   *
+   * @returns {Promise<Object>}
+   */
   selfCheckOut(bookingId, userId) {
     return bookingLifecycle.selfCheckOut(bookingId, userId);
   }
 
+  /**
+   * Processes automated checkouts.
+   *
+   * @returns {Promise<void>}
+   */
   processAutomatedCheckouts() {
     return bookingLifecycle.processAutomatedCheckouts();
   }
