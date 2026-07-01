@@ -150,7 +150,7 @@ class BookingUtils {
   static async calculateTotalPrice(roomTypeId, checkInDate, checkOutDate) {
     const roomType = await RoomType.findByPk(roomTypeId);
 
-    if (!roomType) throw new Error('Room type not found');
+    if (!roomType) {throw new Error('Room type not found');}
 
     const start = new Date(checkInDate);
     const end = new Date(checkOutDate);

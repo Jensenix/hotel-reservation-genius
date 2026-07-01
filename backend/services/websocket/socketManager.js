@@ -96,7 +96,7 @@ function emitCurrentEditingActiveList() {
  * @returns {Server} Socket.IO server instance
  */
 function initializeSocketIO(httpServer) {
-  if (io) return io;
+  if (io) {return io;}
 
   const corsOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
@@ -407,7 +407,7 @@ function broadcast(targetRooms, eventName, standardEnvelope) {
  * @returns {Promise<void>}
  */
 async function closeIO() {
-  if (!io) return;
+  if (!io) {return;}
 
   await io.close();
 

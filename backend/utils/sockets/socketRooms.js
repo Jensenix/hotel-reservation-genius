@@ -61,13 +61,13 @@ function canJoinRoom(socket, room) {
   const { id: userId, role } = socket.data.user;
   const isStaff = isStaffRole(role);
 
-  if (room === ADMIN_DASHBOARD_ROOM) return isStaff;
+  if (room === ADMIN_DASHBOARD_ROOM) {return isStaff;}
 
   if (room.startsWith('user:')) {
     return String(userId) === room.split(':')[1] || isStaff;
   }
 
-  if (room.startsWith('room:')) return true;
+  if (room.startsWith('room:')) {return true;}
 
   return false;
 }

@@ -32,7 +32,7 @@ import { jwtSecret } from '#config/config.js';
  * @returns {void}
  */
 export const authenticateToken = (req, res, next) => {
-  if (req.method === 'OPTIONS') return next();
+  if (req.method === 'OPTIONS') {return next();}
 
   const authHeader = req.headers.authorization || req.headers.Authorization;
 
@@ -52,6 +52,7 @@ export const authenticateToken = (req, res, next) => {
 
     next();
   } catch (error) {
+    console.warn(`[Auth Middleware] Token verification failed: ${error.message}`);
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired token.',
@@ -74,7 +75,7 @@ export const authenticateToken = (req, res, next) => {
  * @returns {void}
  */
 export const requireAdmin = (req, res, next) => {
-  if (req.method === 'OPTIONS') return next();
+  if (req.method === 'OPTIONS') {return next();}
 
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({

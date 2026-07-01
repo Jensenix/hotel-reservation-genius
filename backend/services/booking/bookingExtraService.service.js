@@ -123,7 +123,9 @@ class BookingExtraServiceService extends BaseService {
     for (const item of items) {
       const unitPrice = priceById.get(item.extraServiceId);
 
-      if (unitPrice == null) continue;
+      if (unitPrice === null || unitPrice === undefined) {
+        continue;
+      }
 
       const quantity = Number(item.quantity);
       const subtotal = unitPrice * quantity;

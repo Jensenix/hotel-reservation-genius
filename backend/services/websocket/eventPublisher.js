@@ -3,7 +3,7 @@
  * PostgreSQL LISTEN/NOTIFY based event publisher for realtime updates.
  *
  * Responsibilities:
- * - Publish booking/payment/room events through PostgreSQL NOTIFY
+ * - Publish booking/payment/room/user events through PostgreSQL NOTIFY
  * - Listen to PostgreSQL channels using a dedicated pg Client
  * - Forward received events to Socket.IO rooms through socketManager.broadcast
  * - Automatically reconnect the LISTEN client if the database connection closes
@@ -21,7 +21,7 @@ const { sequelize } = db;
  * PostgreSQL notification channels used by the realtime system.
  *
  * These channels separate different event domains so that booking,
- * payment, and room updates can be published independently.
+ * payment, room, and user updates can be published independently.
  */
 export const CHANNELS = {
   BOOKING: 'booking_events',
@@ -123,9 +123,12 @@ function buildClientConfig() {
  *
  * @param {object} msg PostgreSQL notification message
  * @param {string} msg.payload JSON payload sent through pg_notify
+ * @returns {void}
  */
 function handleNotification(msg) {
-  if (!msg.payload) return;
+  if (!msg.payload) {
+    return;
+  }
 
   try {
     const envelope = JSON.parse(msg.payload);
@@ -142,10 +145,10 @@ function handleNotification(msg) {
     delete envelope._routing;
 
     broadcast(_routing.rooms, event, envelope);
-  } catch (err) {
+  } catch (error) {
     console.error(
       '[eventPublisher] Failed to parse notification payload:',
-      err.message,
+      error.message,
     );
   }
 }
@@ -158,9 +161,13 @@ function handleNotification(msg) {
  *
  * The delay is capped at RECONNECT_MAX_MS.
  * Reconnects are skipped when the server is shutting down.
+ *
+ * @returns {void}
  */
 function scheduleReconnect() {
-  if (isShuttingDown || reconnectTimer !== null) return;
+  if (isShuttingDown || reconnectTimer !== null) {
+    return;
+  }
 
   reconnectAttempts++;
 
@@ -178,8 +185,8 @@ function scheduleReconnect() {
 
     try {
       await initializeEventListener();
-    } catch (err) {
-      console.error('[eventPublisher] Reconnect failed:', err.message);
+    } catch (error) {
+      console.error('[eventPublisher] Reconnect failed:', error.message);
       scheduleReconnect();
     }
   }, delay);
@@ -206,7 +213,12 @@ async function initializeEventListener() {
 
     try {
       await listenClient.end();
-    } catch (_) {}
+    } catch (error) {
+      console.error(
+        '[eventPublisher] Failed to close existing LISTEN client:',
+        error.message,
+      );
+    }
 
     listenClient = null;
   }
@@ -215,8 +227,8 @@ async function initializeEventListener() {
 
   client.on('notification', handleNotification);
 
-  client.on('error', (err) => {
-    console.error('[eventPublisher] LISTEN client error:', err.message);
+  client.on('error', (error) => {
+    console.error('[eventPublisher] LISTEN client error:', error.message);
   });
 
   client.on('end', () => {
@@ -233,7 +245,8 @@ async function initializeEventListener() {
   await client.connect();
 
   for (const channel of LISTEN_CHANNELS) {
-    await client.query(`LISTEN ${channel}`);
+    // eslint-disable-next-line no-await-in-loop
+    await client.query(`LISTEN ${channel}`); // await is intentional to ensure sequential subscription
   }
 
   listenClient = client;
@@ -263,7 +276,6 @@ async function initializeEventListener() {
  * @param {object} [payload.data] Main event data
  * @param {object} [payload.meta] Extra metadata about the event
  * @param {string[]} payload.rooms Socket.IO rooms that should receive the event
- *
  * @returns {Promise<void>}
  */
 async function publish(channel, { event, data, meta, rooms }) {
@@ -315,14 +327,22 @@ async function publish(channel, { event, data, meta, rooms }) {
 async function closeEventListener() {
   isShuttingDown = true;
 
-  if (reconnectTimer !== null) clearTimeout(reconnectTimer);
+  if (reconnectTimer !== null) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
 
   if (listenClient) {
     listenClient.removeAllListeners();
 
     try {
       await listenClient.end();
-    } catch (err) {}
+    } catch (error) {
+      console.warn(
+        '[eventPublisher] Failed to close LISTEN client during shutdown:',
+        error.message,
+      );
+    }
 
     listenClient = null;
   }

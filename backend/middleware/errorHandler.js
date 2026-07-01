@@ -32,7 +32,7 @@ import { sendError } from '#utils/responseHandler.js';
  *
  * @returns {import('express').Response}
  */
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _next) => {
   console.error(`[ErrorHandler] ${req.method} ${req.originalUrl}`, err.stack);
 
   if (err.name === 'SequelizeValidationError') {

@@ -7,9 +7,9 @@
  * behave exactly as before — Socket.IO is an additive layer on the same port.
  */
 
-import http from 'http';
+import http from 'node:http';
 import app from './app.js';
-import models from './models/index.js'; // ensures Sequelize models are registered before listen
+import './models/index.js'; 
 import { initializeSocketIO, closeIO } from './services/websocket/socketManager.js';
 import { startListening, stopListening } from './services/websocket/eventPublisher.js';
 

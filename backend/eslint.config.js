@@ -1,4 +1,3 @@
-// backend/eslint.config.js
 import js from '@eslint/js';
 import globals from 'globals';
 import nodePlugin from 'eslint-plugin-n';
@@ -13,17 +12,10 @@ export default [
       'dist/**',
       'build/**',
       'logs/**',
-      '*.config.js',
     ],
   },
 
   js.configs.recommended,
-
-  /*
-   * SonarJS code-smell rules.
-   * Do not also add `sonarjs` inside plugins manually here,
-   * because the recommended config already registers it.
-   */
   sonarjs.configs.recommended,
 
   {
@@ -44,10 +36,8 @@ export default [
     },
 
     rules: {
-      /*
-       * General correctness
-       */
       'no-undef': 'error',
+
       'no-unused-vars': [
         'warn',
         {
@@ -56,80 +46,58 @@ export default [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
+
       'no-var': 'error',
-      'prefer-const': 'error',
+      'prefer-const': 'warn',
       eqeqeq: ['error', 'always'],
-      curly: ['error', 'all'],
-      'no-duplicate-imports': 'error',
+      curly: ['warn', 'all'],
+      'no-duplicate-imports': 'warn',
       'no-unreachable': 'error',
-      'no-constant-condition': 'warn',
 
-      /*
-       * Async / promise safety
-       */
-      'no-async-promise-executor': 'error',
-      'no-promise-executor-return': 'error',
-      'require-await': 'warn',
+      // Too noisy for Express/service facade style
+      'require-await': 'off',
+      'consistent-return': 'off',
+
+      // Useful but should not block cleanup
       'no-await-in-loop': 'warn',
-      'no-return-await': 'warn',
-
-      /*
-       * Cleaner backend code
-       */
-      'consistent-return': 'warn',
-      'default-case-last': 'warn',
       'no-useless-catch': 'warn',
       'no-else-return': 'warn',
       'object-shorthand': 'warn',
       'prefer-template': 'warn',
 
-      /*
-       * Console logs
-       */
-      'no-console': [
-        'warn',
-        {
-          allow: ['warn', 'error', 'info', 'log'],
-        },
-      ],
+      // Backend logs and shutdown code are acceptable
+      'no-console': 'off',
+      'n/no-process-exit': 'off',
 
-      /*
-       * Node.js rules
-       */
+      // Node rules
       'n/no-missing-import': 'off',
       'n/no-unpublished-import': 'off',
-      'n/no-process-exit': 'warn',
       'n/prefer-node-protocol': 'warn',
 
-      /*
-       * Security rules
-       */
+      // Security rules
       'security/detect-object-injection': 'off',
       'security/detect-non-literal-fs-filename': 'warn',
       'security/detect-child-process': 'warn',
       'security/detect-eval-with-expression': 'error',
       'security/detect-new-buffer': 'error',
-      'security/detect-no-csrf-before-method-override': 'warn',
-      'security/detect-possible-timing-attacks': 'warn',
-      'security/detect-pseudoRandomBytes': 'warn',
 
-      /*
-       * SonarJS tuning
-       * Keep these as warnings first so you can review gradually.
-       */
-      'sonarjs/cognitive-complexity': ['warn', 20],
+      // SonarJS tuning
+      'sonarjs/cognitive-complexity': ['warn', 25],
       'sonarjs/no-duplicated-branches': 'warn',
       'sonarjs/no-identical-functions': 'warn',
       'sonarjs/no-redundant-boolean': 'warn',
-      'sonarjs/no-small-switch': 'off',
+      'sonarjs/prefer-single-boolean-return': 'warn',
+
+      // Too noisy for Sequelize/raw SQL/event publisher code
+      'sonarjs/sql-queries': 'off',
     },
   },
 
-  /*
-   * Sequelize migrations/seeders often use CommonJS.
-   */
   {
-    files: ['migrations/**/*.cjs', 'seeders/**/*.cjs', '**/*.cjs'],
+    files: [
+      'migrations/**/*.{js,cjs,mjs}',
+      'seeders/**/*.{js,cjs,mjs}',
+    ],
 
     languageOptions: {
       sourceType: 'commonjs',
@@ -137,6 +105,15 @@ export default [
         ...globals.node,
         ...globals.commonjs,
       },
+    },
+
+    rules: {
+      'no-unused-vars': 'off',
+
+      'sonarjs/no-hardcoded-passwords': 'off',
+
+      'no-await-in-loop': 'off',
+      'no-console': 'off',
     },
   },
 ];

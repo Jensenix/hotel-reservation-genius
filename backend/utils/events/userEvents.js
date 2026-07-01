@@ -8,11 +8,14 @@ import { RealtimeEvents } from '#shared/eventContract.js';
 
 class UserEvents {
   static sanitizeUser(user) {
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
 
     const plainUser = typeof user.toJSON === 'function' ? user.toJSON() : user;
 
-    const { password, ...safeUser } = plainUser;
+    const safeUser = { ...plainUser };
+    delete safeUser.password;
 
     return safeUser;
   }

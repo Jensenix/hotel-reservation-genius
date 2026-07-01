@@ -39,9 +39,9 @@ class ReviewService extends BaseService {
    */
   async getAllReviews({ page = 1, limit, rating, userId, bookingId }) {
     const where = {};
-    if (rating) where.rating = rating;
-    if (userId) where.userId = userId;
-    if (bookingId) where.bookingId = bookingId;
+    if (rating) {where.rating = rating;}
+    if (userId) {where.userId = userId;}
+    if (bookingId) {where.bookingId = bookingId;}
 
     const { offset, limit: parsedLimit } = pagination.getPagination(
       page,
