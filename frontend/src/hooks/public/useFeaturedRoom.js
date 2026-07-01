@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @param {number} [limit]
+ * @returns {{
+ *   rooms: Array<Object>,
+ *   loading: boolean,
+ *   error: Error|null
+ * }}
+ */
 export const useFeaturedRooms = (limit = 3) => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);

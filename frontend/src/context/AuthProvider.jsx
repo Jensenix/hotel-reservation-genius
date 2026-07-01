@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { AuthContext } from './AuthContext'; 
+import { AuthContext } from './AuthContext';
 import { logger } from '@/config';
 
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
@@ -36,14 +41,10 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
-    loading
+    loading,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {

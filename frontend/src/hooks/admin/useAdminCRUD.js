@@ -3,11 +3,16 @@ import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
 /**
- * A generic CRUD hook for Admin Management pages.
- * Replaces the legacy BaseAdminManagement class.
- * @param {string} endpoint - The key in apiService (e.g., 'facilities', 'extraServices')
- * @param {Function} mapApiResponse - Function to format raw API data
- * @param {Object} initialFormState - The empty state for the creation form
+ * Generic CRUD hook for admin management pages.
+ *
+ * @param {Object} config
+ * @param {string} config.endpoint - The key in apiService.
+ * @param {Function} config.mapApiResponse - Maps raw API data into UI-ready data.
+ * @param {Object} config.initialFormState - Empty/default form state.
+ * @returns {{
+ *   state: Object,
+ *   actions: Object
+ * }}
  */
 export function useAdminCRUD({ endpoint, mapApiResponse, initialFormState }) {
   const [data, setData] = useState([]);

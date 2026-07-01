@@ -3,6 +3,13 @@ import { useParams } from 'react-router-dom';
 import apiService from '@/services/api/apiService';
 import { logger } from '@/config';
 
+/**
+ * @param {Object|null} prev
+ * @param {Object} payload
+ * @param {string|number} payload.roomId
+ * @param {string} payload.status
+ * @returns {Object|null}
+ */
 export const useRoomTypeDetail = () => {
   const { roomTypeId } = useParams();
   const [roomType, setRoomType] = useState(null);

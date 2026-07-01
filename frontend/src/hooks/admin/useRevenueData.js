@@ -4,6 +4,15 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { RealtimeEvents } from '@/shared/eventContract';
 import { logger } from '@/config';
 
+/**
+ * @returns {{
+ *   revenueData: Object|null,
+ *   loading: boolean,
+ *   dateRange: Object,
+ *   setDateRange: Function,
+ *   handleApplyFilter: Function
+ * }}
+ */
 export const useRevenueData = () => {
   const [revenueData, setRevenueData] = useState(null);
   const [loading, setLoading] = useState(true);

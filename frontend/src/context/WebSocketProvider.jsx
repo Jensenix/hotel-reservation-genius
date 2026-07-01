@@ -18,9 +18,14 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import { WebSocketContext } from './WebSocketContext';
 import { ApiUrl } from '@/config';
 import { logger } from '@/config';
+import { SocketRetryDelays } from '@/config';
 
-const RETRY_DELAYS = [1000, 2000, 5000, 10000];
 
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
+ */
 export function WebSocketProvider({ children }) {
   const { user, isAuthenticated } = useAuth();
   const [socket, setSocket] = useState(null);
@@ -58,11 +63,10 @@ export function WebSocketProvider({ children }) {
       cancelRetry();
 
       const delay =
-        RETRY_DELAYS[Math.min(retryIndexRef.current, RETRY_DELAYS.length - 1)];
+        SocketRetryDelays[Math.min(retryIndexRef.current, SocketRetryDelays.length - 1)];
 
       retryIndexRef.current++;
 
-      
       logger.log(
         `[WebSocket] Retry in ${delay}ms (attempt ${retryIndexRef.current})`,
       );
