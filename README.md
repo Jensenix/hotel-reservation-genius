@@ -300,10 +300,6 @@ BASE_URL=http://localhost:3000
 API_URL=http://localhost:3000/api
 ```
 
-
-Then frontend:
-
-```md
 ### Frontend (`frontend/.env`)
 
 ```env
@@ -312,15 +308,13 @@ VITE_API_URL=http://localhost:3000/api
 VITE_DEBUG_MODE=true
 ```
 
-
-
 ```md
 `VITE_API_URL` is used by the frontend Axios client and WebSocket provider.  
 The WebSocket provider derives the Socket.IO server URL by removing `/api` from `VITE_API_URL`.
 
-For production, do not use `localhost`. Use the deployed backend URL instead:
+For production, do not use `localhost`. Use the deployed backend URL instead, you should also set the **VITE_DEBUG_MODE** to false
 
-```env
+
 VITE_API_URL=https://your-backend-domain.com/api
 VITE_DEBUG_MODE=false
 ```
