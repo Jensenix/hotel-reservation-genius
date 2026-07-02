@@ -1,0 +1,132 @@
+@startuml GeniusSocietyHotelERD
+
+title Genius Society Hotel - Entity Relationship Diagram
+
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #334155
+  ArrowColor #92400E
+}
+
+entity "Users" as User {
+  * id : INTEGER <<PK>>
+  --
+  fullName : STRING
+  email : STRING
+  password : STRING
+  phoneNumber : STRING
+  role : ENUM(admin, staff, guest)
+}
+
+entity "RoomTypes" as RoomType {
+  * id : INTEGER <<PK>>
+  --
+  name : STRING
+  description : TEXT
+  basePrice : DECIMAL
+  maxCapacity : INTEGER
+}
+
+entity "Rooms" as Room {
+  * id : INTEGER <<PK>>
+  --
+  roomNumber : STRING
+  roomTypeId : INTEGER <<FK>>
+  floor : INTEGER
+  status : ENUM(available, occupied, maintenance, cleaning)
+}
+
+entity "Bookings" as Booking {
+  * id : INTEGER <<PK>>
+  --
+  userId : INTEGER <<FK>>
+  roomId : INTEGER <<FK>>
+  checkInDate : DATE
+  checkOutDate : DATE
+  totalPrice : DECIMAL
+  status : ENUM(pending, confirmed, checked_in, checked_out, cancelled)
+  actualCheckIn : DATE
+  actualCheckOut : DATE
+  cancelReason : TEXT
+  cancelledAt : DATE
+}
+
+entity "Payments" as Payment {
+  * id : INTEGER <<PK>>
+  --
+  bookingId : INTEGER <<FK>>
+  paymentMethodId : INTEGER <<FK>>
+  amount : DECIMAL
+  paymentStatus : ENUM(pending, paid, failed, refunded)
+  transactionTime : DATE
+}
+
+entity "PaymentMethods" as PaymentMethod {
+  * id : INTEGER <<PK>>
+  --
+  methodName : STRING
+  accountNumber : STRING
+  isActive : BOOLEAN
+}
+
+entity "Reviews" as Review {
+  * id : INTEGER <<PK>>
+  --
+  bookingId : INTEGER <<FK>>
+  userId : INTEGER <<FK>>
+  rating : INTEGER
+  comment : TEXT
+}
+
+entity "ExtraServices" as ExtraService {
+  * id : INTEGER <<PK>>
+  --
+  serviceName : STRING
+  price : DECIMAL
+}
+
+entity "BookingExtraServices" as BookingExtraService {
+  * id : INTEGER <<PK>>
+  --
+  bookingId : INTEGER <<FK>>
+  extraServiceId : INTEGER <<FK>>
+  quantity : INTEGER
+  subtotal : DECIMAL
+}
+
+entity "Facilities" as Facility {
+  * id : INTEGER <<PK>>
+  --
+  facilityName : STRING
+  iconUrl : STRING
+}
+
+entity "RoomTypeFacilities" as RoomTypeFacility {
+  * id : INTEGER <<PK>>
+  --
+  roomTypeId : INTEGER <<FK>>
+  facilityId : INTEGER <<FK>>
+}
+
+User ||--o{ Booking : creates
+User ||--o{ Review : writes
+
+RoomType ||--o{ Room : contains
+Room ||--o{ Booking : assigned_to
+
+Booking ||--o| Payment : has
+PaymentMethod ||--o{ Payment : used_by
+
+Booking ||--o{ Review : receives
+
+Booking ||--o{ BookingExtraService : includes
+ExtraService ||--o{ BookingExtraService : selected_as
+
+RoomType ||--o{ RoomTypeFacility : has
+Facility ||--o{ RoomTypeFacility : assigned_to
+
+@enduml

@@ -1,5 +1,23 @@
 @echo off
+setlocal
 
-start cmd /k "cd /d frontend && npm run dev"
+set "ROOT=%~dp0"
 
-start cmd /k "cd /d backend && npm run dev" 
+if not exist "%ROOT%frontend\package.json" (
+  echo [ERROR] frontend/package.json not found.
+  echo Make sure start_app.bat is placed in the project root folder.
+  pause
+  exit /b 1
+)
+
+if not exist "%ROOT%backend\package.json" (
+  echo [ERROR] backend/package.json not found.
+  echo Make sure start_app.bat is placed in the project root folder.
+  pause
+  exit /b 1
+)
+
+start "GSH Frontend" cmd /k "cd /d ""%ROOT%frontend"" && npm run dev"
+start "GSH Backend" cmd /k "cd /d ""%ROOT%backend"" && npm run dev"
+
+endlocal
